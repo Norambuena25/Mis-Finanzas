@@ -201,16 +201,30 @@ body{font-family:'Inter',system-ui,sans-serif;background:radial-gradient(900px 6
 }
 .bn-item{
   display:flex;flex-direction:column;align-items:center;gap:3px;
-  padding:6px 10px;border-radius:12px;
-  color:var(--muted);font-size:9.5px;font-weight:700;
+  padding:6px 4px;border-radius:12px;
+  color:var(--muted);font-size:8.5px;font-weight:700;
   cursor:pointer;transition:.18s;user-select:none;
   border:none;background:none;font-family:inherit;
-  flex:1;min-width:0;
+  flex:1;min-width:0;position:relative;
 }
-.bn-item .bni{font-size:19px;line-height:1;filter:grayscale(1);opacity:.65;transition:.18s}
+.bn-item .bni{font-size:18px;line-height:1;filter:grayscale(1);opacity:.65;transition:.18s}
 .bn-item.active{color:var(--purple);background:rgba(124,92,255,.12)}
 .bn-item.active .bni{filter:none;opacity:1;transform:translateY(-1px)}
 .bn-item:active{transform:scale(.95)}
+.bn-badge{
+  position:absolute;top:2px;right:calc(50% - 16px);
+  width:8px;height:8px;border-radius:50%;
+  background:var(--orange);box-shadow:0 0 8px var(--orange);
+  animation:pulse 1.5s infinite;
+  display:none;
+}
+#bnCuenta:not(.logged){
+  color:#c3b3ff;
+}
+#bnCuenta:not(.logged) .bni{
+  filter:none;
+  opacity:1;
+}
 @media(max-width:720px){
   .bottom-nav{display:flex}
   .main{padding-bottom:88px !important}
@@ -457,6 +471,11 @@ body{font-family:'Inter',system-ui,sans-serif;background:radial-gradient(900px 6
   <button class="bn-item" data-view="inversiones" type="button">
     <span class="bni">◉</span><span>Invers.</span>
   </button>
+  <button class="bn-item" id="bnCuenta" data-view="config" type="button">
+    <span class="bni" id="bnCuentaIcon">👤</span>
+    <span id="bnCuentaLabel">Entrar</span>
+    <span class="bn-badge" id="bnCuentaBadge"></span>
+  </button>
 </nav>
 
 <div class="modal-bg" id="modalBg">
@@ -481,7 +500,6 @@ const APP_URL = 'https://norambuena25.github.io/Mis-Finanzas/';
 
 /* =====================================================
    CONFIGURACIÓN SUPABASE
-   Rellena con tus valores para activar la sincronización
 ===================================================== */
 const SUPABASE_URL = 'https://gieyocpbvrlgjwcojkbo.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdpZXlvY3BidnJsZ2p3Y29qa2JvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAxMjY0ODQsImV4cCI6MjEwNTcwMjQ4NH0.Pmmn6DTAHx2TytXI85eQgVY-XSeVaCDV0_kDZzJsgTM';
@@ -1530,12 +1548,38 @@ authForm?.addEventListener('submit',async e=>{
   }
 });
 
+function updateBnCuenta(){
+  const btn=document.getElementById('bnCuenta');
+  const icon=document.getElementById('bnCuentaIcon');
+  const label=document.getElementById('bnCuentaLabel');
+  const badge=document.getElementById('bnCuentaBadge');
+  if(!btn||!icon||!label||!badge)return;
+
+  if(user && user.email){
+    const inicial=user.email.trim().charAt(0).toUpperCase();
+    icon.textContent=inicial;
+    icon.style.fontSize='16px';
+    icon.style.fontWeight='800';
+    label.textContent='Cuenta';
+    btn.classList.add('logged');
+    badge.style.display='none';
+  }else{
+    icon.textContent='👤';
+    icon.style.fontSize='';
+    icon.style.fontWeight='';
+    label.textContent='Entrar';
+    btn.classList.remove('logged');
+    badge.style.display='block';
+  }
+}
+
 async function afterLogin(){
   document.getElementById('syncBox').style.display='flex';
   document.getElementById('syncEmail').textContent=user.email||'';
   await pullCloud();
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.getElementById('view-dashboard').classList.add('active');
+  updateBnCuenta();
   renderConfig();
 }
 
@@ -1547,6 +1591,7 @@ async function initSupabase(){
 
 /* ============ INICIO ============ */
 renderAll();
+updateBnCuenta();
 initSupabase();
 </script>
 </body>
