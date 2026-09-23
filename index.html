@@ -1398,4 +1398,309 @@ function openModal(tipo,id=null,tarjetaPreset=null){
     '</div>';
   }
   if(tipo==='inversion'){
-    html=inputField('
+    html=inputField('nombre','Nombre','text',item?.nombre||'',"required");
+    html+=selectField('tipo','Tipo',data.categorias.inversiones,item?.tipo||data.categorias.inversiones[0]);
+    html+=inputField('monto','Monto actual (CLP)','number',item?.monto||'',"required min=0 step=1");
+    html+=inputField('rendimiento','Rendimiento (%)','number',item?.rendimiento??'',"step=0.1");
+  }
+  if(tipo==='presupuesto'){
+    html=selectField('categoria','Categoría',data.categorias.gastos,item?.categoria||data.categorias.gastos[0]);
+    html+=inputField('asignado','Monto asignado (CLP)','number',item?.asignado||'',"required min=0 step=1");
+  }
+  if(tipo==='activo'||tipo==='pasivo'){
+    const tipos=tipo==='activo'?['Bien raíz','Efectivo','Vehículo','Otro']:['Hipotecario','Automotriz','Otro'];
+    html=inputField('nombre','Nombre','text',item?.nombre||'',"required");
+    html+=selectField('tipo','Tipo',tipos,item?.tipo||tipos[0]);
+    html+=inputField('valor','Valor (CLP)','number',item?.valor||'',"required min=0 step=1");
+  }
+  if(tipo==='tarjeta'){
+    html=inputField('nombre','Nombre de la tarjeta','text',item?.nombre||'',"required");
+    html+=inputField('cupo','Cupo autorizado (CLP)','number',item?.cupo||'',"required min=0 step=1");
+    html+=inputField('deudaInicial','Deuda inicial (opcional)','number',item?.deudaInicial||0,"min=0 step=1");
+  }
+  if(tipo==='prestamo'){
+    html=inputField('nombre','Nombre del préstamo','text',item?.nombre||'',"required placeholder='Ej: Crédito hipotecario'");
+    html+=inputField('montoTotal','Monto original (CLP)','number',item?.montoTotal||'',"required min=0 step=1");
+    html+='<div class="field-row">'+
+      '<div class="field"><label>N° de cuotas</label><input name="numCuotas" type="number" min="1" max="600" value="'+(item?.numCuotas||12)+'" required></div>'+
+      '<div class="field"><label>Interés mensual (%)</label><input name="tasaInteres" type="number" min="0" step="0.01" value="'+(item?.tasaInteres||0)+'"></div>'+
+    '</div>';
+    html+=inputField('fechaInicio','Fecha de inicio','date',item?.fechaInicio||hoy());
+  }
+  if(tipo==='pagoTarjeta'){
+    const card=data.pasivos.find(x=>x.id===id);
+    if(!card){toast('Tarjeta no encontrada',true);return;}
+    modalTitle.textContent='Registrar pago · '+card.nombre;
+    const deuda=Math.max(0,deudaTarjeta(card));
+    html='<div style="font-size:12.5px;color:var(--muted);margin-bottom:18px;padding:14px;border-radius:12px;background:var(--surface-2);border:1px solid var(--border-2);line-height:1.8">'+
+      '<div style="display:flex;justify-content:space-between"><span>Deuda actual</span><strong style="color:var(--text)">'+clp(deuda)+'</strong></div>'+
+      '<div style="display:flex;justify-content:space-between;margin-top:4px"><span>Disponible</span><strong style="color:var(--green)">'+clp(cupoDisponible(card))+'</strong></div>'+
+    '</div>';
+    html+=inputField('monto','Monto a pagar (CLP)','number','',"required min=1 step=1");
+    html+=inputField('fecha','Fecha','date',hoy(),"required");
+    html+=inputField('nota','Nota (opcional)','text','',"placeholder='Pago mínimo / Total'");
+  }
+  if(tipo==='pagoPrestamo'){
+    const p=data.prestamos.find(x=>x.id===id);
+    if(!p){toast('Préstamo no encontrado',true);return;}
+    modalTitle.textContent='Registrar pago · '+p.nombre;
+    const c=calcularPrestamo(p);
+    html='<div style="font-size:12.5px;color:var(--muted);margin-bottom:18px;padding:14px;border-radius:12px;background:var(--surface-2);border:1px solid var(--border-2);line-height:1.8">'+
+      '<div style="display:flex;justify-content:space-between"><span>Cuota sugerida</span><strong style="color:var(--text)">'+clp(c.cuota)+'</strong></div>'+
+      '<div style="display:flex;justify-content:space-between;margin-top:4px"><span>Saldo pendiente</span><strong style="color:var(--orange)">'+clp(c.saldoPendiente)+'</strong></div>'+
+      '<div style="display:flex;justify-content:space-between;margin-top:4px"><span>Cuotas pagadas</span><strong style="color:var(--text)">'+c.cuotasPagadas+' / '+c.numCuotas+'</strong></div>'+
+    '</div>';
+    html+=inputField('monto','Monto pagado (CLP)','number',c.cuota.toFixed(0),"required min=1 step=1");
+    html+=inputField('fecha','Fecha','date',hoy(),"required");
+    html+=inputField('nota','Nota (opcional)','text','',"placeholder='Ej: Cuota 12'");
+  }
+
+  modalForm.innerHTML=html;
+  modalBg.classList.add('open');
+  setTimeout(()=>modalForm.querySelector('input,select')?.focus(),80);
+
+  if(tipo==='gasto'){
+    const sel=document.getElementById('selTarjetaGasto');
+    const bloque=document.getElementById('bloqueCuotas');
+    const preview=document.getElementById('previewCuotas');
+    const inpCuotas=modalForm.querySelector('[name=cuotas]');
+    const inpTasa=modalForm.querySelector('[name=tasaInteres]');
+    const inpMonto=modalForm.querySelector('[name=monto]');
+    function actualizar(){
+      const esTarjeta=!!sel.value;
+      bloque.style.display=esTarjeta?'block':'none';
+      if(!esTarjeta)return;
+      const cuotas=+inpCuotas.value||1;
+      const tasa=+inpTasa.value||0;
+      const monto=+inpMonto.value||0;
+      const r=calcularCompra(monto,cuotas,tasa);
+      preview.innerHTML='Valor cuota: <strong style="color:var(--text)">'+clp(r.valorCuota)+'</strong> · '+
+        'Total: <strong style="color:var(--text)">'+clp(r.totalCompra)+'</strong>'+
+        (r.interesTotal>0?' · Interés: <strong style="color:var(--orange)">'+clp(r.interesTotal)+'</strong>':'');
+    }
+    sel.addEventListener('change',actualizar);
+    inpCuotas.addEventListener('input',actualizar);
+    inpTasa.addEventListener('input',actualizar);
+    inpMonto.addEventListener('input',actualizar);
+    actualizar();
+  }
+}
+function closeModal(){modalBg.classList.remove('open');modalForm.reset();}
+
+document.getElementById('btnCancel').onclick=closeModal;
+document.getElementById('btnSave').onclick=e=>{
+  e.preventDefault();
+
+  if(currentTipo==='pagoTarjeta'){
+    const fd=new FormData(modalForm);
+    const card=data.pasivos.find(x=>x.id===currentId);
+    if(!card)return;
+    const monto=+fd.get('monto');
+    if(!monto||monto<=0){toast('Monto inválido',true);return;}
+    card.pagos=card.pagos||[];
+    card.pagos.push({id:uid(),monto:monto,fecha:fd.get('fecha'),nota:fd.get('nota')||''});
+    save();closeModal();renderAll();
+    toast('Pago registrado · '+clp(monto));
+    return;
+  }
+
+  if(currentTipo==='pagoPrestamo'){
+    const fd=new FormData(modalForm);
+    const p=data.prestamos.find(x=>x.id===currentId);
+    if(!p)return;
+    const monto=+fd.get('monto');
+    if(!monto||monto<=0){toast('Monto inválido',true);return;}
+    p.pagos=p.pagos||[];
+    p.pagos.push({id:uid(),monto:monto,fecha:fd.get('fecha'),nota:fd.get('nota')||''});
+    save();closeModal();renderAll();
+    toast('Pago registrado · '+clp(monto));
+    return;
+  }
+
+  const fd=new FormData(modalForm);
+  const obj={};
+  for(const [k,v] of fd.entries()){
+    if(['monto','valor','asignado','rendimiento','cupo','deudaInicial','cuotas','numCuotas','tasaInteres','montoTotal'].includes(k)){
+      obj[k]=v===''?0:+v;
+    }else if(k==='tarjetaId'){
+      obj[k]=v===''?null:+v;
+    }else{ obj[k]=v; }
+  }
+  if(modalForm.querySelector('[name=recurrente]'))obj.recurrente=modalForm.querySelector('[name=recurrente]').checked;
+  if(currentTipo!=='tarjeta' && currentTipo!=='prestamo' && !obj.nombre && !obj.categoria){toast('Completa los campos',true);return;}
+
+  const arr=tipoToArray(currentTipo);
+  if(!arr){toast('Tipo desconocido',true);return;}
+  if(currentId){
+    const idx=data[arr].findIndex(x=>x.id===currentId);
+    if(idx<0){toast('No encontrado',true);return;}
+    data[arr][idx]={...data[arr][idx],...obj};
+    toast('Actualizado');
+  }else{
+    if(currentTipo==='tarjeta'){
+      data[arr].push({id:uid(),tipo:'Tarjeta',nombre:obj.nombre,cupo:+obj.cupo||0,deudaInicial:+obj.deudaInicial||0,pagos:[],valor:0});
+    }else if(currentTipo==='prestamo'){
+      data[arr].push({id:uid(),nombre:obj.nombre,montoTotal:+obj.montoTotal||0,numCuotas:+obj.numCuotas||1,tasaInteres:+obj.tasaInteres||0,fechaInicio:obj.fechaInicio||hoy(),pagos:[]});
+    }else{
+      data[arr].push({id:uid(),...obj});
+    }
+    toast('Agregado');
+  }
+  save();closeModal();renderAll();
+};
+modalBg.onclick=e=>{if(e.target===modalBg)closeModal();};
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modalBg.classList.contains('open'))closeModal();});
+document.querySelectorAll('[data-add]').forEach(b=>b.addEventListener('click',()=>openModal(b.dataset.add)));
+
+const btnAddCatPresup=document.getElementById('btnAddCatPresup');
+if(btnAddCatPresup){
+  btnAddCatPresup.onclick=()=>{
+    const entrada=prompt('Nombre de la nueva categoría de gasto:');
+    if(!entrada)return;
+    const nombre=entrada.trim();
+    if(!nombre)return;
+    if(data.categorias.gastos.some(c=>c.toLowerCase()===nombre.toLowerCase())){toast('Ya existe',true);return;}
+    data.categorias.gastos.push(nombre);
+    data.colores[nombre]=PALETA[(data.categorias.gastos.length-1)%PALETA.length];
+    save();renderAll();toast('Categoría creada');
+    setTimeout(()=>{
+      if(confirm('¿Crear un sobre de presupuesto para "'+nombre+'"?')){
+        openModal('presupuesto');
+        setTimeout(()=>{
+          const sel=modalForm.querySelector('[name=categoria]');
+          if(sel)sel.value=nombre;
+        },120);
+      }
+    },200);
+  };
+}
+
+const btnNuevoTipoInv=document.getElementById('btnNuevoTipoInv');
+const btnNuevoTipoInv2=document.getElementById('btnNuevoTipoInv2');
+if(btnNuevoTipoInv)btnNuevoTipoInv.onclick=addTipoInv;
+if(btnNuevoTipoInv2)btnNuevoTipoInv2.onclick=addTipoInv;
+
+function toast(msg,warn){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast show'+(warn?' warn':'');
+  setTimeout(()=>t.className='toast'+(warn?' warn':''),2400);
+}
+
+document.getElementById('btnExport').onclick=()=>{
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);a.download='mis-finanzas-'+hoy()+'.json';a.click();
+  toast('Respaldo exportado');
+};
+document.getElementById('btnImport').onclick=()=>document.getElementById('fileImport').click();
+document.getElementById('fileImport').onchange=e=>{
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=()=>{
+    try{
+      const j=JSON.parse(r.result);
+      if(!j.ingresos||!j.gastos)throw 0;
+      if(!j.categorias)j.categorias=structuredClone(seed.categorias);
+      if(!j.colores)j.colores=structuredClone(seed.colores);
+      if(!Array.isArray(j.prestamos))j.prestamos=[];
+      j.pasivos.forEach(p=>{ if(p.tipo==='Tarjeta' && !Array.isArray(p.pagos))p.pagos=[]; });
+      j.gastos.forEach(g=>{
+        if(g.tarjetaId===undefined)g.tarjetaId=null;
+        if(g.cuotas===undefined)g.cuotas=1;
+        if(g.tasaInteres===undefined)g.tasaInteres=0;
+      });
+      data=j;save();renderAll();toast('Respaldo importado');
+    }catch{toast('Archivo inválido',true);}
+  };
+  r.readAsText(f);
+};
+document.getElementById('btnReset').onclick=()=>{
+  if(!confirm('¿Borrar todos tus datos y volver a los datos de ejemplo?'))return;
+  data=structuredClone(seed);save();renderAll();toast('Datos restablecidos');
+};
+
+document.getElementById('btnRangoHist').onclick=()=>{histRango=6;renderHistorico();};
+document.getElementById('btnRangoHist12').onclick=()=>{histRango=12;renderHistorico();};
+
+if('serviceWorker' in navigator && location.protocol!=='file:'){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('./sw.js',{scope:'./'}).catch(()=>{});
+  });
+}
+
+let authMode='signin';
+const authForm=document.getElementById('authForm');
+const authTitle=document.getElementById('authTitle');
+const authSub=document.getElementById('authSub');
+const authBtn=document.getElementById('authBtn');
+const authToggle=document.getElementById('authToggle');
+const authToggleText=document.getElementById('authToggleText');
+
+authToggle?.addEventListener('click',()=>{
+  authMode=authMode==='signin'?'signup':'signin';
+  if(authMode==='signup'){
+    authTitle.textContent='Crear cuenta';authSub.textContent='Regístrate para sincronizar tus finanzas';
+    authBtn.textContent='Registrarme';authToggleText.textContent='¿Ya tienes cuenta?';authToggle.textContent='Iniciar sesión';
+  }else{
+    authTitle.textContent='Inicia sesión';authSub.textContent='Sincroniza tus finanzas entre todos tus dispositivos';
+    authBtn.textContent='Entrar';authToggleText.textContent='¿No tienes cuenta?';authToggle.textContent='Crear cuenta';
+  }
+});
+
+authForm?.addEventListener('submit',async e=>{
+  e.preventDefault();
+  if(!sb){toast('Supabase no configurado',true);return;}
+  const email=document.getElementById('authEmail').value.trim();
+  const pass=document.getElementById('authPass').value;
+  authBtn.disabled=true;authBtn.textContent='Procesando…';
+  try{
+    let res;
+    if(authMode==='signin')res=await sb.auth.signInWithPassword({email,password:pass});
+    else res=await sb.auth.signUp({email,password:pass,options:{emailRedirectTo:APP_URL}});
+    if(res.error)throw res.error;
+    if(authMode==='signup' && !res.data.session){ toast('Revisa tu correo para confirmar la cuenta'); }
+    else{ user=res.data.user; await afterLogin(); }
+  }catch(err){ toast(err.message||'Error',true); }
+  finally{ authBtn.disabled=false; authBtn.textContent=authMode==='signin'?'Entrar':'Registrarme'; }
+});
+
+function updateBnCuenta(){
+  const btn=document.getElementById('bnCuenta');
+  const icon=document.getElementById('bnCuentaIcon');
+  const label=document.getElementById('bnCuentaLabel');
+  const badge=document.getElementById('bnCuentaBadge');
+  if(!btn||!icon||!label||!badge)return;
+  if(user && user.email){
+    const inicial=user.email.trim().charAt(0).toUpperCase();
+    icon.textContent=inicial;icon.style.fontSize='16px';icon.style.fontWeight='800';
+    label.textContent='Cuenta';btn.classList.add('logged');badge.style.display='none';
+  }else{
+    icon.textContent='👤';icon.style.fontSize='';icon.style.fontWeight='';
+    label.textContent='Entrar';btn.classList.remove('logged');badge.style.display='block';
+  }
+}
+
+async function afterLogin(){
+  document.getElementById('syncBox').style.display='flex';
+  document.getElementById('syncEmail').textContent=user.email||'';
+  await pullCloud();
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-dashboard').classList.add('active');
+  updateBnCuenta();
+  renderAll();
+}
+
+async function initSupabase(){
+  if(!sb)return;
+  try{
+    const {data:{session}}=await sb.auth.getSession();
+    if(session?.user){user=session.user;await afterLogin();}
+  }catch(e){ console.error('initSupabase:', e); }
+}
+
+renderAll();
+updateBnCuenta();
+initSupabase();
+</script>
+</body>
+</html>
