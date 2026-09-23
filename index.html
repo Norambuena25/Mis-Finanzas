@@ -124,7 +124,6 @@ body{font-family:'Inter',system-ui,sans-serif;background:radial-gradient(900px 6
 .dash-chart-legend{display:flex;gap:16px;font-size:11px;font-weight:700;flex-wrap:wrap}
 .dash-chart-legend span{display:flex;align-items:center;gap:6px}
 .dash-chart-legend .dot{width:10px;height:10px;border-radius:3px}
-/* ============ GRÁFICO DE TORTA (DONUT) ============ */
 .donut-wrap{display:flex;align-items:center;gap:24px;flex-wrap:wrap;padding:4px 0}
 .donut-svg{flex:0 0 200px;width:200px;height:200px;position:relative}
 .donut-svg svg{width:100%;height:100%;display:block;overflow:visible}
@@ -142,7 +141,6 @@ body{font-family:'Inter',system-ui,sans-serif;background:radial-gradient(900px 6
 .leg .leg-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .leg .val{font-weight:800;font-variant-numeric:tabular-nums;font-size:12px}
 .leg .pct{color:var(--muted);font-weight:700;font-size:11px;width:46px;text-align:right;flex:0 0 46px}
-.leg .badge-cuota{padding:2px 7px;border-radius:999px;font-size:10px;font-weight:800;background:rgba(124,92,255,.15);border:1px solid rgba(124,92,255,.3);color:#c3b3ff;margin-left:6px}
 .cc-card{background:linear-gradient(135deg,#1e1e35,#15152a);border:1px solid var(--border-2);border-radius:20px;padding:22px;position:relative;overflow:hidden;margin-bottom:14px}
 .cc-card::before{content:'';position:absolute;top:-70px;right:-70px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(124,92,255,.35),transparent 70%);pointer-events:none}
 .cc-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:18px;position:relative;z-index:1}
@@ -270,7 +268,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:radial-gradient(900px 6
     <!-- DASHBOARD -->
     <section class="view active" id="view-dashboard">
       <div class="topbar">
-        <div><div class="page-title">Hola Oscar Patricio👋</div><div class="page-sub" id="dashSub"></div></div>
+        <div><div class="page-title">Hola Oscar Patricio V.7 👋</div><div class="page-sub" id="dashSub"></div></div>
         <div class="topbar-actions">
           <button class="chip primary" data-add="gasto">+ Nuevo gasto</button>
           <button class="chip primary" data-add="ingreso">+ Nuevo ingreso</button>
@@ -569,8 +567,8 @@ const seed={
     {id:11,nombre:'CMR Falabella',tipo:'Tarjeta',cupo:1500000,deudaInicial:0,pagos:[],valor:0}
   ],
   prestamos:[
-    {id:1,nombre:'Crédito hipotecario',montoTotal:28400000,numCuotas:240,tasaInteres:0.55,fechaInicio:'2024-01-01',pagos:[]},
-    {id:2,nombre:'Crédito automotriz',montoTotal:3850000,numCuotas:48,tasaInteres:0.85,fechaInicio:'2024-06-15',pagos:[]}
+    {id:1,nombre:'Crédito hipotecario',montoTotal:28400000,numCuotas:240,valorCuota:325420,costoTotal:78100800,tasaInteres:0.55,fechaInicio:'2024-01-01',pagos:[]},
+    {id:2,nombre:'Crédito automotriz',montoTotal:3850000,numCuotas:48,valorCuota:97380,costoTotal:4674240,tasaInteres:0.85,fechaInicio:'2024-06-15',pagos:[]}
   ]
 };
 
@@ -595,6 +593,11 @@ try{
     if(g.tarjetaId===undefined) g.tarjetaId=null;
     if(g.cuotas===undefined) g.cuotas=1;
     if(g.tasaInteres===undefined) g.tasaInteres=0;
+  });
+  data.prestamos.forEach(p=>{
+    if(p.valorCuota===undefined) p.valorCuota=0;
+    if(p.costoTotal===undefined) p.costoTotal=0;
+    if(!Array.isArray(p.pagos)) p.pagos=[];
   });
 }catch(e){
   console.error('Error cargando datos, usando seed:', e);
@@ -626,6 +629,11 @@ async function pullCloud(){
       if(g.tarjetaId===undefined)g.tarjetaId=null;
       if(g.cuotas===undefined)g.cuotas=1;
       if(g.tasaInteres===undefined)g.tasaInteres=0;
+    });
+    data.prestamos.forEach(p=>{
+      if(p.valorCuota===undefined)p.valorCuota=0;
+      if(p.costoTotal===undefined)p.costoTotal=0;
+      if(!Array.isArray(p.pagos))p.pagos=[];
     });
     localStorage.setItem(KEY,JSON.stringify(data));
     renderAll();
@@ -684,19 +692,50 @@ function deudaTarjeta(card){
 }
 function cupoDisponible(card){return (+card.cupo||0) - deudaTarjeta(card);}
 
+/* ============ PRÉSTAMOS (MEJORADO) ============ */
 function calcularPrestamo(p){
   const montoTotal=+p.montoTotal||0;
   const n=Math.max(1,+p.numCuotas||1);
   const i=(+p.tasaInteres||0)/100;
+  const valorCuotaInput=+p.valorCuota||0;
+  const costoTotalInput=+p.costoTotal||0;
+
   let cuota=0;
-  if(i>0){ cuota=montoTotal*(i*Math.pow(1+i,n))/(Math.pow(1+i,n)-1); }
-  else { cuota=montoTotal/n; }
-  const totalPagar=cuota*n;
+  if(valorCuotaInput > 0){
+    cuota = valorCuotaInput;
+  } else if(costoTotalInput > 0){
+    cuota = costoTotalInput / n;
+  } else if(i > 0){
+    cuota = montoTotal*(i*Math.pow(1+i,n))/(Math.pow(1+i,n)-1);
+  } else {
+    cuota = montoTotal/n;
+  }
+
+  const totalPagar = costoTotalInput > 0 ? costoTotalInput : (cuota*n);
+
   const totalPagado=(p.pagos||[]).reduce((s,x)=>s+(+x.monto||0),0);
   const saldoPendiente=Math.max(0, totalPagar-totalPagado);
-  const cuotasPagadas=cuota>0 ? Math.min(n, Math.floor(totalPagado/cuota)) : 0;
-  const interesTotal=totalPagar-montoTotal;
-  return {montoTotal, cuota, totalPagar, totalPagado, saldoPendiente, cuotasPagadas, numCuotas:n, interesTotal};
+  const cuotasPagadas=cuota>0 ? Math.min(n, Math.round(totalPagado/cuota)) : 0;
+  const interesTotal=Math.max(0, totalPagar-montoTotal);
+
+  let tasaImplicita = 0;
+  if(montoTotal>0 && n>0 && totalPagar>montoTotal && cuota>0){
+    let low=0, high=0.5;
+    for(let k=0;k<60;k++){
+      const mid=(low+high)/2;
+      let f=0;
+      for(let t=1;t<=n;t++){ f += cuota/Math.pow(1+mid,t); }
+      if(f > montoTotal){ low=mid; } else { high=mid; }
+    }
+    tasaImplicita = ((low+high)/2)*100;
+  } else if(i>0){
+    tasaImplicita = i*100;
+  }
+
+  return {
+    montoTotal, cuota, totalPagar, totalPagado, saldoPendiente,
+    cuotasPagadas, numCuotas:n, interesTotal, tasaImplicita
+  };
 }
 function totalSaldoPrestamos(){return data.prestamos.reduce((s,p)=>s+calcularPrestamo(p).saldoPendiente,0);}
 function totalMensualPrestamos(){return data.prestamos.reduce((s,p)=>s+calcularPrestamo(p).cuota,0);}
@@ -751,7 +790,6 @@ function renderAll(){
   try{ bindRowClicks(); }catch(e){ console.error('bindRows:', e); }
 }
 
-/* ================= GRÁFICO DE TORTA (DONUT) ================= */
 function renderDonutGastos(){
   const mes=mesActual();
   const cats={};
@@ -808,7 +846,6 @@ function renderDonutGastos(){
   '</div>';
 }
 
-/* ================= GRÁFICO DE LÍNEAS DASHBOARD ================= */
 function renderDashChartSVG(){
   const datos=datosMensuales(6);
   if(!datos.length) return '<div class="empty">Sin datos</div>';
@@ -842,7 +879,6 @@ function renderDashChartSVG(){
   '</svg>';
 }
 
-/* ================= DASHBOARD ================= */
 function renderDashboard(){
   const ing=totalIngresos(),gas=totalGastos(),pat=totalActivos()-totalPasivos(),aho=ing?((ing-gas)/ing*100):0;
   const mes=mesActual();
@@ -1169,11 +1205,14 @@ function delTipoInv(tipo){
   save();renderAll();toast('Tipo eliminado');
 }
 
+/* ============ PRÉSTAMOS RENDER ============ */
 function renderPrestamos(){
   const totalSaldo=totalSaldoPrestamos();
   const totalMensual=totalMensualPrestamos();
   const totalPrestado=data.prestamos.reduce((s,p)=>s+(+p.montoTotal||0),0);
   const totalPagado=data.prestamos.reduce((s,p)=>s+calcularPrestamo(p).totalPagado,0);
+  const totalCosto=data.prestamos.reduce((s,p)=>s+calcularPrestamo(p).totalPagar,0);
+  const totalInteres=data.prestamos.reduce((s,p)=>s+calcularPrestamo(p).interesTotal,0);
 
   document.getElementById('subPrest').textContent=data.prestamos.length+' préstamo'+(data.prestamos.length===1?'':'s')+' activo'+(data.prestamos.length===1?'':'s');
   document.getElementById('prestKpis').innerHTML=
@@ -1181,10 +1220,12 @@ function renderPrestamos(){
       '<div class="kpi-value"><span class="cur">$</span>'+totalSaldo.toLocaleString('es-CL')+'</div></div>'+
     '<div class="card"><div class="kpi-icon i-pink">◐</div><div class="kpi-label">Cuota mensual total</div>'+
       '<div class="kpi-value"><span class="cur">$</span>'+Math.round(totalMensual).toLocaleString('es-CL')+'</div></div>'+
-    '<div class="card"><div class="kpi-icon i-pur">◆</div><div class="kpi-label">Total prestado</div>'+
-      '<div class="kpi-value"><span class="cur">$</span>'+totalPrestado.toLocaleString('es-CL')+'</div></div>'+
-    '<div class="card"><div class="kpi-icon i-green">✓</div><div class="kpi-label">Total pagado</div>'+
-      '<div class="kpi-value"><span class="cur">$</span>'+Math.round(totalPagado).toLocaleString('es-CL')+'</div></div>';
+    '<div class="card"><div class="kpi-icon i-pur">◆</div><div class="kpi-label">Costo total préstamos</div>'+
+      '<div class="kpi-value"><span class="cur">$</span>'+Math.round(totalCosto).toLocaleString('es-CL')+'</div>'+
+      '<div class="kpi-foot">Monto original: '+clp(totalPrestado)+'</div></div>'+
+    '<div class="card"><div class="kpi-icon i-cyan">↗</div><div class="kpi-label">Interés total</div>'+
+      '<div class="kpi-value"><span class="cur">$</span>'+Math.round(totalInteres).toLocaleString('es-CL')+'</div>'+
+      '<div class="kpi-foot">Pagado a la fecha: '+clp(totalPagado)+'</div></div>';
 
   const cont=document.getElementById('listPrestamos');
   if(!data.prestamos.length){
@@ -1194,24 +1235,30 @@ function renderPrestamos(){
   cont.innerHTML=data.prestamos.map(p=>{
     const c=calcularPrestamo(p);
     const pct=c.totalPagar?Math.min(100,c.totalPagado/c.totalPagar*100):0;
+    const tasaTxt = c.tasaImplicita>0 ? c.tasaImplicita.toFixed(3)+'% mensual' : '0% mensual';
+    const pctInteres = c.montoTotal>0 ? ((c.interesTotal/c.montoTotal)*100).toFixed(1) : '0';
     return '<div class="loan-card">'+
       '<div class="loan-head">'+
         '<div><div class="loan-name">💵 '+p.nombre+'</div>'+
-          '<div class="loan-tipo">Préstamo · '+(p.tasaInteres||0)+'% mensual</div></div>'+
+          '<div class="loan-tipo">Préstamo · '+tasaTxt+'</div></div>'+
         '<div class="loan-actions-top">'+
           '<button data-act="edit-prest" data-id="'+p.id+'" title="Editar">✎</button>'+
           '<button class="del" data-act="del-prest" data-id="'+p.id+'" title="Eliminar">🗑</button>'+
         '</div></div>'+
       '<div class="loan-nums">'+
         '<div class="loan-num"><div class="l">Monto original</div><div class="v">'+clp(c.montoTotal)+'</div></div>'+
-        '<div class="loan-num"><div class="l">Saldo pendiente</div><div class="v" style="color:var(--orange)">'+clp(c.saldoPendiente)+'</div></div>'+
-        '<div class="loan-num"><div class="l">Valor cuota</div><div class="v">'+clp(c.cuota)+'</div></div>'+
-        '<div class="loan-num"><div class="l">Total a pagar</div><div class="v">'+clp(c.totalPagar)+'</div></div>'+
+        '<div class="loan-num"><div class="l">Valor cuota real</div><div class="v" style="color:var(--cyan)">'+clp(c.cuota)+'</div></div>'+
+        '<div class="loan-num"><div class="l">Costo total</div><div class="v" style="color:var(--orange)">'+clp(c.totalPagar)+'</div></div>'+
+        '<div class="loan-num"><div class="l">Saldo pendiente</div><div class="v" style="color:var(--pink)">'+clp(c.saldoPendiente)+'</div></div>'+
       '</div>'+
       '<div class="loan-bar"><div class="loan-bar-fill" style="width:'+pct+'%"></div></div>'+
       '<div class="loan-bar-lbl">'+
         '<span>Cuotas pagadas: <strong style="color:var(--text)">'+c.cuotasPagadas+' / '+c.numCuotas+'</strong></span>'+
-        '<span>Interés total: <strong style="color:var(--text)">'+clp(c.interesTotal)+'</strong></span>'+
+        '<span>Interés total: <strong style="color:var(--text)">'+clp(c.interesTotal)+'</strong> <span style="color:var(--muted);font-weight:600">('+pctInteres+'% sobre el monto)</span></span>'+
+      '</div>'+
+      '<div class="loan-bar-lbl" style="margin-top:6px">'+
+        '<span>Pagado hasta ahora: <strong style="color:var(--green)">'+clp(c.totalPagado)+'</strong></span>'+
+        '<span>'+(c.cuotasPagadas>0?'Faltan '+(c.numCuotas-c.cuotasPagadas)+' cuotas':'Sin pagos aún')+'</span>'+
       '</div>'+
       '<div class="loan-actions">'+
         '<button class="cc-btn primary" data-act="pagar-prest" data-id="'+p.id+'">💵 Registrar pago</button>'+
@@ -1512,12 +1559,16 @@ function openModal(tipo,id=null,tarjetaPreset=null){
   }
   if(tipo==='prestamo'){
     html=inputField('nombre','Nombre del préstamo','text',item?.nombre||'',"required placeholder='Ej: Crédito hipotecario'");
-    html+=inputField('montoTotal','Monto original (CLP)','number',item?.montoTotal||'',"required min=0 step=1");
+    html+=inputField('montoTotal','Monto original (lo que te prestaron)','number',item?.montoTotal||'',"required min=0 step=1 placeholder='Ej: 28400000'");
     html+='<div class="field-row">'+
       '<div class="field"><label>N° de cuotas</label><input name="numCuotas" type="number" min="1" max="600" value="'+(item?.numCuotas||12)+'" required></div>'+
-      '<div class="field"><label>Interés mensual (%)</label><input name="tasaInteres" type="number" min="0" step="0.01" value="'+(item?.tasaInteres||0)+'"></div>'+
+      '<div class="field"><label>Valor cuota real (CLP)</label><input name="valorCuota" type="number" min="0" step="1" value="'+(item?.valorCuota||'')+'" placeholder="Lo que pagas al mes"></div>'+
     '</div>';
+    html+=inputField('costoTotal','Costo total del préstamo (CLP)','number',item?.costoTotal||'',"min=0 step=1 placeholder='Total a pagar al final (opcional)'");
+    html+='<div class="field"><label>Interés mensual (% — opcional)</label><input name="tasaInteres" type="number" min="0" step="0.01" value="'+(item?.tasaInteres||0)+'" placeholder="Se calcula automáticamente si lo dejas en 0"></div>';
     html+=inputField('fechaInicio','Fecha de inicio','date',item?.fechaInicio||hoy());
+    html+='<div id="previewPrestamo" style="font-size:11.5px;color:var(--muted);font-weight:600;padding:12px 14px;border-radius:12px;background:rgba(255,165,59,.08);border:1px solid rgba(255,165,59,.25);line-height:1.9"></div>';
+    html+='<div style="font-size:11px;color:var(--muted);margin-top:8px;line-height:1.5">💡 Ingresa el <strong style="color:var(--text)">valor cuota</strong> que te cobra el banco o el <strong style="color:var(--text)">costo total</strong> a pagar — lo que completes primero calcula el otro automáticamente.</div>';
   }
   if(tipo==='pagoTarjeta'){
     const card=data.pasivos.find(x=>x.id===id);
@@ -1538,7 +1589,7 @@ function openModal(tipo,id=null,tarjetaPreset=null){
     modalTitle.textContent='Registrar pago · '+p.nombre;
     const c=calcularPrestamo(p);
     html='<div style="font-size:12.5px;color:var(--muted);margin-bottom:18px;padding:14px;border-radius:12px;background:var(--surface-2);border:1px solid var(--border-2);line-height:1.8">'+
-      '<div style="display:flex;justify-content:space-between"><span>Cuota sugerida</span><strong style="color:var(--text)">'+clp(c.cuota)+'</strong></div>'+
+      '<div style="display:flex;justify-content:space-between"><span>Cuota sugerida</span><strong style="color:var(--cyan)">'+clp(c.cuota)+'</strong></div>'+
       '<div style="display:flex;justify-content:space-between;margin-top:4px"><span>Saldo pendiente</span><strong style="color:var(--orange)">'+clp(c.saldoPendiente)+'</strong></div>'+
       '<div style="display:flex;justify-content:space-between;margin-top:4px"><span>Cuotas pagadas</span><strong style="color:var(--text)">'+c.cuotasPagadas+' / '+c.numCuotas+'</strong></div>'+
     '</div>';
@@ -1550,6 +1601,65 @@ function openModal(tipo,id=null,tarjetaPreset=null){
   modalForm.innerHTML=html;
   modalBg.classList.add('open');
   setTimeout(()=>modalForm.querySelector('input,select')?.focus(),80);
+
+  if(tipo==='prestamo'){
+    const inpMonto=modalForm.querySelector('[name=montoTotal]');
+    const inpCuotas=modalForm.querySelector('[name=numCuotas]');
+    const inpCuota=modalForm.querySelector('[name=valorCuota]');
+    const inpCosto=modalForm.querySelector('[name=costoTotal]');
+    const inpTasa=modalForm.querySelector('[name=tasaInteres]');
+    const preview=document.getElementById('previewPrestamo');
+
+    function recalcular(){
+      const monto=+inpMonto.value||0;
+      const n=+inpCuotas.value||1;
+      const cuota=+inpCuota.value||0;
+      const costo=+inpCosto.value||0;
+      const tasa=+inpTasa.value||0;
+
+      if(cuota>0 && costo===0){
+        inpCosto.value = Math.round(cuota*n);
+      } else if(costo>0 && cuota===0){
+        inpCuota.value = Math.round(costo/n);
+      }
+
+      const cuotaFinal = +inpCuota.value||0;
+      const costoFinal = +inpCosto.value||0;
+      const interesTotal = Math.max(0, costoFinal-monto);
+      const pctInteres = monto>0 ? (interesTotal/monto*100) : 0;
+
+      let tasaImp=0;
+      if(monto>0 && n>0 && cuotaFinal>0 && costoFinal>monto){
+        let low=0, high=0.5;
+        for(let k=0;k<60;k++){
+          const mid=(low+high)/2;
+          let f=0;
+          for(let t=1;t<=n;t++){ f += cuotaFinal/Math.pow(1+mid,t); }
+          if(f > monto){ low=mid; } else { high=mid; }
+        }
+        tasaImp=((low+high)/2)*100;
+      } else if(tasa>0){
+        tasaImp=tasa;
+      }
+
+      if(monto===0 || cuotaFinal===0){
+        preview.innerHTML='<span style="color:var(--muted)">💡 Ingresa el monto y el valor cuota para ver el resumen</span>';
+        return;
+      }
+
+      preview.innerHTML=
+        '<div style="display:flex;justify-content:space-between"><span>Monto original</span><strong style="color:var(--text)">'+clp(monto)+'</strong></div>'+
+        '<div style="display:flex;justify-content:space-between"><span>Valor cuota</span><strong style="color:var(--cyan)">'+clp(cuotaFinal)+'</strong></div>'+
+        '<div style="display:flex;justify-content:space-between"><span>Costo total</span><strong style="color:var(--orange)">'+clp(costoFinal)+'</strong></div>'+
+        '<div style="display:flex;justify-content:space-between"><span>Interés total</span><strong style="color:var(--pink)">'+clp(interesTotal)+'</strong> <span style="color:var(--muted)">('+pctInteres.toFixed(1)+'%)</span></div>'+
+        '<div style="display:flex;justify-content:space-between"><span>Tasa mensual implícita</span><strong style="color:var(--green)">'+tasaImp.toFixed(3)+'%</strong></div>';
+    }
+
+    [inpMonto,inpCuotas,inpCuota,inpCosto,inpTasa].forEach(el=>{
+      if(el){ el.addEventListener('input',recalcular); }
+    });
+    recalcular();
+  }
 
   if(tipo==='gasto'){
     const sel=document.getElementById('selTarjetaGasto');
@@ -1612,7 +1722,7 @@ document.getElementById('btnSave').onclick=e=>{
   const fd=new FormData(modalForm);
   const obj={};
   for(const [k,v] of fd.entries()){
-    if(['monto','valor','asignado','rendimiento','cupo','deudaInicial','cuotas','numCuotas','tasaInteres','montoTotal'].includes(k)){
+    if(['monto','valor','asignado','rendimiento','cupo','deudaInicial','cuotas','numCuotas','tasaInteres','montoTotal','valorCuota','costoTotal'].includes(k)){
       obj[k]=v===''?0:+v;
     }else if(k==='tarjetaId'){
       obj[k]=v===''?null:+v;
@@ -1632,7 +1742,17 @@ document.getElementById('btnSave').onclick=e=>{
     if(currentTipo==='tarjeta'){
       data[arr].push({id:uid(),tipo:'Tarjeta',nombre:obj.nombre,cupo:+obj.cupo||0,deudaInicial:+obj.deudaInicial||0,pagos:[],valor:0});
     }else if(currentTipo==='prestamo'){
-      data[arr].push({id:uid(),nombre:obj.nombre,montoTotal:+obj.montoTotal||0,numCuotas:+obj.numCuotas||1,tasaInteres:+obj.tasaInteres||0,fechaInicio:obj.fechaInicio||hoy(),pagos:[]});
+      data[arr].push({
+        id:uid(),
+        nombre:obj.nombre,
+        montoTotal:+obj.montoTotal||0,
+        numCuotas:+obj.numCuotas||1,
+        valorCuota:+obj.valorCuota||0,
+        costoTotal:+obj.costoTotal||0,
+        tasaInteres:+obj.tasaInteres||0,
+        fechaInicio:obj.fechaInicio||hoy(),
+        pagos:[]
+      });
     }else{
       data[arr].push({id:uid(),...obj});
     }
@@ -1700,6 +1820,11 @@ document.getElementById('fileImport').onchange=e=>{
         if(g.tarjetaId===undefined)g.tarjetaId=null;
         if(g.cuotas===undefined)g.cuotas=1;
         if(g.tasaInteres===undefined)g.tasaInteres=0;
+      });
+      j.prestamos.forEach(p=>{
+        if(p.valorCuota===undefined)p.valorCuota=0;
+        if(p.costoTotal===undefined)p.costoTotal=0;
+        if(!Array.isArray(p.pagos))p.pagos=[];
       });
       data=j;save();renderAll();toast('Respaldo importado');
     }catch{toast('Archivo inválido',true);}
