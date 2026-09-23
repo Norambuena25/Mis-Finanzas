@@ -161,6 +161,8 @@ body{font-family:'Inter',system-ui,sans-serif;background:radial-gradient(900px 6
 .cc-btn:hover{background:rgba(255,255,255,.12)}
 .cc-btn.primary{background:linear-gradient(135deg,var(--purple),var(--violet));border-color:transparent;color:#fff;box-shadow:0 6px 18px rgba(124,92,255,.35)}
 .cc-btn.primary:hover{filter:brightness(1.1)}
+.cc-btn.success{background:linear-gradient(135deg,#00e5a0,#00d4ff);border-color:transparent;color:#04231a;box-shadow:0 6px 18px rgba(0,229,160,.35)}
+.cc-btn.success:hover{filter:brightness(1.1)}
 .cc-hist{font-size:11.5px;color:var(--muted);margin-top:14px;font-weight:600;position:relative;z-index:1;line-height:1.6;display:flex;gap:14px;flex-wrap:wrap}
 .cc-hist strong{color:var(--text);font-weight:800}
 .loan-card{background:linear-gradient(135deg,#221a1e,#1a1218);border:1px solid var(--border-2);border-radius:20px;padding:22px;position:relative;overflow:hidden;margin-bottom:14px}
@@ -265,17 +267,15 @@ body{font-family:'Inter',system-ui,sans-serif;background:radial-gradient(900px 6
   </aside>
 
   <main class="main">
-    <!-- DASHBOARD -->
     <section class="view active" id="view-dashboard">
       <div class="topbar">
-        <div><div class="page-title">Hola Oscar Patricio V.7 👋</div><div class="page-sub" id="dashSub"></div></div>
+        <div><div class="page-title">Hola Oscar Patricio V.8 👋</div><div class="page-sub" id="dashSub"></div></div>
         <div class="topbar-actions">
           <button class="chip primary" data-add="gasto">+ Nuevo gasto</button>
           <button class="chip primary" data-add="ingreso">+ Nuevo ingreso</button>
         </div>
       </div>
       <div class="grid g4" id="dashKpis"></div>
-
       <div class="card" style="margin-bottom:16px">
         <div class="card-head">
           <div class="card-title">Ingresos vs Gastos<small>Últimos 6 meses</small></div>
@@ -286,34 +286,24 @@ body{font-family:'Inter',system-ui,sans-serif;background:radial-gradient(900px 6
         </div>
         <div id="dashChart"></div>
       </div>
-
       <div class="grid g21">
         <div class="card"><div class="card-head"><div class="card-title">Patrimonio vs. deuda<small>Balance actual</small></div></div><div id="dashBalance"></div></div>
-        <div class="card">
-          <div class="card-head">
-            <div class="card-title">Gastos por categoría<small id="dashCatLbl">Mes actual</small></div>
-          </div>
-          <div id="dashCat"></div>
-        </div>
+        <div class="card"><div class="card-head"><div class="card-title">Gastos por categoría<small id="dashCatLbl">Mes actual</small></div></div><div id="dashCat"></div></div>
       </div>
-
       <div class="card" id="dashTarjetasBox" style="display:none;margin-bottom:16px">
         <div class="card-head"><div class="card-title">💳 Estado de tarjetas<small>Uso actual del cupo</small></div><div class="card-link" onclick="irA('patrimonio')">Ver detalle</div></div>
         <div id="dashTarjetas"></div>
       </div>
-
       <div class="card" id="dashPrestamosBox" style="display:none;margin-bottom:16px">
         <div class="card-head"><div class="card-title">💵 Préstamos activos<small>Saldo pendiente</small></div><div class="card-link" onclick="irA('prestamos')">Ver detalle</div></div>
         <div id="dashPrestamos"></div>
       </div>
-
       <div class="grid g12">
         <div class="card"><div class="card-head"><div class="card-title">Presupuesto</div><div class="card-title" style="font-size:11px;color:var(--muted)">Top 4</div></div><div id="dashPresupuesto"></div></div>
         <div class="card"><div class="card-head"><div class="card-title">Movimientos recientes</div></div><div class="list" id="dashMovs"></div></div>
       </div>
     </section>
 
-    <!-- HISTÓRICO -->
     <section class="view" id="view-historico">
       <div class="topbar">
         <div><div class="page-title">Histórico</div><div class="page-sub" id="subHist"></div></div>
@@ -338,7 +328,6 @@ body{font-family:'Inter',system-ui,sans-serif;background:radial-gradient(900px 6
       </div>
     </section>
 
-    <!-- INGRESOS -->
     <section class="view" id="view-ingresos">
       <div class="topbar">
         <div><div class="page-title">Ingresos</div><div class="page-sub" id="subIngresos"></div></div>
@@ -348,7 +337,6 @@ body{font-family:'Inter',system-ui,sans-serif;background:radial-gradient(900px 6
       <div class="card"><div class="card-head"><div class="card-title">Todos los ingresos</div></div><div class="list" id="listIngresos"></div></div>
     </section>
 
-    <!-- GASTOS -->
     <section class="view" id="view-gastos">
       <div class="topbar">
         <div><div class="page-title">Gastos</div><div class="page-sub" id="subGastos"></div></div>
@@ -362,7 +350,6 @@ body{font-family:'Inter',system-ui,sans-serif;background:radial-gradient(900px 6
       </div>
     </section>
 
-    <!-- PRESUPUESTO -->
     <section class="view" id="view-presupuesto">
       <div class="topbar">
         <div><div class="page-title">Presupuesto</div><div class="page-sub" id="subPresup"></div></div>
@@ -375,7 +362,6 @@ body{font-family:'Inter',system-ui,sans-serif;background:radial-gradient(900px 6
       <div class="grid g2" id="sobresPresup"></div>
     </section>
 
-    <!-- INVERSIONES -->
     <section class="view" id="view-inversiones">
       <div class="topbar">
         <div><div class="page-title">Inversiones</div><div class="page-sub" id="subInv"></div></div>
@@ -395,7 +381,6 @@ body{font-family:'Inter',system-ui,sans-serif;background:radial-gradient(900px 6
       </div>
     </section>
 
-    <!-- PRÉSTAMOS -->
     <section class="view" id="view-prestamos">
       <div class="topbar">
         <div><div class="page-title">Préstamos</div><div class="page-sub" id="subPrest"></div></div>
@@ -407,7 +392,6 @@ body{font-family:'Inter',system-ui,sans-serif;background:radial-gradient(900px 6
       <div id="listPrestamos"></div>
     </section>
 
-    <!-- PATRIMONIO -->
     <section class="view" id="view-patrimonio">
       <div class="topbar">
         <div><div class="page-title">Patrimonio</div><div class="page-sub" id="subPatrim"></div></div>
@@ -437,7 +421,6 @@ body{font-family:'Inter',system-ui,sans-serif;background:radial-gradient(900px 6
       </div>
     </section>
 
-    <!-- CONFIGURACIÓN -->
     <section class="view" id="view-config">
       <div class="topbar">
         <div><div class="page-title">Configuración</div><div class="page-sub">Categorías y sincronización</div></div>
@@ -466,7 +449,6 @@ body{font-family:'Inter',system-ui,sans-serif;background:radial-gradient(900px 6
       </div>
     </section>
 
-    <!-- LOGIN -->
     <section class="view" id="view-login">
       <div class="auth-wrap">
         <h2 id="authTitle">Inicia sesión</h2>
@@ -567,10 +549,41 @@ const seed={
     {id:11,nombre:'CMR Falabella',tipo:'Tarjeta',cupo:1500000,deudaInicial:0,pagos:[],valor:0}
   ],
   prestamos:[
-    {id:1,nombre:'Crédito hipotecario',montoTotal:28400000,numCuotas:240,valorCuota:325420,costoTotal:78100800,tasaInteres:0.55,fechaInicio:'2024-01-01',pagos:[]},
-    {id:2,nombre:'Crédito automotriz',montoTotal:3850000,numCuotas:48,valorCuota:97380,costoTotal:4674240,tasaInteres:0.85,fechaInicio:'2024-06-15',pagos:[]}
+    {id:1,nombre:'Crédito hipotecario',montoTotal:28400000,numCuotas:240,valorCuota:325420,costoTotal:78100800,tasaInteres:0.55,fechaInicio:'2024-01-01',fechaPrimerPago:'2024-02-01',montoPrimerPago:325420,autoCompletarPagos:false,pagos:[]},
+    {id:2,nombre:'Crédito automotriz',montoTotal:3850000,numCuotas:48,valorCuota:97380,costoTotal:4674240,tasaInteres:0.85,fechaInicio:'2024-06-15',fechaPrimerPago:'2024-07-15',montoPrimerPago:97380,autoCompletarPagos:false,pagos:[]}
   ]
 };
+
+/* ============ GENERADOR DE PAGOS ============ */
+function generarPagosMensuales(fechaInicio, montoPago, pagosExistentes){
+  if(!fechaInicio || !montoPago || montoPago<=0) return [];
+  const pagos=[]; const existentes=new Set((pagosExistentes||[]).map(p=>p.fecha));
+  const hoyD=new Date(); hoyD.setHours(0,0,0,0);
+  let actual=new Date(fechaInicio+'T00:00:00');
+  if(isNaN(actual.getTime())) return [];
+  const diaOriginal=actual.getDate();
+  let idx=0;
+  while(actual<=hoyD && idx<800){
+    const iso=actual.getFullYear()+'-'+String(actual.getMonth()+1).padStart(2,'0')+'-'+String(actual.getDate()).padStart(2,'0');
+    if(!existentes.has(iso)){
+      pagos.push({
+        id:Date.now()+idx*1000+Math.floor(Math.random()*999),
+        monto:montoPago,
+        fecha:iso,
+        nota:'Cuota '+(idx+1)
+      });
+    }
+    // Avanzar 1 mes manteniendo el día original
+    const mesNuevo=actual.getMonth()+1;
+    const anioNuevo=actual.getFullYear()+(mesNuevo>11?1:0);
+    const mes=mesNuevo%12;
+    const ultimoDia=new Date(anioNuevo,mes+1,0).getDate();
+    const diaFinal=Math.min(diaOriginal,ultimoDia);
+    actual=new Date(anioNuevo,mes,diaFinal);
+    idx++;
+  }
+  return pagos;
+}
 
 let data;
 try{
@@ -597,6 +610,9 @@ try{
   data.prestamos.forEach(p=>{
     if(p.valorCuota===undefined) p.valorCuota=0;
     if(p.costoTotal===undefined) p.costoTotal=0;
+    if(p.fechaPrimerPago===undefined) p.fechaPrimerPago='';
+    if(p.montoPrimerPago===undefined) p.montoPrimerPago=0;
+    if(p.autoCompletarPagos===undefined) p.autoCompletarPagos=false;
     if(!Array.isArray(p.pagos)) p.pagos=[];
   });
 }catch(e){
@@ -633,6 +649,9 @@ async function pullCloud(){
     data.prestamos.forEach(p=>{
       if(p.valorCuota===undefined)p.valorCuota=0;
       if(p.costoTotal===undefined)p.costoTotal=0;
+      if(p.fechaPrimerPago===undefined)p.fechaPrimerPago='';
+      if(p.montoPrimerPago===undefined)p.montoPrimerPago=0;
+      if(p.autoCompletarPagos===undefined)p.autoCompletarPagos=false;
       if(!Array.isArray(p.pagos))p.pagos=[];
     });
     localStorage.setItem(KEY,JSON.stringify(data));
@@ -653,7 +672,7 @@ function setSync(state){
 const uid=()=>Date.now()+Math.floor(Math.random()*9999);
 const clp=n=>'$'+Math.round(+n||0).toLocaleString('es-CL');
 const hoy=()=>new Date().toISOString().slice(0,10);
-function fmtDate(iso){if(!iso)return'';try{const d=new Date(iso+'T00:00:00');return d.toLocaleDateString('es-CL',{day:'2-digit',month:'short'});}catch{return iso;}}
+function fmtDate(iso){if(!iso)return'';try{const d=new Date(iso+'T00:00:00');return d.toLocaleDateString('es-CL',{day:'2-digit',month:'short',year:'numeric'});}catch{return iso;}}
 function fmtMes(ym){try{const [y,m]=ym.split('-');const d=new Date(y,m-1);return d.toLocaleDateString('es-CL',{month:'short',year:'2-digit'});}catch{return ym;}}
 function iconoCategoria(c){
   const m={'Vivienda':'🏠','Alimentación':'🛒','Transporte':'🚗','Ocio':'🎬','Salud':'💊','Educación':'📚','Sueldo':'💼','Freelance':'💻','Arriendo':'🏘','Dividendos':'📈','Otros':'📦','Acciones':'◉','Fondos mutuos':'◇','Depósito a plazo':'🏦','Cripto':'₿','APV':'💎','Bien raíz':'🏢','Efectivo':'💰','Vehículo':'🚗','Hipotecario':'🏠','Automotriz':'🚙','Tarjeta':'💳','Otro':'●'};
@@ -692,7 +711,6 @@ function deudaTarjeta(card){
 }
 function cupoDisponible(card){return (+card.cupo||0) - deudaTarjeta(card);}
 
-/* ============ PRÉSTAMOS (MEJORADO) ============ */
 function calcularPrestamo(p){
   const montoTotal=+p.montoTotal||0;
   const n=Math.max(1,+p.numCuotas||1);
@@ -712,7 +730,6 @@ function calcularPrestamo(p){
   }
 
   const totalPagar = costoTotalInput > 0 ? costoTotalInput : (cuota*n);
-
   const totalPagado=(p.pagos||[]).reduce((s,x)=>s+(+x.monto||0),0);
   const saldoPendiente=Math.max(0, totalPagar-totalPagado);
   const cuotasPagadas=cuota>0 ? Math.min(n, Math.round(totalPagado/cuota)) : 0;
@@ -1237,6 +1254,8 @@ function renderPrestamos(){
     const pct=c.totalPagar?Math.min(100,c.totalPagado/c.totalPagar*100):0;
     const tasaTxt = c.tasaImplicita>0 ? c.tasaImplicita.toFixed(3)+'% mensual' : '0% mensual';
     const pctInteres = c.montoTotal>0 ? ((c.interesTotal/c.montoTotal)*100).toFixed(1) : '0';
+    const pagosArr=p.pagos||[];
+    const puedeCompletar = p.fechaPrimerPago && p.montoPrimerPago>0 && c.cuotasPagadas < c.numCuotas;
     return '<div class="loan-card">'+
       '<div class="loan-head">'+
         '<div><div class="loan-name">💵 '+p.nombre+'</div>'+
@@ -1260,9 +1279,15 @@ function renderPrestamos(){
         '<span>Pagado hasta ahora: <strong style="color:var(--green)">'+clp(c.totalPagado)+'</strong></span>'+
         '<span>'+(c.cuotasPagadas>0?'Faltan '+(c.numCuotas-c.cuotasPagadas)+' cuotas':'Sin pagos aún')+'</span>'+
       '</div>'+
+      (pagosArr.length?
+        '<div class="cc-hist" style="margin-top:10px">'+
+          '<span>Primer pago: <strong>'+fmtDate(pagosArr[0].fecha)+'</strong></span>'+
+          '<span>Último pago: <strong>'+fmtDate(pagosArr[pagosArr.length-1].fecha)+'</strong></span>'+
+        '</div>':'')+
       '<div class="loan-actions">'+
         '<button class="cc-btn primary" data-act="pagar-prest" data-id="'+p.id+'">💵 Registrar pago</button>'+
-        '<button class="cc-btn" data-act="ver-pagos-prest" data-id="'+p.id+'">Ver pagos ('+((p.pagos||[]).length)+')</button>'+
+        (puedeCompletar?'<button class="cc-btn success" data-act="completar-prest" data-id="'+p.id+'">⚡ Completar hasta hoy</button>':'')+
+        '<button class="cc-btn" data-act="ver-pagos-prest" data-id="'+p.id+'">Ver pagos ('+pagosArr.length+')</button>'+
       '</div>'+
     '</div>';
   }).join('');
@@ -1271,6 +1296,22 @@ function renderPrestamos(){
   document.querySelectorAll('[data-act="del-prest"]').forEach(b=>b.onclick=e=>{e.stopPropagation();delPrestamo(+b.dataset.id);});
   document.querySelectorAll('[data-act="pagar-prest"]').forEach(b=>b.onclick=e=>{e.stopPropagation();openModal('pagoPrestamo',+b.dataset.id);});
   document.querySelectorAll('[data-act="ver-pagos-prest"]').forEach(b=>b.onclick=e=>{e.stopPropagation();verPagosPrestamo(+b.dataset.id);});
+  document.querySelectorAll('[data-act="completar-prest"]').forEach(b=>b.onclick=e=>{e.stopPropagation();completarPagosPrestamo(+b.dataset.id);});
+}
+
+function completarPagosPrestamo(id){
+  const p=data.prestamos.find(x=>x.id===id);if(!p)return;
+  const c=calcularPrestamo(p);
+  const fechaBase = p.fechaPrimerPago || p.fechaInicio;
+  const monto = p.montoPrimerPago || c.cuota;
+  if(!fechaBase || monto<=0){toast('Falta fecha del primer pago o monto',true);return;}
+
+  const nuevos = generarPagosMensuales(fechaBase, monto, p.pagos||[]);
+  if(!nuevos.length){toast('No hay pagos nuevos que agregar',true);return;}
+  if(!confirm('Se agregarán '+nuevos.length+' pagos mensuales desde '+fmtDate(fechaBase)+' hasta hoy.\n\n¿Continuar?')) return;
+  p.pagos=(p.pagos||[]).concat(nuevos).sort((a,b)=>a.fecha.localeCompare(b.fecha));
+  save();renderAll();
+  toast('Agregados '+nuevos.length+' pagos');
 }
 
 function delPrestamo(id){
@@ -1566,9 +1607,17 @@ function openModal(tipo,id=null,tarjetaPreset=null){
     '</div>';
     html+=inputField('costoTotal','Costo total del préstamo (CLP)','number',item?.costoTotal||'',"min=0 step=1 placeholder='Total a pagar al final (opcional)'");
     html+='<div class="field"><label>Interés mensual (% — opcional)</label><input name="tasaInteres" type="number" min="0" step="0.01" value="'+(item?.tasaInteres||0)+'" placeholder="Se calcula automáticamente si lo dejas en 0"></div>';
-    html+=inputField('fechaInicio','Fecha de inicio','date',item?.fechaInicio||hoy());
+    html+=inputField('fechaInicio','Fecha de inicio del préstamo','date',item?.fechaInicio||hoy());
+    html+='<div style="padding:14px;border-radius:12px;background:rgba(0,229,160,.06);border:1px solid rgba(0,229,160,.22);margin-bottom:14px">'+
+      '<div style="font-size:12px;font-weight:800;color:var(--green);margin-bottom:10px;letter-spacing:.3px">⚡ PAGOS YA REALIZADOS</div>'+
+      '<div class="field-row">'+
+        '<div class="field"><label>Fecha del primer pago</label><input name="fechaPrimerPago" type="date" value="'+(item?.fechaPrimerPago||'')+'"></div>'+
+        '<div class="field"><label>Monto del primer pago</label><input name="montoPrimerPago" type="number" min="0" step="1" value="'+(item?.montoPrimerPago||'')+'" placeholder="Ej: 325420"></div>'+
+      '</div>'+
+      '<label class="check" style="background:rgba(255,255,255,.04)"><input type="checkbox" name="autoCompletarPagos" '+(item?.autoCompletarPagos!==false?'checked':'')+'> Completar pagos mensuales hasta hoy automáticamente</label>'+
+      '<div style="font-size:11px;color:var(--muted);margin-top:8px;line-height:1.5">💡 Ingresa la fecha y el monto del primer pago que realizaste. Si marcas la casilla, la app generará automáticamente un pago por cada mes transcurrido hasta hoy.</div>'+
+    '</div>';
     html+='<div id="previewPrestamo" style="font-size:11.5px;color:var(--muted);font-weight:600;padding:12px 14px;border-radius:12px;background:rgba(255,165,59,.08);border:1px solid rgba(255,165,59,.25);line-height:1.9"></div>';
-    html+='<div style="font-size:11px;color:var(--muted);margin-top:8px;line-height:1.5">💡 Ingresa el <strong style="color:var(--text)">valor cuota</strong> que te cobra el banco o el <strong style="color:var(--text)">costo total</strong> a pagar — lo que completes primero calcula el otro automáticamente.</div>';
   }
   if(tipo==='pagoTarjeta'){
     const card=data.pasivos.find(x=>x.id===id);
@@ -1608,7 +1657,23 @@ function openModal(tipo,id=null,tarjetaPreset=null){
     const inpCuota=modalForm.querySelector('[name=valorCuota]');
     const inpCosto=modalForm.querySelector('[name=costoTotal]');
     const inpTasa=modalForm.querySelector('[name=tasaInteres]');
+    const inpFechaInicio=modalForm.querySelector('[name=fechaInicio]');
+    const inpFechaPrimer=modalForm.querySelector('[name=fechaPrimerPago]');
+    const inpMontoPrimer=modalForm.querySelector('[name=montoPrimerPago]');
     const preview=document.getElementById('previewPrestamo');
+
+    // Si hay valor cuota y no hay monto primer pago, prellenar
+    if(inpCuota && !inpMontoPrimer.value && inpCuota.value){
+      inpMontoPrimer.value=inpCuota.value;
+    }
+    // Si hay fecha inicio y no fecha primer pago, sugerir +1 mes
+    if(inpFechaInicio && !inpFechaPrimer.value && inpFechaInicio.value){
+      const d=new Date(inpFechaInicio.value+'T00:00:00');
+      if(!isNaN(d.getTime())){
+        d.setMonth(d.getMonth()+1);
+        inpFechaPrimer.value=d.toISOString().slice(0,10);
+      }
+    }
 
     function recalcular(){
       const monto=+inpMonto.value||0;
@@ -1621,6 +1686,11 @@ function openModal(tipo,id=null,tarjetaPreset=null){
         inpCosto.value = Math.round(cuota*n);
       } else if(costo>0 && cuota===0){
         inpCuota.value = Math.round(costo/n);
+      }
+
+      // Prellenar monto primer pago si está vacío
+      if(!inpMontoPrimer.value && (+inpCuota.value||0)>0){
+        inpMontoPrimer.value = Math.round(+inpCuota.value);
       }
 
       const cuotaFinal = +inpCuota.value||0;
@@ -1647,16 +1717,24 @@ function openModal(tipo,id=null,tarjetaPreset=null){
         return;
       }
 
+      // Calcular cuántos pagos se generarían
+      let pagosAuto=0;
+      if(inpFechaPrimer.value && (+inpMontoPrimer.value||0)>0){
+        const arr=generarPagosMensuales(inpFechaPrimer.value, +inpMontoPrimer.value||0, []);
+        pagosAuto=arr.length;
+      }
+
       preview.innerHTML=
         '<div style="display:flex;justify-content:space-between"><span>Monto original</span><strong style="color:var(--text)">'+clp(monto)+'</strong></div>'+
         '<div style="display:flex;justify-content:space-between"><span>Valor cuota</span><strong style="color:var(--cyan)">'+clp(cuotaFinal)+'</strong></div>'+
         '<div style="display:flex;justify-content:space-between"><span>Costo total</span><strong style="color:var(--orange)">'+clp(costoFinal)+'</strong></div>'+
         '<div style="display:flex;justify-content:space-between"><span>Interés total</span><strong style="color:var(--pink)">'+clp(interesTotal)+'</strong> <span style="color:var(--muted)">('+pctInteres.toFixed(1)+'%)</span></div>'+
-        '<div style="display:flex;justify-content:space-between"><span>Tasa mensual implícita</span><strong style="color:var(--green)">'+tasaImp.toFixed(3)+'%</strong></div>';
+        '<div style="display:flex;justify-content:space-between"><span>Tasa mensual implícita</span><strong style="color:var(--green)">'+tasaImp.toFixed(3)+'%</strong></div>'+
+        (pagosAuto>0?'<div style="display:flex;justify-content:space-between;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.08)"><span>Pagos a generar</span><strong style="color:var(--green)">'+pagosAuto+' pagos mensuales</strong></div>':'');
     }
 
-    [inpMonto,inpCuotas,inpCuota,inpCosto,inpTasa].forEach(el=>{
-      if(el){ el.addEventListener('input',recalcular); }
+    [inpMonto,inpCuotas,inpCuota,inpCosto,inpTasa,inpFechaPrimer,inpMontoPrimer].forEach(el=>{
+      if(el){ el.addEventListener('input',recalcular); el.addEventListener('change',recalcular); }
     });
     recalcular();
   }
@@ -1714,6 +1792,7 @@ document.getElementById('btnSave').onclick=e=>{
     if(!monto||monto<=0){toast('Monto inválido',true);return;}
     p.pagos=p.pagos||[];
     p.pagos.push({id:uid(),monto:monto,fecha:fd.get('fecha'),nota:fd.get('nota')||''});
+    p.pagos.sort((a,b)=>a.fecha.localeCompare(b.fecha));
     save();closeModal();renderAll();
     toast('Pago registrado · '+clp(monto));
     return;
@@ -1722,13 +1801,14 @@ document.getElementById('btnSave').onclick=e=>{
   const fd=new FormData(modalForm);
   const obj={};
   for(const [k,v] of fd.entries()){
-    if(['monto','valor','asignado','rendimiento','cupo','deudaInicial','cuotas','numCuotas','tasaInteres','montoTotal','valorCuota','costoTotal'].includes(k)){
+    if(['monto','valor','asignado','rendimiento','cupo','deudaInicial','cuotas','numCuotas','tasaInteres','montoTotal','valorCuota','costoTotal','montoPrimerPago'].includes(k)){
       obj[k]=v===''?0:+v;
     }else if(k==='tarjetaId'){
       obj[k]=v===''?null:+v;
     }else{ obj[k]=v; }
   }
   if(modalForm.querySelector('[name=recurrente]'))obj.recurrente=modalForm.querySelector('[name=recurrente]').checked;
+  if(modalForm.querySelector('[name=autoCompletarPagos]'))obj.autoCompletarPagos=modalForm.querySelector('[name=autoCompletarPagos]').checked;
   if(currentTipo!=='tarjeta' && currentTipo!=='prestamo' && !obj.nombre && !obj.categoria){toast('Completa los campos',true);return;}
 
   const arr=tipoToArray(currentTipo);
@@ -1736,12 +1816,28 @@ document.getElementById('btnSave').onclick=e=>{
   if(currentId){
     const idx=data[arr].findIndex(x=>x.id===currentId);
     if(idx<0){toast('No encontrado',true);return;}
-    data[arr][idx]={...data[arr][idx],...obj};
+    const prev=data[arr][idx];
+    data[arr][idx]={...prev,...obj};
+    // Si cambió la fecha del primer pago o el monto, regenerar pagos automáticos
+    if(currentTipo==='prestamo' && prev.autoCompletarPagos && obj.autoCompletarPagos){
+      const fechaCambio=prev.fechaPrimerPago!==obj.fechaPrimerPago;
+      const montoCambio=prev.montoPrimerPago!==obj.montoPrimerPago;
+      if((fechaCambio||montoCambio) && obj.fechaPrimerPago && +obj.montoPrimerPago>0){
+        // Solo regenerar los pagos que tengan la nota "Cuota" (auto-generados)
+        const pagosManuales=(prev.pagos||[]).filter(x=>!/^Cuota \d+$/.test(x.nota||''));
+        const pagosAuto=generarPagosMensuales(obj.fechaPrimerPago, +obj.montoPrimerPago, []);
+        data[arr][idx].pagos=pagosAuto.concat(pagosManuales).sort((a,b)=>a.fecha.localeCompare(b.fecha));
+      }
+    }
     toast('Actualizado');
   }else{
     if(currentTipo==='tarjeta'){
       data[arr].push({id:uid(),tipo:'Tarjeta',nombre:obj.nombre,cupo:+obj.cupo||0,deudaInicial:+obj.deudaInicial||0,pagos:[],valor:0});
     }else if(currentTipo==='prestamo'){
+      let pagosIniciales=[];
+      if(obj.autoCompletarPagos && obj.fechaPrimerPago && +obj.montoPrimerPago>0){
+        pagosIniciales=generarPagosMensuales(obj.fechaPrimerPago, +obj.montoPrimerPago, []);
+      }
       data[arr].push({
         id:uid(),
         nombre:obj.nombre,
@@ -1751,8 +1847,18 @@ document.getElementById('btnSave').onclick=e=>{
         costoTotal:+obj.costoTotal||0,
         tasaInteres:+obj.tasaInteres||0,
         fechaInicio:obj.fechaInicio||hoy(),
-        pagos:[]
+        fechaPrimerPago:obj.fechaPrimerPago||'',
+        montoPrimerPago:+obj.montoPrimerPago||0,
+        autoCompletarPagos:obj.autoCompletarPagos!==false,
+        pagos:pagosIniciales
       });
+      if(pagosIniciales.length>0){
+        toast('Préstamo agregado · '+pagosIniciales.length+' pagos generados');
+      }else{
+        toast('Préstamo agregado');
+      }
+      save();closeModal();renderAll();
+      return;
     }else{
       data[arr].push({id:uid(),...obj});
     }
@@ -1795,7 +1901,7 @@ if(btnNuevoTipoInv2)btnNuevoTipoInv2.onclick=addTipoInv;
 function toast(msg,warn){
   const t=document.getElementById('toast');
   t.textContent=msg;t.className='toast show'+(warn?' warn':'');
-  setTimeout(()=>t.className='toast'+(warn?' warn':''),2400);
+  setTimeout(()=>t.className='toast'+(warn?' warn':''),3000);
 }
 
 document.getElementById('btnExport').onclick=()=>{
@@ -1824,6 +1930,9 @@ document.getElementById('fileImport').onchange=e=>{
       j.prestamos.forEach(p=>{
         if(p.valorCuota===undefined)p.valorCuota=0;
         if(p.costoTotal===undefined)p.costoTotal=0;
+        if(p.fechaPrimerPago===undefined)p.fechaPrimerPago='';
+        if(p.montoPrimerPago===undefined)p.montoPrimerPago=0;
+        if(p.autoCompletarPagos===undefined)p.autoCompletarPagos=false;
         if(!Array.isArray(p.pagos))p.pagos=[];
       });
       data=j;save();renderAll();toast('Respaldo importado');
