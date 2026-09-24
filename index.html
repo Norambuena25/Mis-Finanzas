@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="canonical" href="https://norambuena25.github.io/Mis-Finanzas/">
 <link rel="manifest" href="./manifest.json">
-<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='110' fill='%231a1a1f'/%3E%3Ctext x='256' y='340' font-family='Arial' font-size='200' font-weight='600' fill='white' text-anchor='middle'%3EMF%3C/text%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='110' fill='%236e56ff'/%3E%3Ctext x='256' y='340' font-family='Arial' font-size='200' font-weight='600' fill='white' text-anchor='middle'%3EMF%3C/text%3E%3C/svg%3E">
 <title>Mis Finanzas</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -23,12 +23,13 @@
   --text-2:#a8a8b3;
   --muted:#6e6e7a;
   --muted-2:#4a4a55;
-  --accent:#6366f1;
-  --accent-2:#818cf8;
-  --green:#4ade80;
+  --accent:#6e56ff;
+  --accent-2:#a78bfa;
+  --green:#22c55e;
   --red:#f87171;
-  --orange:#fbbf24;
-  --cyan:#22d3ee;
+  --orange:#f97316;
+  --cyan:#06b6d4;
+  --pink:#ec4899;
   --r:12px;
   --r-sm:8px;
 }
@@ -61,11 +62,10 @@ body{
 }
 .brand{display:flex;align-items:center;gap:10px;padding:4px 8px 22px}
 .brand-mark{
-  width:30px;height:30px;border-radius:8px;flex:0 0 30px;
-  background:var(--surface-3);
-  border:1px solid var(--border-2);
+  width:32px;height:32px;border-radius:8px;flex:0 0 32px;
+  background:var(--accent);
   display:grid;place-items:center;
-  font-weight:600;font-size:12px;color:var(--text-2);
+  font-weight:600;font-size:12px;color:#fff;
   letter-spacing:-.3px;
 }
 .brand-name{font-size:13px;font-weight:600;letter-spacing:-.1px;line-height:1.1}
@@ -82,8 +82,8 @@ body{
   cursor:pointer;transition:.15s;user-select:none;
 }
 .nav-item:hover{background:rgba(255,255,255,.025);color:var(--text-2)}
-.nav-item.active{background:var(--surface-3);color:var(--text)}
-.nav-item .ic{width:16px;text-align:center;font-size:13px;opacity:.6}
+.nav-item.active{background:rgba(110,86,255,.12);color:#fff}
+.nav-item .ic{width:16px;text-align:center;font-size:13px;opacity:.7}
 .nav-item.active .ic{opacity:1}
 
 .sidebar-foot{
@@ -116,8 +116,8 @@ body{
   color:var(--text-2);cursor:pointer;transition:.15s;font-family:inherit;
 }
 .chip:hover{background:var(--surface-3);border-color:var(--border-2);color:var(--text)}
-.chip.primary{background:var(--text);border-color:transparent;color:var(--bg);font-weight:600}
-.chip.primary:hover{background:#fff}
+.chip.primary{background:var(--accent);border-color:transparent;color:#fff;font-weight:600}
+.chip.primary:hover{background:#5b46e6}
 
 .grid{display:grid;gap:12px;margin-bottom:12px}
 .g4{grid-template-columns:repeat(4,1fr)}
@@ -137,12 +137,11 @@ body{
 .card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
 .card-title{font-size:12.5px;font-weight:600;letter-spacing:-.1px;color:var(--text)}
 .card-title small{display:block;font-size:10.5px;color:var(--muted);font-weight:400;margin-top:2px;letter-spacing:0}
-.card-link{font-size:11px;color:var(--text-2);font-weight:500;cursor:pointer;transition:.15s}
-.card-link:hover{color:var(--text)}
+.card-link{font-size:11px;color:var(--accent-2);font-weight:500;cursor:pointer;transition:.15s}
+.card-link:hover{color:#c4b5fd}
 
 /* ============ PATRIMONIO HERO ============ */
 .hero-card{
-  grid-column:span 4;
   background:var(--surface);
   border:1px solid var(--border);
   border-radius:var(--r);
@@ -152,8 +151,16 @@ body{
   gap:28px;
   align-items:center;
   margin-bottom:12px;
+  position:relative;
+  overflow:hidden;
 }
-.hero-main{}
+.hero-card::before{
+  content:'';position:absolute;top:-80px;right:-80px;
+  width:220px;height:220px;border-radius:50%;
+  background:radial-gradient(circle,rgba(110,86,255,.18),transparent 70%);
+  pointer-events:none;
+}
+.hero-main{position:relative;z-index:1}
 .hero-label{
   font-size:10.5px;color:var(--muted);font-weight:500;
   text-transform:uppercase;letter-spacing:1px;
@@ -165,11 +172,12 @@ body{
 }
 .hero-value.negative{color:var(--red)}
 .hero-value .cur{font-size:22px;font-weight:400;color:var(--muted);margin-right:3px}
+.hero-value.negative .cur{color:var(--red);opacity:.7}
 .hero-foot{
   display:flex;align-items:center;gap:8px;margin-top:10px;
   font-size:11.5px;color:var(--muted);font-weight:500;
 }
-.hero-stat{}
+.hero-stat{position:relative;z-index:1}
 .hero-stat-label{font-size:10.5px;color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:.8px}
 .hero-stat-value{
   font-size:20px;font-weight:600;letter-spacing:-.6px;margin-top:6px;
@@ -200,10 +208,10 @@ body{
   padding:2px 7px;border-radius:5px;font-size:10px;font-weight:600;
   letter-spacing:.1px;
 }
-.b-up{background:rgba(74,222,128,.10);color:var(--green)}
-.b-down{background:rgba(248,113,113,.10);color:var(--red)}
-.b-warn{background:rgba(251,191,36,.10);color:var(--orange)}
-.b-info{background:rgba(34,211,238,.10);color:var(--cyan)}
+.b-up{background:rgba(34,197,94,.12);color:#4ade80}
+.b-down{background:rgba(248,113,113,.12);color:#f87171}
+.b-warn{background:rgba(249,115,22,.12);color:#fb923c}
+.b-info{background:rgba(6,182,212,.12);color:#22d3ee}
 .b-neutral{background:rgba(255,255,255,.04);color:var(--muted)}
 
 /* ============ BARS ============ */
@@ -269,7 +277,7 @@ body{
 .asset .row-actions{opacity:1}
 .asset-logo{
   width:34px;height:34px;flex:0 0 34px;border-radius:8px;
-  display:grid;place-items:center;font-weight:500;font-size:13px;color:var(--text);
+  display:grid;place-items:center;font-weight:500;font-size:13px;
   background:var(--surface-3);
 }
 .asset-info{flex:1;min-width:0}
@@ -287,7 +295,7 @@ body{
   color:var(--muted);cursor:pointer;transition:.15s;font-family:inherit;
 }
 .pill:hover{color:var(--text-2)}
-.pill.on{background:var(--surface-3);border-color:var(--border-2);color:var(--text)}
+.pill.on{background:rgba(110,86,255,.15);border-color:rgba(110,86,255,.35);color:#c4b5fd}
 
 /* ============ DONUT ============ */
 .chart-donut{position:relative;width:100%;display:flex;align-items:center;justify-content:center;padding:8px 0}
@@ -298,6 +306,7 @@ body{
 }
 .donut-center .dc-l{font-size:9.5px;color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:.8px}
 .donut-center .dc-v{font-size:16px;font-weight:600;letter-spacing:-.4px;margin-top:3px;font-variant-numeric:tabular-nums}
+.donut-center .dc-v.neg{color:var(--red)}
 .donut-center .dc-s{font-size:9.5px;color:var(--muted);margin-top:2px;font-weight:400}
 
 .chart-legend{display:flex;flex-direction:column;gap:7px;margin-top:14px}
@@ -311,8 +320,8 @@ body{
 .chart-col{flex:1;min-width:48px;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end}
 .chart-pair{display:flex;gap:3px;align-items:flex-end;height:100%;width:100%;justify-content:center}
 .chart-bar{width:12px;border-radius:4px 4px 2px 2px;transition:.4s}
-.chart-bar.ing{background:var(--green);opacity:.75}
-.chart-bar.gas{background:var(--red);opacity:.75}
+.chart-bar.ing{background:var(--green);opacity:.85}
+.chart-bar.gas{background:var(--pink);opacity:.85}
 .chart-lbl{font-size:10px;color:var(--muted);font-weight:500}
 .chart-val{font-size:9px;color:var(--muted);font-weight:500;white-space:nowrap}
 
@@ -326,8 +335,8 @@ body{
   transition:.15s;
 }
 .cc-card:hover{border-color:var(--border-2)}
-.cc-card.warning{border-color:rgba(248,113,113,.25)}
-.cc-card.warning-soft{border-color:rgba(251,191,36,.20)}
+.cc-card.warning{border-color:rgba(248,113,113,.3)}
+.cc-card.warning-soft{border-color:rgba(249,115,22,.25)}
 .cc-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px}
 .cc-name{font-size:13px;font-weight:600;letter-spacing:-.1px}
 .cc-tipo{font-size:10px;color:var(--muted);margin-top:3px;font-weight:500;text-transform:uppercase;letter-spacing:.5px}
@@ -359,10 +368,10 @@ body{
   display:inline-flex;align-items:center;gap:5px;
 }
 .cc-btn:hover{background:rgba(255,255,255,.04);border-color:var(--border-2);color:var(--text)}
-.cc-btn.primary{background:var(--text);border-color:transparent;color:var(--bg);font-weight:600}
-.cc-btn.primary:hover{background:#fff}
-.cc-btn.cyan{background:var(--text-2);border-color:transparent;color:var(--bg);font-weight:600}
-.cc-btn.cyan:hover{background:var(--text)}
+.cc-btn.primary{background:var(--accent);border-color:transparent;color:#fff;font-weight:600}
+.cc-btn.primary:hover{background:#5b46e6}
+.cc-btn.cyan{background:var(--cyan);border-color:transparent;color:#fff;font-weight:600}
+.cc-btn.cyan:hover{background:#0891b2}
 
 /* ============ SUGERENCIAS ============ */
 .suggestions{
@@ -393,10 +402,10 @@ body{
   display:grid;place-items:center;font-size:12px;
   background:var(--surface-2);
 }
-.sug-icon.warn{background:rgba(251,191,36,.10);color:var(--orange)}
-.sug-icon.alert{background:rgba(248,113,113,.10);color:var(--red)}
-.sug-icon.ok{background:rgba(74,222,128,.10);color:var(--green)}
-.sug-icon.info{background:rgba(99,102,241,.10);color:var(--accent-2)}
+.sug-icon.warn{background:rgba(249,115,22,.12);color:#fb923c}
+.sug-icon.alert{background:rgba(248,113,113,.12);color:var(--red)}
+.sug-icon.ok{background:rgba(34,197,94,.12);color:#4ade80}
+.sug-icon.info{background:rgba(110,86,255,.12);color:var(--accent-2)}
 .sug-body{flex:1}
 .sug-title{font-size:12.5px;font-weight:600;color:var(--text);margin-bottom:3px}
 .sug-text{font-size:11.5px;color:var(--text-2);line-height:1.55;font-weight:400}
@@ -432,7 +441,7 @@ body{
 }
 .field input:focus,.field select:focus{
   outline:none;border-color:var(--accent);
-  box-shadow:0 0 0 3px rgba(99,102,241,.12);
+  box-shadow:0 0 0 3px rgba(110,86,255,.15);
 }
 .field select{cursor:pointer}
 .field-row{display:grid;grid-template-columns:1fr 1fr;gap:9px}
@@ -447,8 +456,8 @@ body{
 .btn{flex:1;padding:10px;border-radius:8px;border:none;font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;transition:.15s}
 .btn-cancel{background:var(--surface-2);color:var(--text-2);border:1px solid var(--border)}
 .btn-cancel:hover{color:var(--text);background:var(--surface-3)}
-.btn-save{background:var(--text);color:var(--bg)}
-.btn-save:hover{background:#fff}
+.btn-save{background:var(--accent);color:#fff}
+.btn-save:hover{background:#5b46e6}
 
 /* ============ TOAST ============ */
 .toast{
@@ -488,8 +497,8 @@ body{
 .auth-wrap h2{font-size:18px;font-weight:600;margin-bottom:6px;letter-spacing:-.3px}
 .auth-wrap p{font-size:12px;color:var(--muted);margin-bottom:20px}
 .auth-toggle{text-align:center;font-size:11.5px;color:var(--muted);margin-top:14px;font-weight:400}
-.auth-toggle a{color:var(--text-2);cursor:pointer;font-weight:600;text-decoration:none}
-.auth-toggle a:hover{color:var(--text)}
+.auth-toggle a{color:var(--accent-2);cursor:pointer;font-weight:600;text-decoration:none}
+.auth-toggle a:hover{color:#c4b5fd}
 
 /* ============ SYNC ============ */
 .sync-dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--muted-2);margin-left:auto}
@@ -521,7 +530,7 @@ body{
   flex:1;min-width:0;position:relative;
 }
 .bn-item .bni{font-size:16px;line-height:1;transition:.15s}
-.bn-item.active{color:var(--text)}
+.bn-item.active{color:var(--accent-2)}
 .bn-item:active{transform:scale(.95)}
 .bn-badge{
   position:absolute;top:3px;right:calc(50% - 12px);
@@ -530,7 +539,7 @@ body{
   animation:pulse 1.5s infinite;
   display:none;
 }
-#bnCuenta:not(.logged){color:var(--text-2)}
+#bnCuenta:not(.logged){color:var(--accent-2)}
 #bnCuenta:not(.logged) .bn-badge{display:block}
 
 /* ============ RESPONSIVE ============ */
@@ -661,7 +670,7 @@ body{
           <div class="card-title">Ingresos vs. Gastos<small id="histLbl"></small></div>
           <div style="display:flex;gap:12px;font-size:10.5px;font-weight:500;color:var(--muted)">
             <span style="display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:2px;background:var(--green)"></span>Ingresos</span>
-            <span style="display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:2px;background:var(--red)"></span>Gastos</span>
+            <span style="display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:2px;background:var(--pink)"></span>Gastos</span>
           </div>
         </div>
         <div class="chart-bars" id="histChart"></div>
@@ -757,7 +766,7 @@ body{
       </div>
 
       <div class="grid g2">
-        <div class="card"><div class="card-head"><div class="card-title">Activos</div><div id="totActivos" style="font-size:12.5px;font-weight:600"></div></div><div class="list" id="listActivos"></div></div>
+        <div class="card"><div class="card-head"><div class="card-title">Activos</div><div id="totActivos" style="font-size:12.5px;font-weight:600;color:var(--green)"></div></div><div class="list" id="listActivos"></div></div>
         <div class="card"><div class="card-head"><div class="card-title">Otros pasivos</div><div id="totPasivos" style="font-size:12.5px;font-weight:600;color:var(--red)"></div></div><div class="list" id="listPasivos"></div></div>
       </div>
     </section>
@@ -849,8 +858,8 @@ const APP_URL='https://norambuena25.github.io/Mis-Finanzas/';
 const SUPABASE_URL='https://gieyocpbvrlgjwcojkbo.supabase.co';
 const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdpZXlvY3BidnJsZ2p3Y29qa2JvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAxMjY0ODQsImV4cCI6MjEwNTcwMjQ4NH0.Pmmn6DTAHx2TytXI85eQgVY-XSeVaCDV0_kDZzJsgTM';
 
-const KEY='misfinanzas_v7';
-const PALETA=['#818cf8','#a78bfa','#22d3ee','#4ade80','#f472b6','#fb923c','#facc15','#f87171','#94a3b8','#0891b2','#8b5cf6','#34d399'];
+const KEY='misfinanzas_v8';
+const PALETA=['#6e56ff','#a855f7','#06b6d4','#22c55e','#ec4899','#f97316','#eab308','#f87171','#64748b','#0891b2','#8b5cf6','#10b981'];
 
 const seed={
   categorias:{
@@ -858,7 +867,7 @@ const seed={
     ingresos:['Sueldo','Freelance','Arriendo','Dividendos','Otros'],
     inversiones:['Acciones','Fondos mutuos','Depósito a plazo','Cripto','APV','Otros']
   },
-  colores:{'Vivienda':'#818cf8','Alimentación':'#22d3ee','Transporte':'#4ade80','Ocio':'#f472b6','Salud':'#fb923c','Educación':'#facc15','Otros':'#94a3b8','Sueldo':'#4ade80','Freelance':'#818cf8','Arriendo':'#22d3ee','Dividendos':'#fb923c','Acciones':'#818cf8','Fondos mutuos':'#22d3ee','Depósito a plazo':'#4ade80','Cripto':'#fb923c','APV':'#f472b6','Tarjeta':'#a78bfa','Hipotecario':'#f472b6','Automotriz':'#fb923c'},
+  colores:{'Vivienda':'#6e56ff','Alimentación':'#06b6d4','Transporte':'#22c55e','Ocio':'#ec4899','Salud':'#f97316','Educación':'#eab308','Otros':'#64748b','Sueldo':'#22c55e','Freelance':'#6e56ff','Arriendo':'#06b6d4','Dividendos':'#f97316','Acciones':'#6e56ff','Fondos mutuos':'#06b6d4','Depósito a plazo':'#22c55e','Cripto':'#f97316','APV':'#ec4899','Tarjeta':'#a855f7','Hipotecario':'#ec4899','Automotriz':'#f97316'},
   ingresos:[
     {id:1,nombre:'Sueldo septiembre',monto:2450000,categoria:'Sueldo',fecha:'2026-09-01',recurrente:true},
     {id:2,nombre:'Proyecto freelance',monto:620000,categoria:'Freelance',fecha:'2026-09-10',recurrente:false},
@@ -913,7 +922,7 @@ const seed={
 
 let data;
 try{
-  const stored=localStorage.getItem(KEY)||localStorage.getItem('misfinanzas_v6')||localStorage.getItem('misfinanzas_v5')||localStorage.getItem('misfinanzas_v4');
+  const stored=localStorage.getItem(KEY)||localStorage.getItem('misfinanzas_v7')||localStorage.getItem('misfinanzas_v6')||localStorage.getItem('misfinanzas_v5')||localStorage.getItem('misfinanzas_v4');
   data=stored?JSON.parse(stored):structuredClone(seed);
   if(!data.categorias||!data.colores){
     const s=structuredClone(seed);
@@ -1072,7 +1081,6 @@ function renderDashboard(){
 
   document.getElementById('dashSub').textContent=new Date().toLocaleDateString('es-CL',{month:'long',year:'numeric'});
 
-  /* ---- HERO PATRIMONIO ---- */
   document.getElementById('heroPatrimonio').innerHTML=`
     <div class="hero-card">
       <div class="hero-main">
@@ -1098,12 +1106,11 @@ function renderDashboard(){
         <div class="hero-stat-label">Ratio deuda/activo</div>
         <div class="hero-stat-value ${(ta&&(tp/ta*100)>60)?'neg':''}">${ta?((tp/ta)*100).toFixed(1):'0.0'}%</div>
         <div class="hero-bar">
-          <div class="hero-bar-fill" style="width:${ta?Math.min(100,tp/ta*100):0}%;background:${(ta&&(tp/ta*100)>60)?'var(--red)':'var(--accent-2)'}"></div>
+          <div class="hero-bar-fill" style="width:${ta?Math.min(100,tp/ta*100):0}%;background:${(ta&&(tp/ta*100)>60)?'var(--red)':'var(--accent)'}"></div>
         </div>
       </div>
     </div>`;
 
-  /* ---- KPIs ROW ---- */
   document.getElementById('dashKpis').innerHTML=`
     <div class="card">
       <div class="kpi-label">Ingresos del mes</div>
@@ -1126,7 +1133,7 @@ function renderDashboard(){
       <div class="kpi-foot"><span class="badge ${aho<0?'b-down':(aho>=20?'b-up':'b-warn')}">${aho<0?'Negativa':(aho>=20?'Saludable':'A mejorar')}</span></div>
     </div>`;
 
-  /* ---- TARJETAS DONUT ---- */
+  /* TARJETAS */
   const tSub=document.getElementById('dashTarjSub');
   const tCont=document.getElementById('dashTarjChart');
   if(tarjetas.length){
@@ -1137,7 +1144,7 @@ function renderDashboard(){
     tCont.innerHTML=`
       <div class="chart-donut">
         ${donutSVG([
-          {valor:totalDeudaTarjetas,color:'#f472b6'},
+          {valor:totalDeudaTarjetas,color:'#ec4899'},
           {valor:totalDisp,color:'rgba(255,255,255,.06)'}
         ])}
         <div class="donut-center">
@@ -1147,7 +1154,7 @@ function renderDashboard(){
         </div>
       </div>
       <div class="chart-legend">
-        <div class="leg"><span class="sw" style="background:#f472b6"></span>Utilizado<span class="val">${clp(totalDeudaTarjetas)}</span><span class="pct">${pctTotal.toFixed(0)}%</span></div>
+        <div class="leg"><span class="sw" style="background:#ec4899"></span>Utilizado<span class="val">${clp(totalDeudaTarjetas)}</span><span class="pct">${pctTotal.toFixed(0)}%</span></div>
         <div class="leg"><span class="sw" style="background:rgba(255,255,255,.2)"></span>Disponible<span class="val">${clp(totalDisp)}</span><span class="pct">${(100-pctTotal).toFixed(0)}%</span></div>
       </div>`;
   }else{
@@ -1155,7 +1162,7 @@ function renderDashboard(){
     tCont.innerHTML='<div class="empty"><strong>Sin tarjetas</strong>Agrega tu primera tarjeta en Patrimonio</div>';
   }
 
-  /* ---- LÍNEAS DONUT ---- */
+  /* LÍNEAS */
   const lSub=document.getElementById('dashLinSub');
   const lCont=document.getElementById('dashLinChart');
   if(lineas.length){
@@ -1166,7 +1173,7 @@ function renderDashboard(){
     lCont.innerHTML=`
       <div class="chart-donut">
         ${donutSVG([
-          {valor:totalUtilizadoLineas,color:'#22d3ee'},
+          {valor:totalUtilizadoLineas,color:'#06b6d4'},
           {valor:totalDispL,color:'rgba(255,255,255,.06)'}
         ])}
         <div class="donut-center">
@@ -1176,7 +1183,7 @@ function renderDashboard(){
         </div>
       </div>
       <div class="chart-legend">
-        <div class="leg"><span class="sw" style="background:#22d3ee"></span>Utilizado<span class="val">${clp(totalUtilizadoLineas)}</span><span class="pct">${pctTotalL.toFixed(0)}%</span></div>
+        <div class="leg"><span class="sw" style="background:#06b6d4"></span>Utilizado<span class="val">${clp(totalUtilizadoLineas)}</span><span class="pct">${pctTotalL.toFixed(0)}%</span></div>
         <div class="leg"><span class="sw" style="background:rgba(255,255,255,.2)"></span>Disponible<span class="val">${clp(totalDispL)}</span><span class="pct">${(100-pctTotalL).toFixed(0)}%</span></div>
       </div>`;
   }else{
@@ -1184,7 +1191,7 @@ function renderDashboard(){
     lCont.innerHTML='<div class="empty"><strong>Sin líneas de crédito</strong>Agrega tu primera línea en Patrimonio</div>';
   }
 
-  /* ---- GASTOS POR CATEGORÍA ---- */
+  /* GASTOS CATEGORÍA */
   const cats={};
   data.gastos.filter(g=>g.fecha?.startsWith(mes)).forEach(g=>cats[g.categoria]=(cats[g.categoria]||0)+(+g.monto||0));
   const totalCat=Object.values(cats).reduce((s,v)=>s+v,0);
@@ -1196,18 +1203,18 @@ function renderDashboard(){
       <div class="bar-track"><div class="bar-fill" style="width:${v/totalCat*100}%;background:${colorCategoria(c)}"></div></div>
     </div>`).join(''):'<div class="empty">Sin gastos este mes</div>';
 
-  /* ---- PRESUPUESTO ---- */
+  /* PRESUPUESTO */
   const top=data.presupuestos.slice(0,4).map(p=>{
     const g=gastoDeCategoria(p.categoria);const pct=p.asignado?Math.min(100,g/p.asignado*100):0;const over=g>p.asignado;
     return `<div class="bar-row">
       <div class="bar-top"><span>${iconoCategoria(p.categoria)} ${p.categoria}</span>
       <span class="amt ${over?'neg':''}">${clp(g)} <small>/ ${clp(p.asignado)}</small></span></div>
-      <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${over?'var(--red)':(pct>90?'var(--orange)':'var(--accent-2)')}"></div></div>
+      <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${over?'var(--red)':(pct>90?'var(--orange)':'var(--accent)')}"></div></div>
     </div>`;
   }).join('');
   document.getElementById('dashPresupuesto').innerHTML=top||'<div class="empty">Sin presupuestos</div>';
 
-  /* ---- MOVIMIENTOS ---- */
+  /* MOVIMIENTOS */
   const movs=[...data.ingresos.map(i=>({...i,tipo:'ingreso'})),...data.gastos.map(g=>({...g,tipo:'gasto'}))]
     .sort((a,b)=>(b.fecha||'').localeCompare(a.fecha||'')).slice(0,6);
   document.getElementById('dashMovs').innerHTML=movs.length?movs.map(m=>{
@@ -1220,7 +1227,7 @@ function renderDashboard(){
     </div>`;
   }).join(''):'<div class="empty">Sin movimientos</div>';
 
-  /* ---- SUGERENCIAS ---- */
+  /* SUGERENCIAS */
   renderSugerencias({ing,gas,pat,ta,tp,ahoMes,aho,tarjetas,lineas,totalDeudaTarjetas,totalUtilizadoLineas,ingMes,gasMes});
 }
 
@@ -1229,19 +1236,14 @@ function renderSugerencias(ctx){
   const sug=[];
   const {ing,gas,pat,ta,tp,ahoMes,aho,tarjetas,lineas,totalDeudaTarjetas,totalUtilizadoLineas,ingMes,gasMes}=ctx;
 
-  /* 1. Alerta patrimonio negativo */
   if(pat<0){
     sug.push({tipo:'alert',icon:'⚠',title:'Tu patrimonio neto es negativo',
       text:`Tus deudas superan a tus activos por <strong>${clp(Math.abs(pat))}</strong>. Prioriza reducir deuda de mayor tasa antes de nuevas inversiones.`});
   }
-
-  /* 2. Alerta flujo mensual negativo */
   if(ahoMes<0){
     sug.push({tipo:'alert',icon:'⚠',title:'Estás gastando más de lo que ingresas',
       text:`Este mes gastaste <strong>${clp(Math.abs(ahoMes))}</strong> más de lo que ingresó. Revisa tus categorías de mayor gasto y ajusta el presupuesto para el próximo mes.`});
   }
-
-  /* 3. Tasa de ahorro baja */
   if(ing>0 && aho>=0 && aho<10){
     sug.push({tipo:'warn',icon:'◐',title:'Tasa de ahorro por debajo del 10%',
       text:`Ahorras el <strong>${aho.toFixed(1)}%</strong> de tus ingresos. La recomendación general es ahorrar entre el 15% y 20% mensual para objetivos de mediano plazo.`});
@@ -1250,7 +1252,6 @@ function renderSugerencias(ctx){
       text:`Ahorras el <strong>${aho.toFixed(1)}%</strong> de tus ingresos. Considera destinar el excedente a inversiones diversificadas o fondo de emergencia.`});
   }
 
-  /* 4. Uso de tarjetas */
   if(tarjetas.length){
     const totalCupo=tarjetas.reduce((s,t)=>s+(+t.cupo||0),0);
     const pctTarj=totalCupo?(totalDeudaTarjetas/totalCupo*100):0;
@@ -1266,7 +1267,6 @@ function renderSugerencias(ctx){
     }
   }
 
-  /* 5. Líneas de crédito */
   if(lineas.length){
     const totalCupoL=lineas.reduce((s,l)=>s+(+l.cupo||0),0);
     const pctLin=totalCupoL?(totalUtilizadoLineas/totalCupoL*100):0;
@@ -1276,7 +1276,6 @@ function renderSugerencias(ctx){
     }
   }
 
-  /* 6. Ratio deuda/activo */
   if(ta>0){
     const ratio=tp/ta*100;
     if(ratio>60){
@@ -1288,20 +1287,16 @@ function renderSugerencias(ctx){
     }
   }
 
-  /* 7. Fondo de emergencia */
-  const mesesGastos=gasMes?6*Math.max(1,Math.round(gasMes/100000))*100000:0;
   if(gasMes>0 && !sug.some(x=>x.tipo==='alert')){
     sug.push({tipo:'info',icon:'🛡',title:'Fondo de emergencia recomendado',
       text:`Con tus gastos actuales (${clp(gasMes)} al mes), un fondo de emergencia de 3–6 meses equivale a <strong>${clp(gasMes*3)} – ${clp(gasMes*6)}</strong>. Considéralo antes de invertir a largo plazo.`});
   }
 
-  /* 8. Sin movimientos */
   if(!data.ingresos.length && !data.gastos.length){
     sug.push({tipo:'info',icon:'✦',title:'Empieza a registrar',
       text:'Agrega tus ingresos y gastos del mes para que la app pueda darte sugerencias personalizadas basadas en tus finanzas reales.'});
   }
 
-  /* Render */
   const cont=document.getElementById('sugerencias');
   cont.innerHTML=`
     <div class="sug-head"><span class="dot"></span> Sugerencias</div>
@@ -1330,7 +1325,7 @@ function renderHistorico(){
   const tasaProm=promIng?(promAho/promIng*100):0;
   document.getElementById('histKpis').innerHTML=`
     <div class="card"><div class="kpi-label">Promedio ingresos</div>
-      <div class="kpi-value"><span class="cur">$</span>${Math.round(promIng).toLocaleString('es-CL')}</div>
+      <div class="kpi-value pos"><span class="cur">$</span>${Math.round(promIng).toLocaleString('es-CL')}</div>
       <div class="kpi-foot">Mensual</div></div>
     <div class="card"><div class="kpi-label">Promedio gastos</div>
       <div class="kpi-value neg"><span class="cur">$</span>${Math.round(promGas).toLocaleString('es-CL')}</div>
@@ -1475,7 +1470,7 @@ function renderPresupuesto(){
     const g=gastoDeCategoria(p.categoria);
     const pct=p.asignado?Math.min(100,g/p.asignado*100):0;
     const over=g>p.asignado;
-    return `<div class="card" ${over?'style="border-color:rgba(248,113,113,.25)"':''}>
+    return `<div class="card" ${over?'style="border-color:rgba(248,113,113,.3)"':''}>
       <div class="card-head" style="margin-bottom:10px">
         <div class="card-title">${iconoCategoria(p.categoria)} ${p.categoria}</div>
         <div style="display:flex;gap:4px;align-items:center">
@@ -1488,7 +1483,7 @@ function renderPresupuesto(){
         <div style="font-size:17px;font-weight:600;letter-spacing:-.3px;font-variant-numeric:tabular-nums;${over?'color:var(--red)':''}">${clp(g)}</div>
         <div style="font-size:11px;color:var(--muted);font-weight:400">/ ${clp(p.asignado)}</div>
       </div>
-      <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${over?'var(--red)':(pct>90?'var(--orange)':'var(--accent-2)')}"></div></div>
+      <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${over?'var(--red)':(pct>90?'var(--orange)':'var(--accent)')}"></div></div>
       <div class="kpi-foot" style="margin-top:8px;justify-content:space-between">
         <span>${over?'Exceso':'Disponible'}</span>
         <strong style="color:${over?'var(--red)':'var(--green)'};font-weight:600">${clp(Math.abs(p.asignado-g))}</strong>
