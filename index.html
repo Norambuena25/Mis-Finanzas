@@ -192,6 +192,20 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
 .cc-cuotas-item .monto{font-variant-numeric:tabular-nums;color:var(--text);font-weight:600}
 .cc-cuotas-total{margin-top:8px;padding-top:8px;border-top:1px dashed rgba(255,255,255,.08);display:flex;justify-content:space-between;font-size:11.5px;font-weight:600}
 .cc-cuotas-total .val{color:#c4b5fd;font-variant-numeric:tabular-nums}
+/* Historial de pagos */
+.hist-pagos{margin-top:16px;padding-top:16px;border-top:1px solid var(--border)}
+.hist-pagos-title{font-size:10.5px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);font-weight:600;margin-bottom:10px}
+.hist-pago{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;background:var(--surface-2);border:1px solid var(--border);margin-bottom:6px}
+.hist-pago-info{flex:1;min-width:0}
+.hist-pago-fecha{font-size:11.5px;font-weight:600;color:var(--text)}
+.hist-pago-cat{font-size:10.5px;color:var(--muted);margin-top:2px;font-weight:400}
+.hist-pago-monto{font-size:12.5px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--text)}
+.hist-pago-acciones{display:flex;gap:4px}
+.hist-pago-acciones button{width:24px;height:24px;border-radius:6px;background:transparent;border:1px solid var(--border);color:var(--muted);cursor:pointer;font-size:10px;font-family:inherit;transition:.15s}
+.hist-pago-acciones button:hover{color:var(--text);background:rgba(255,255,255,.06)}
+.hist-pago-acciones button.del:hover{color:var(--red);border-color:rgba(248,113,113,.25)}
+.hist-edit-banner{font-size:11px;color:#fb923c;padding:8px 11px;border-radius:7px;background:rgba(249,115,22,.08);border:1px solid rgba(249,115,22,.25);margin-bottom:12px;font-weight:500;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.hist-edit-banner button{background:transparent;border:none;color:#fb923c;font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;text-decoration:underline}
 .suggestions{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:20px 22px;margin-top:12px}
 .sug-head{display:flex;align-items:center;gap:9px;margin-bottom:16px;font-size:12px;font-weight:600;color:var(--text);text-transform:uppercase;letter-spacing:.8px}
 .sug-head .dot{width:6px;height:6px;border-radius:50%;background:var(--accent-2);animation:sugPulse 2s infinite}
@@ -210,7 +224,7 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
 .sug-text strong{color:var(--text);font-weight:600}
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:1000;padding:20px}
 .modal-bg.open{display:flex}
-.modal{background:var(--surface);border:1px solid var(--border-2);border-radius:14px;padding:22px;width:100%;max-width:400px;max-height:90vh;overflow-y:auto;animation:pop .18s}
+.modal{background:var(--surface);border:1px solid var(--border-2);border-radius:14px;padding:22px;width:100%;max-width:440px;max-height:90vh;overflow-y:auto;animation:pop .18s}
 @keyframes pop{from{transform:scale(.97);opacity:0}to{transform:scale(1);opacity:1}}
 .modal h3{font-size:15px;font-weight:600;margin-bottom:18px;letter-spacing:-.2px}
 .field{margin-bottom:11px}
@@ -591,23 +605,22 @@ const APP_URL='https://norambuena25.github.io/Mis-Finanzas/';
 const SUPABASE_URL='https://gieyocpbvrlgjwcojkbo.supabase.co';
 const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdpZXlvY3BidnJsZ2p3Y29qa2JvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAxMjY0ODQsImV4cCI6MjEwNTcwMjQ4NH0.Pmmn6DTAHx2TytXI85eQgVY-XSeVaCDV0_kDZzJsgTM';
 
-const KEY='misfinanzas_v12';
+const KEY='misfinanzas_v13';
 const PALETA=['#6e56ff','#a855f7','#06b6d4','#22c55e','#ec4899','#f97316','#eab308','#f87171','#64748b','#0891b2','#8b5cf6','#10b981'];
 
 const seed={
   categorias:{
-    gastos:['Vivienda','Alimentación','Transporte','Ocio','Salud','Educación','Otros'],
+    gastos:['Vivienda','Alimentación','Transporte','Ocio','Salud','Educación','Pago de tarjetas','Otros'],
     ingresos:['Sueldo','Freelance','Arriendo','Dividendos','Otros'],
     inversiones:['Acciones','Fondos mutuos','Depósito a plazo','Cripto','APV','Otros']
   },
-  colores:{'Vivienda':'#6e56ff','Alimentación':'#06b6d4','Transporte':'#22c55e','Ocio':'#ec4899','Salud':'#f97316','Educación':'#eab308','Otros':'#64748b','Sueldo':'#22c55e','Freelance':'#6e56ff','Arriendo':'#06b6d4','Dividendos':'#f97316','Acciones':'#6e56ff','Fondos mutuos':'#06b6d4','Depósito a plazo':'#22c55e','Cripto':'#f97316','APV':'#ec4899','Tarjeta':'#a855f7','Hipotecario':'#ec4899','Automotriz':'#f97316'},
+  colores:{'Vivienda':'#6e56ff','Alimentación':'#06b6d4','Transporte':'#22c55e','Ocio':'#ec4899','Salud':'#f97316','Educación':'#eab308','Pago de tarjetas':'#a855f7','Otros':'#64748b','Sueldo':'#22c55e','Freelance':'#6e56ff','Arriendo':'#06b6d4','Dividendos':'#f97316','Acciones':'#6e56ff','Fondos mutuos':'#06b6d4','Depósito a plazo':'#22c55e','Cripto':'#f97316','APV':'#ec4899','Tarjeta':'#a855f7','Hipotecario':'#ec4899','Automotriz':'#f97316'},
   ingresos:[
     {id:1,nombre:'Sueldo septiembre',monto:2450000,categoria:'Sueldo',fecha:'2026-09-01',recurrente:true},
     {id:2,nombre:'Proyecto freelance',monto:620000,categoria:'Freelance',fecha:'2026-09-10',recurrente:false},
     {id:3,nombre:'Arriendo oficina',monto:300000,categoria:'Arriendo',fecha:'2026-09-05',recurrente:true},
     {id:4,nombre:'Dividendos fondo A',monto:184200,categoria:'Dividendos',fecha:'2026-09-06',recurrente:false},
-    {id:5,nombre:'Sueldo agosto',monto:2380000,categoria:'Sueldo',fecha:'2026-08-01',recurrente:true},
-    {id:6,nombre:'Sueldo julio',monto:2380000,categoria:'Sueldo',fecha:'2026-07-01',recurrente:true}
+    {id:5,nombre:'Sueldo agosto',monto:2380000,categoria:'Sueldo',fecha:'2026-08-01',recurrente:true}
   ],
   gastos:[
     {id:1,nombre:'Dividendo depto',monto:633600,categoria:'Vivienda',fecha:'2026-09-03',tarjetaId:null,cuotas:1,tasaCuotas:0},
@@ -633,7 +646,8 @@ const seed={
     {id:3,categoria:'Transporte',asignado:300000},
     {id:4,categoria:'Ocio',asignado:250000},
     {id:5,categoria:'Salud',asignado:280000},
-    {id:6,categoria:'Educación',asignado:370000}
+    {id:6,categoria:'Educación',asignado:370000},
+    {id:7,categoria:'Pago de tarjetas',asignado:400000}
   ],
   activos:[
     {id:1,nombre:'Depto Providencia',tipo:'Bien raíz',valor:42000000},
@@ -651,14 +665,33 @@ const seed={
 
 let data;
 try{
-  const stored=localStorage.getItem(KEY)||localStorage.getItem('misfinanzas_v11')||localStorage.getItem('misfinanzas_v10')||localStorage.getItem('misfinanzas_v9')||localStorage.getItem('misfinanzas_v8')||localStorage.getItem('misfinanzas_v7');
+  const stored=localStorage.getItem(KEY)||localStorage.getItem('misfinanzas_v12')||localStorage.getItem('misfinanzas_v11')||localStorage.getItem('misfinanzas_v10');
   data=stored?JSON.parse(stored):structuredClone(seed);
   if(!data.categorias||!data.colores){
     const s=structuredClone(seed);
     data.categorias=data.categorias||s.categorias;
     data.colores=data.colores||s.colores;
   }
-  data.pasivos.forEach(p=>{ if(p.tipo==='Tarjeta' && !Array.isArray(p.pagos))p.pagos=[]; });
+  /* Migración: agregar categoría "Pago de tarjetas" si no existe */
+  if(!data.categorias.gastos.includes('Pago de tarjetas')){
+    /* Insertar antes de 'Otros' si existe, si no al final */
+    const idxOtros=data.categorias.gastos.indexOf('Otros');
+    if(idxOtros>=0) data.categorias.gastos.splice(idxOtros,0,'Pago de tarjetas');
+    else data.categorias.gastos.push('Pago de tarjetas');
+  }
+  if(!data.colores['Pago de tarjetas']){
+    data.colores['Pago de tarjetas']='#a855f7';
+  }
+  /* Migración: agregar categoría a cada pago de tarjeta */
+  data.pasivos.forEach(p=>{
+    if(p.tipo==='Tarjeta'){
+      if(!Array.isArray(p.pagos)) p.pagos=[];
+      p.pagos.forEach(pg=>{
+        if(pg.categoria===undefined) pg.categoria='Pago de tarjetas';
+        if(pg.id===undefined) pg.id=Date.now()+Math.floor(Math.random()*9999);
+      });
+    }
+  });
   data.gastos.forEach(g=>{
     if(g.tarjetaId===undefined)g.tarjetaId=null;
     if(g.cuotas===undefined)g.cuotas=1;
@@ -682,7 +715,21 @@ async function pullCloud(){
   const {data:rows,error}=await sb.from('finanzas').select('data').eq('user_id',user.id).maybeSingle();
   if(!error && rows?.data){
     data=rows.data;
-    data.pasivos.forEach(p=>{ if(p.tipo==='Tarjeta' && !Array.isArray(p.pagos))p.pagos=[]; });
+    if(!data.categorias.gastos.includes('Pago de tarjetas')){
+      const idxOtros=data.categorias.gastos.indexOf('Otros');
+      if(idxOtros>=0) data.categorias.gastos.splice(idxOtros,0,'Pago de tarjetas');
+      else data.categorias.gastos.push('Pago de tarjetas');
+    }
+    if(!data.colores['Pago de tarjetas']) data.colores['Pago de tarjetas']='#a855f7';
+    data.pasivos.forEach(p=>{
+      if(p.tipo==='Tarjeta'){
+        if(!Array.isArray(p.pagos)) p.pagos=[];
+        p.pagos.forEach(pg=>{
+          if(pg.categoria===undefined) pg.categoria='Pago de tarjetas';
+          if(pg.id===undefined) pg.id=Date.now()+Math.floor(Math.random()*9999);
+        });
+      }
+    });
     data.gastos.forEach(g=>{
       if(g.tarjetaId===undefined)g.tarjetaId=null;
       if(g.cuotas===undefined)g.cuotas=1;
@@ -707,9 +754,10 @@ const uid=()=>Date.now()+Math.floor(Math.random()*9999);
 const clp=n=>'$'+Math.round(+n||0).toLocaleString('es-CL');
 const hoy=()=>new Date().toISOString().slice(0,10);
 function fmtDate(iso){if(!iso)return'';const d=new Date(iso+'T00:00:00');return d.toLocaleDateString('es-CL',{day:'2-digit',month:'short'});}
+function fmtDateLong(iso){if(!iso)return'';const d=new Date(iso+'T00:00:00');return d.toLocaleDateString('es-CL',{day:'2-digit',month:'long',year:'numeric'});}
 function fmtMes(ym){const [y,m]=ym.split('-');const d=new Date(y,m-1);return d.toLocaleDateString('es-CL',{month:'short',year:'2-digit'});}
 function iconoCategoria(c){
-  const m={'Vivienda':'🏠','Alimentación':'🛒','Transporte':'🚗','Ocio':'🎬','Salud':'💊','Educación':'📚','Sueldo':'💼','Freelance':'💻','Arriendo':'🏘','Dividendos':'📈','Otros':'📦','Acciones':'◉','Fondos mutuos':'◇','Depósito a plazo':'🏦','Cripto':'₿','APV':'💎','Bien raíz':'🏢','Efectivo':'💰','Vehículo':'🚗','Hipotecario':'🏠','Automotriz':'🚙','Tarjeta':'💳','Linea':'🏦','Otro':'●'};
+  const m={'Vivienda':'🏠','Alimentación':'🛒','Transporte':'🚗','Ocio':'🎬','Salud':'💊','Educación':'📚','Pago de tarjetas':'💳','Sueldo':'💼','Freelance':'💻','Arriendo':'🏘','Dividendos':'📈','Otros':'📦','Acciones':'◉','Fondos mutuos':'◇','Depósito a plazo':'🏦','Cripto':'₿','APV':'💎','Bien raíz':'🏢','Efectivo':'💰','Vehículo':'🚗','Hipotecario':'🏠','Automotriz':'🚙','Tarjeta':'💳','Linea':'🏦','Otro':'●'};
   return m[c]||'●';
 }
 function colorCategoria(c){
@@ -738,7 +786,33 @@ function totalPasivos(){
     return s+(+p.valor||0);
   },0);
 }
-function gastoDeCategoria(cat){return data.gastos.filter(g=>g.categoria===cat).reduce((s,g)=>s+(+g.monto||0),0);}
+
+/* =====================
+   Cálculo de gasto por categoría INCLUYENDO pagos de tarjeta
+   - Gastos normales del mes actual + pagos de tarjeta del mes actual
+===================== */
+function gastoDeCategoria(cat){
+  const mes = mesActual();
+  const gastosMes = data.gastos
+    .filter(g=>g.categoria===cat && (g.fecha||'').startsWith(mes))
+    .reduce((s,g)=>s+(+g.monto||0),0);
+  const pagosMes = data.pasivos
+    .filter(p=>p.tipo==='Tarjeta')
+    .reduce((s,p)=>{
+      const sum = (p.pagos||[])
+        .filter(pg=>(pg.fecha||'').startsWith(mes) && (pg.categoria||'Pago de tarjetas')===cat)
+        .reduce((ss,pg)=>ss+(+pg.monto||0),0);
+      return s+sum;
+    },0);
+  return gastosMes + pagosMes;
+}
+/* Gasto por categoría solo del mes actual sin pagos de tarjeta, para usos puntuales */
+function gastoDeCategoriaSoloGastos(cat){
+  const mes = mesActual();
+  return data.gastos
+    .filter(g=>g.categoria===cat && (g.fecha||'').startsWith(mes))
+    .reduce((s,g)=>s+(+g.monto||0),0);
+}
 function mesActual(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');}
 
 function infoCuotas(g){
@@ -938,8 +1012,16 @@ function renderDashboard(){
     lCont.innerHTML='<div class="empty"><strong>Sin líneas de crédito</strong>Agrega tu primera línea en Gastos y crédito</div>';
   }
 
+  /* Gastos por categoría incluyendo pagos de tarjeta */
   const cats={};
   data.gastos.filter(g=>g.fecha?.startsWith(mes)).forEach(g=>cats[g.categoria]=(cats[g.categoria]||0)+(+g.monto||0));
+  /* Sumar pagos de tarjeta del mes por su categoría */
+  data.pasivos.filter(p=>p.tipo==='Tarjeta').forEach(p=>{
+    (p.pagos||[]).filter(pg=>(pg.fecha||'').startsWith(mes)).forEach(pg=>{
+      const cat=pg.categoria||'Pago de tarjetas';
+      cats[cat]=(cats[cat]||0)+(+pg.monto||0);
+    });
+  });
   const totalCat=Object.values(cats).reduce((s,v)=>s+v,0);
   const sorted=Object.entries(cats).sort((a,b)=>b[1]-a[1]).slice(0,6);
   document.getElementById('dashCat').innerHTML=sorted.length?sorted.map(([c,v])=>`
@@ -1051,7 +1133,6 @@ function renderGastos(){
     <div class="card"><div class="kpi-label">Con tarjeta</div><div class="kpi-value"><span class="cur">$</span>${conTarjeta.toLocaleString('es-CL')}</div><div class="kpi-foot">${t?((conTarjeta/t)*100).toFixed(1):0}% del total</div></div>
     <div class="card"><div class="kpi-label">Sobre presupuesto</div><div class="kpi-value ${over?'neg':''}">${over}</div><div class="kpi-foot"><span class="badge ${over?'b-warn':'b-up'}">${over?'Revisar':'Todo ok'}</span></div></div>`;
 
-  /* Render tarjetas dentro de Gastos */
   const tarjetas=getTarjetas();
   const lineas=getLineasCredito();
   const totalDeudaTarjetas=tarjetas.reduce((s,t)=>s+Math.max(0,deudaTarjeta(t)),0);
@@ -1071,6 +1152,7 @@ function renderGastos(){
       const gastos=gastosDeTarjeta(t.id);
       const cuotasVig=cuotasVigentesDeTarjeta(t.id);
       const totalMensualCuotas=totalMensualCuotasTarjeta(t.id);
+      const numPagos=(t.pagos||[]).length;
       const cuotasHTML=cuotasVig.length?`
         <div class="cc-cuotas">
           <div class="cc-cuotas-title">📆 Cuotas vigentes este mes</div>
@@ -1083,11 +1165,11 @@ function renderGastos(){
           ${cuotasVig.length>5?`<div class="cc-cuotas-item" style="color:var(--muted);font-style:italic">+${cuotasVig.length-5} más…</div>`:''}
           <div class="cc-cuotas-total"><span>Total cuotas del mes</span><span class="val">${clp(totalMensualCuotas)}</span></div>
         </div>`:'';
-      return `<div class="cc-card ${warnClass}"><div class="cc-head"><div><div class="cc-name">💳 ${t.nombre}</div><div class="cc-tipo">Tarjeta de crédito</div></div><div class="cc-actions-top"><button data-act="edit-tarjeta" data-id="${t.id}">✎</button><button class="del" data-act="del-tarjeta" data-id="${t.id}">🗑</button></div></div><div class="cc-nums"><div class="cc-num"><div class="l">Cupo total</div><div class="v">${clp(t.cupo)}</div></div><div class="cc-num"><div class="l">Utilizado</div><div class="v" style="color:${col}">${clp(deuda)}</div></div><div class="cc-num"><div class="l">Disponible</div><div class="v pos">${clp(disp)}</div></div></div><div class="cc-bar"><div class="cc-bar-fill" style="width:${pct}%;background:${col}"></div></div><div class="cc-bar-lbl"><span>${pct.toFixed(1)}% usado</span><span>${gastos.length} movs · ${(t.pagos||[]).length} pagos</span></div>${cuotasHTML}<div class="cc-actions"><button class="cc-btn primary" data-act="pagar-tarjeta" data-id="${t.id}">Registrar pago</button><button class="cc-btn" data-act="nuevo-gasto-tarjeta" data-id="${t.id}">+ Gasto</button></div></div>`;
+      return `<div class="cc-card ${warnClass}"><div class="cc-head"><div><div class="cc-name">💳 ${t.nombre}</div><div class="cc-tipo">Tarjeta de crédito</div></div><div class="cc-actions-top"><button data-act="edit-tarjeta" data-id="${t.id}">✎</button><button class="del" data-act="del-tarjeta" data-id="${t.id}">🗑</button></div></div><div class="cc-nums"><div class="cc-num"><div class="l">Cupo total</div><div class="v">${clp(t.cupo)}</div></div><div class="cc-num"><div class="l">Utilizado</div><div class="v" style="color:${col}">${clp(deuda)}</div></div><div class="cc-num"><div class="l">Disponible</div><div class="v pos">${clp(disp)}</div></div></div><div class="cc-bar"><div class="cc-bar-fill" style="width:${pct}%;background:${col}"></div></div><div class="cc-bar-lbl"><span>${pct.toFixed(1)}% usado</span><span>${gastos.length} movs · ${numPagos} pagos</span></div>${cuotasHTML}<div class="cc-actions"><button class="cc-btn primary" data-act="pagar-tarjeta" data-id="${t.id}">${numPagos?'💵 Registrar pago / ver historial':'💵 Registrar pago'}</button><button class="cc-btn" data-act="nuevo-gasto-tarjeta" data-id="${t.id}">+ Gasto</button></div></div>`;
     }).join('');
     document.querySelectorAll('[data-act="edit-tarjeta"]').forEach(b=>b.onclick=e=>{e.stopPropagation();openModal('tarjeta',+b.dataset.id);});
     document.querySelectorAll('[data-act="del-tarjeta"]').forEach(b=>b.onclick=e=>{e.stopPropagation();delTarjeta(+b.dataset.id);});
-    document.querySelectorAll('[data-act="pagar-tarjeta"]').forEach(b=>b.onclick=e=>{e.stopPropagation();openModal('pagoTarjeta',+b.dataset.id);});
+    document.querySelectorAll('[data-act="pagar-tarjeta"]').forEach(b=>b.onclick=e=>{e.stopPropagation();openModalPago(+b.dataset.id);});
     document.querySelectorAll('[data-act="nuevo-gasto-tarjeta"]').forEach(b=>b.onclick=e=>{e.stopPropagation();openModal('gasto',null,+b.dataset.id);});
   }else{tarjBox.style.display='none';}
 
@@ -1107,7 +1189,6 @@ function renderGastos(){
     document.querySelectorAll('[data-act="actualizar-linea"]').forEach(b=>b.onclick=e=>{e.stopPropagation();openModal('linea',+b.dataset.id);});
   }else{linBox.style.display='none';}
 
-  /* Filtros y transacciones */
   const cats=['Todas',...data.categorias.gastos];
   document.getElementById('filtrosGasto').innerHTML=cats.map(c=>`<button class="pill ${filtroGasto===c?'on':''}" data-cat="${c}">${c==='Todas'?'Todas':iconoCategoria(c)+' '+c}</button>`).join('');
   document.querySelectorAll('#filtrosGasto .pill').forEach(p=>p.addEventListener('click',()=>{filtroGasto=p.dataset.cat;renderGastos();bindRowClicks();}));
@@ -1115,7 +1196,18 @@ function renderGastos(){
   const cont=document.getElementById('listGastos');
   if(!lista.length){cont.innerHTML='<div class="empty"><strong>Sin gastos</strong>Agrega tu primer gasto</div>';}
   else{cont.innerHTML=lista.map(g=>{const tarjeta=g.tarjetaId?getTarjetaById(g.tarjetaId):null;const sub=`${g.categoria} · ${fmtDate(g.fecha)}${tarjeta?' · 💳 '+tarjeta.nombre:''}${infoCuotas(g)}`;return `<div class="row" data-edit="gasto" data-id="${g.id}"><div class="row-ic">${iconoCategoria(g.categoria)}</div><div class="row-main"><div class="row-t">${g.nombre}</div><div class="row-s">${sub}</div></div><div class="row-actions"><button data-act="edit">✎</button><button class="del" data-act="del">🗑</button></div><div class="row-amt neg">−${clp(g.monto)}</div></div>`;}).join('');}
-  const rank=Object.entries(data.gastos.reduce((a,g)=>{a[g.categoria]=(a[g.categoria]||0)+(+g.monto||0);return a;},{})).sort((a,b)=>b[1]-a[1]);
+
+  /* Ranking incluye pagos de tarjeta */
+  const mes=mesActual();
+  const catsRank={};
+  data.gastos.filter(g=>(g.fecha||'').startsWith(mes)).forEach(g=>catsRank[g.categoria]=(catsRank[g.categoria]||0)+(+g.monto||0));
+  data.pasivos.filter(p=>p.tipo==='Tarjeta').forEach(p=>{
+    (p.pagos||[]).filter(pg=>(pg.fecha||'').startsWith(mes)).forEach(pg=>{
+      const cat=pg.categoria||'Pago de tarjetas';
+      catsRank[cat]=(catsRank[cat]||0)+(+pg.monto||0);
+    });
+  });
+  const rank=Object.entries(catsRank).sort((a,b)=>b[1]-a[1]);
   const max=rank[0]?rank[0][1]:1;
   document.getElementById('rankGastos').innerHTML=rank.length?rank.map(([c,v])=>`<div class="bar-row"><div class="bar-top"><span>${iconoCategoria(c)} ${c}</span><span class="amt">${clp(v)}</span></div><div class="bar-track"><div class="bar-fill" style="width:${v/max*100}%;background:${colorCategoria(c)}"></div></div></div>`).join(''):'<div class="empty">Sin datos</div>';
 }
@@ -1133,7 +1225,17 @@ function renderPresupuesto(){
   const cont=document.getElementById('sobresPresup');
   if(!data.presupuestos.length){cont.innerHTML='<div class="card"><div class="empty"><strong>Sin presupuestos</strong>Crea tu primer sobre</div></div>';return;}
   cont.innerHTML=data.presupuestos.map(p=>{
-    const g=gastoDeCategoria(p.categoria);const pct=p.asignado?Math.min(100,g/p.asignado*100):0;const over=g>p.asignado;
+    const g=gastoDeCategoria(p.categoria);
+    /* Desglose: gastos normales vs pagos tarjeta */
+    const mes=mesActual();
+    const soloGastos=data.gastos.filter(x=>x.categoria===p.categoria && (x.fecha||'').startsWith(mes)).reduce((s,x)=>s+(+x.monto||0),0);
+    const soloPagos=data.pasivos.filter(x=>x.tipo==='Tarjeta').reduce((s,x)=>{
+      const sum=(x.pagos||[]).filter(pg=>(pg.fecha||'').startsWith(mes) && (pg.categoria||'Pago de tarjetas')===p.categoria).reduce((ss,pg)=>ss+(+pg.monto||0),0);
+      return s+sum;
+    },0);
+    const pct=p.asignado?Math.min(100,g/p.asignado*100):0;
+    const over=g>p.asignado;
+    const desglose = soloPagos>0 ? `<div style="font-size:10px;color:var(--muted);margin-top:6px;line-height:1.5">💳 Pagos de tarjeta: <strong style="color:var(--text-2)">${clp(soloPagos)}</strong>${soloGastos>0?' · Gastos: '+clp(soloGastos):''}</div>` : '';
     return `<div class="card" ${over?'style="border-color:rgba(248,113,113,.3)"':''}>
       <div class="card-head" style="margin-bottom:10px">
         <div class="card-title">${iconoCategoria(p.categoria)} ${p.categoria}</div>
@@ -1149,6 +1251,7 @@ function renderPresupuesto(){
       </div>
       <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${over?'var(--red)':(pct>90?'var(--orange)':'var(--accent)')}"></div></div>
       <div class="kpi-foot" style="margin-top:8px;justify-content:space-between"><span>${over?'Exceso':'Disponible'}</span><strong style="color:${over?'var(--red)':'var(--green)'};font-weight:600">${clp(Math.abs(p.asignado-g))}</strong></div>
+      ${desglose}
     </div>`;
   }).join('');
   document.querySelectorAll('[data-act="edit-pres"]').forEach(b=>b.onclick=e=>{e.stopPropagation();openModal('presupuesto',+b.dataset.id);});
@@ -1193,10 +1296,12 @@ function renderPatrimonio(){
     <div class="card"><div class="kpi-label">Activos</div><div class="kpi-value pos"><span class="cur">$</span>${ta.toLocaleString('es-CL')}</div><div class="kpi-foot">${data.activos.length} registros + inversiones</div></div>
     <div class="card"><div class="kpi-label">Pasivos</div><div class="kpi-value neg"><span class="cur">$</span>${tp.toLocaleString('es-CL')}</div><div class="kpi-foot">${tarjetas.length} tarjetas · ${lineas.length} líneas · ${otrosPasivos.length} otros</div></div>`;
 
-  /* Referencia informativa a tarjetas y líneas */
+  const existing=document.getElementById('infoCreditosPatrim');
+  if(existing) existing.remove();
   if(tarjetas.length || lineas.length){
-    const infoCard = document.createElement('div');
+    const infoCard=document.createElement('div');
     infoCard.className='card';
+    infoCard.id='infoCreditosPatrim';
     infoCard.style.marginBottom='12px';
     infoCard.style.borderColor='rgba(110,86,255,.2)';
     infoCard.innerHTML=`
@@ -1205,22 +1310,13 @@ function renderPatrimonio(){
         <div style="flex:1">
           <div style="font-size:12.5px;font-weight:600;margin-bottom:3px">Tarjetas y líneas de crédito</div>
           <div style="font-size:11.5px;color:var(--text-2);line-height:1.55;font-weight:400">
-            La gestión de tarjetas (${tarjetas.length}) y líneas (${lineas.length}) ahora está en <strong style="color:var(--accent-2);cursor:pointer" onclick="irA('gastos')">Gastos y crédito →</strong><br>
+            La gestión de tarjetas (${tarjetas.length}) y líneas (${lineas.length}) está en <strong style="color:var(--accent-2);cursor:pointer" onclick="irA('gastos')">Gastos y crédito →</strong><br>
             Deuda tarjetas: <strong style="color:var(--red)">${clp(totalDeudaTarjetas)}</strong> · Líneas utilizadas: <strong style="color:var(--red)">${clp(totalUtilizadoLineas)}</strong>
           </div>
         </div>
       </div>`;
-    /* Insertar antes del grid de activos/pasivos */
-    const gridActivos = document.querySelector('#view-patrimonio .grid.g2');
-    if(gridActivos){
-      const existing = document.getElementById('infoCreditosPatrim');
-      if(existing) existing.remove();
-      infoCard.id='infoCreditosPatrim';
-      gridActivos.parentNode.insertBefore(infoCard, gridActivos);
-    }
-  } else {
-    const existing = document.getElementById('infoCreditosPatrim');
-    if(existing) existing.remove();
+    const gridActivos=document.querySelector('#view-patrimonio .grid.g2');
+    if(gridActivos) gridActivos.parentNode.insertBefore(infoCard, gridActivos);
   }
 
   document.getElementById('totActivos').textContent=clp(ta);
@@ -1277,18 +1373,25 @@ function delRegistro(arr,id){
   save();renderAll();toast('Eliminado');
 }
 
+/* ============================================================
+   MODAL GENÉRICO
+============================================================ */
 const modalBg=document.getElementById('modalBg');
 const modalForm=document.getElementById('modalForm');
 const modalTitle=document.getElementById('modalTitle');
 let currentTipo=null,currentId=null,currentTarjetaPreset=null;
+let currentPagoTarjetaId=null; // id del pago en edición (para pagos de tarjeta)
+
 function inputField(name,label,type='text',value='',attrs=''){return `<div class="field"><label>${label}</label><input name="${name}" type="${type}" value="${value}" ${attrs}></div>`;}
 function selectField(name,label,options,value){return `<div class="field"><label>${label}</label><select name="${name}">${options.map(o=>`<option value="${o}" ${o===value?'selected':''}>${o}</option>`).join('')}</select></div>`;}
+
 function openModal(tipo,id=null,tarjetaPreset=null){
   currentTipo=tipo;currentId=id;currentTarjetaPreset=tarjetaPreset;
+  currentPagoTarjetaId=null;
   let item=null;
   if(id && tipo!=='pagoTarjeta'){const arr=tipoToArray(tipo);item=data[arr].find(x=>x.id===id);}
-  const titulos={ingreso:'Ingreso',gasto:'Gasto',inversion:'Inversión',presupuesto:'Presupuesto',activo:'Activo',pasivo:'Pasivo',tarjeta:'Tarjeta de crédito',linea:'Línea de crédito',pagoTarjeta:'Registrar pago'};
-  modalTitle.textContent=(id && tipo!=='pagoTarjeta'?'Editar ':'Nuevo ')+titulos[tipo];
+  const titulos={ingreso:'Ingreso',gasto:'Gasto',inversion:'Inversión',presupuesto:'Presupuesto',activo:'Activo',pasivo:'Pasivo',tarjeta:'Tarjeta de crédito',linea:'Línea de crédito'};
+  modalTitle.textContent=(id?'Editar ':'Nuevo ')+titulos[tipo];
   let html='';
   if(tipo==='ingreso'){html=inputField('nombre','Nombre','text',item?.nombre||'',"required placeholder='Ej: Sueldo'");html+=inputField('monto','Monto (CLP)','number',item?.monto||'',"required min=0 step=1 placeholder='0'");html+=selectField('categoria','Categoría',data.categorias.ingresos,item?.categoria||data.categorias.ingresos[0]);html+=inputField('fecha','Fecha','date',item?.fecha||hoy(),"required");html+=`<label class="check"><input type="checkbox" name="recurrente" ${item?.recurrente?'checked':''}> Ingreso recurrente</label>`;}
   if(tipo==='gasto'){
@@ -1312,7 +1415,6 @@ function openModal(tipo,id=null,tarjetaPreset=null){
   if(tipo==='activo'||tipo==='pasivo'){const tipos=tipo==='activo'?['Bien raíz','Efectivo','Vehículo','Otro']:['Hipotecario','Automotriz','Otro'];html=inputField('nombre','Nombre','text',item?.nombre||'',"required");html+=selectField('tipo','Tipo',tipos,item?.tipo||tipos[0]);html+=inputField('valor','Valor (CLP)','number',item?.valor||'',"required min=0 step=1");}
   if(tipo==='tarjeta'){html=inputField('nombre','Nombre','text',item?.nombre||'',"required placeholder='Ej: Banco de Chile'");html+=inputField('cupo','Cupo autorizado (CLP)','number',item?.cupo||'',"required min=0 step=1");html+=inputField('deudaInicial','Deuda inicial (opcional)','number',item?.deudaInicial||0,"min=0 step=1");}
   if(tipo==='linea'){html=inputField('nombre','Nombre de la línea','text',item?.nombre||'',"required placeholder='Ej: Línea Banco Estado'");html+=inputField('banco','Banco o entidad','text',item?.banco||'',"placeholder='Ej: Banco Estado'");html+=inputField('cupo','Cupo autorizado (CLP)','number',item?.cupo||'',"required min=0 step=1");html+=inputField('utilizado','Utilizado a la fecha (CLP)','number',item?.utilizado||0,"required min=0 step=1");html+=inputField('tasa','Tasa mensual (%)','number',item?.tasa??'',"step=0.01 min=0 placeholder='Opcional'");}
-  if(tipo==='pagoTarjeta'){const card=data.pasivos.find(x=>x.id===id);if(!card){toast('No encontrada',true);return;}modalTitle.textContent='Pago · '+card.nombre;const deuda=Math.max(0,deudaTarjeta(card));html=`<div style="font-size:11.5px;color:var(--muted);margin-bottom:16px;line-height:1.8;padding:11px;border-radius:8px;background:var(--surface-2);border:1px solid var(--border)"><div style="display:flex;justify-content:space-between"><span>Deuda actual</span><strong style="color:var(--red)">${clp(deuda)}</strong></div><div style="display:flex;justify-content:space-between"><span>Disponible</span><strong style="color:var(--green)">${clp(cupoDisponible(card))}</strong></div></div>`;html+=inputField('monto','Monto a pagar (CLP)','number','',"required min=1 step=1 placeholder='0'");html+=inputField('fecha','Fecha','date',hoy(),"required");html+=inputField('nota','Nota (opcional)','text','',"");}
   modalForm.innerHTML=html;
   modalBg.classList.add('open');
   setTimeout(()=>modalForm.querySelector('input,select')?.focus(),60);
@@ -1352,21 +1454,163 @@ function openModal(tipo,id=null,tarjetaPreset=null){
     },80);
   }
 }
-function closeModal(){modalBg.classList.remove('open');modalForm.reset();}
+
+/* ============================================================
+   MODAL PAGO DE TARJETA (crear / editar / historial)
+============================================================ */
+function openModalPago(cardId, pagoId=null){
+  currentTipo='pagoTarjeta';
+  currentId=cardId;
+  currentPagoTarjetaId=pagoId;
+
+  const card=data.pasivos.find(x=>x.id===cardId && x.tipo==='Tarjeta');
+  if(!card){toast('Tarjeta no encontrada',true);return;}
+
+  const esEdicion = pagoId !== null;
+  modalTitle.textContent = esEdicion ? 'Editar pago · '+card.nombre : (card.pagos && card.pagos.length ? 'Pagos · '+card.nombre : 'Registrar pago · '+card.nombre);
+
+  const deuda=Math.max(0,deudaTarjeta(card));
+  const cupoDisp=cupoDisponible(card);
+
+  const pagoEdit = esEdicion ? (card.pagos||[]).find(pg=>pg.id===pagoId) : null;
+  const montoVal = pagoEdit ? pagoEdit.monto : '';
+  const fechaVal = pagoEdit ? pagoEdit.fecha : hoy();
+  const catVal = pagoEdit ? (pagoEdit.categoria||'Pago de tarjetas') : 'Pago de tarjetas';
+  const notaVal = pagoEdit ? (pagoEdit.nota||'') : '';
+
+  /* Historial de pagos */
+  const pagosOrdenados=[...(card.pagos||[])].sort((a,b)=>(b.fecha||'').localeCompare(a.fecha||''));
+  const historialHTML = pagosOrdenados.length ? `
+    <div class="hist-pagos">
+      <div class="hist-pagos-title">Historial de pagos (${pagosOrdenados.length})</div>
+      ${pagosOrdenados.slice(0,10).map(pg=>`
+        <div class="hist-pago">
+          <div class="hist-pago-info">
+            <div class="hist-pago-fecha">${fmtDateLong(pg.fecha)}</div>
+            <div class="hist-pago-cat">${esc(pg.categoria||'Pago de tarjetas')}${pg.nota?' · '+esc(pg.nota):''}</div>
+          </div>
+          <div class="hist-pago-monto">${clp(pg.monto)}</div>
+          <div class="hist-pago-acciones">
+            <button type="button" data-act="edit-pago" data-pago-id="${pg.id}">✎</button>
+            <button type="button" class="del" data-act="del-pago" data-pago-id="${pg.id}">🗑</button>
+          </div>
+        </div>
+      `).join('')}
+      ${pagosOrdenados.length>10?`<div style="font-size:10.5px;color:var(--muted);text-align:center;padding:6px 0;font-style:italic">+${pagosOrdenados.length-10} pagos anteriores…</div>`:''}
+    </div>` : '';
+
+  const bannerEdicion = esEdicion ? `
+    <div class="hist-edit-banner">
+      <span>✎ Editando pago del ${fmtDateLong(pagoEdit.fecha)}</span>
+      <button type="button" id="cancelarEdicionPago">Cancelar</button>
+    </div>` : '';
+
+  let html='';
+  html += bannerEdicion;
+  html += `<div style="font-size:11.5px;color:var(--muted);margin-bottom:14px;line-height:1.7;padding:11px;border-radius:8px;background:var(--surface-2);border:1px solid var(--border)">
+    <div style="display:flex;justify-content:space-between"><span>Deuda actual</span><strong style="color:var(--red)">${clp(deuda)}</strong></div>
+    <div style="display:flex;justify-content:space-between"><span>Disponible</span><strong style="color:var(--green)">${clp(cupoDisp)}</strong></div>
+    <div style="display:flex;justify-content:space-between"><span>Cupo total</span><strong style="color:var(--text)">${clp(card.cupo)}</strong></div>
+  </div>`;
+  html += `<div class="field-row">
+    <div class="field"><label>Monto a pagar (CLP)</label><input name="monto" type="number" min="1" step="1" value="${montoVal}" placeholder="0" required></div>
+    <div class="field"><label>Fecha</label><input name="fecha" type="date" value="${fechaVal}" required></div>
+  </div>`;
+  html += `<div class="field"><label>Categoría de presupuesto</label><select name="categoria">
+    ${data.categorias.gastos.map(c=>`<option value="${esc(c)}" ${c===catVal?'selected':''}>${iconoCategoria(c)} ${esc(c)}</option>`).join('')}
+  </select></div>`;
+  html += `<div style="font-size:10.5px;color:var(--muted);margin-top:-6px;margin-bottom:10px;line-height:1.55;font-weight:400">El pago se descontará del presupuesto de esta categoría en el mes correspondiente.</div>`;
+  html += `<div class="field"><label>Nota (opcional)</label><input name="nota" type="text" value="${esc(notaVal)}" placeholder="Ej: Pago mínimo / Total"></div>`;
+  html += historialHTML;
+
+  modalForm.innerHTML=html;
+  modalBg.classList.add('open');
+  setTimeout(()=>modalForm.querySelector('[name=monto]')?.focus(),80);
+
+  /* Botones de editar/eliminar pagos */
+  modalForm.querySelectorAll('[data-act="edit-pago"]').forEach(b=>{
+    b.onclick=(e)=>{
+      e.preventDefault();
+      const pid=+b.dataset.pagoId;
+      openModalPago(cardId, pid);
+    };
+  });
+  modalForm.querySelectorAll('[data-act="del-pago"]').forEach(b=>{
+    b.onclick=(e)=>{
+      e.preventDefault();
+      const pid=+b.dataset.pagoId;
+      const pg=(card.pagos||[]).find(x=>x.id===pid);
+      if(!pg) return;
+      if(!confirm(`¿Eliminar el pago del ${fmtDateLong(pg.fecha)} por ${clp(pg.monto)}?`)) return;
+      card.pagos=(card.pagos||[]).filter(x=>x.id!==pid);
+      save();
+      /* Si estábamos editando este mismo pago, cerramos y volvemos a abrir el modal limpio */
+      if(currentPagoTarjetaId===pid){
+        currentPagoTarjetaId=null;
+        openModalPago(cardId);
+      } else {
+        /* Solo re-render del modal para actualizar el historial */
+        const pagoIdActual=currentPagoTarjetaId;
+        openModalPago(cardId, pagoIdActual);
+      }
+      renderAll();
+      toast('Pago eliminado');
+    };
+  });
+  const btnCancelarEd=document.getElementById('cancelarEdicionPago');
+  if(btnCancelarEd){
+    btnCancelarEd.onclick=(e)=>{
+      e.preventDefault();
+      openModalPago(cardId);
+    };
+  }
+}
+
+function closeModal(){modalBg.classList.remove('open');modalForm.reset();currentPagoTarjetaId=null;}
 document.getElementById('btnCancel').onclick=closeModal;
+
+/* ============================================================
+   GUARDAR
+============================================================ */
 document.getElementById('btnSave').onclick=e=>{
   e.preventDefault();
+
+  /* ---------- PAGO DE TARJETA (crear o editar) ---------- */
   if(currentTipo==='pagoTarjeta'){
     const fd=new FormData(modalForm);
     const card=data.pasivos.find(x=>x.id===currentId);
     if(!card)return;
     const monto=+fd.get('monto');
     if(!monto||monto<=0){toast('Monto inválido',true);return;}
+    const fecha=fd.get('fecha')||hoy();
+    const categoria=fd.get('categoria')||'Pago de tarjetas';
+    const nota=fd.get('nota')||'';
+
     card.pagos=card.pagos||[];
-    card.pagos.push({id:uid(),monto,fecha:fd.get('fecha'),nota:fd.get('nota')||''});
-    save();closeModal();renderAll();toast('Pago registrado · '+clp(monto));
+    if(currentPagoTarjetaId){
+      /* Editar pago existente */
+      const idx=card.pagos.findIndex(pg=>pg.id===currentPagoTarjetaId);
+      if(idx<0){toast('Pago no encontrado',true);return;}
+      card.pagos[idx]={...card.pagos[idx],monto,fecha,categoria,nota};
+      toast('Pago actualizado · '+clp(monto));
+    } else {
+      /* Crear nuevo pago */
+      card.pagos.push({id:uid(),monto,fecha,categoria,nota});
+      toast('Pago registrado · '+clp(monto));
+    }
+
+    save();
+    /* Reabrir el modal para mostrar el historial actualizado, o cerrar si es nuevo */
+    if(currentPagoTarjetaId){
+      openModalPago(card.id, currentPagoTarjetaId);
+    } else {
+      closeModal();
+    }
+    renderAll();
     return;
   }
+
+  /* ---------- GUARDADO NORMAL ---------- */
   const fd=new FormData(modalForm);
   const obj={};
   for(const [k,v] of fd.entries()){
@@ -1391,6 +1635,9 @@ modalBg.onclick=e=>{if(e.target===modalBg)closeModal();};
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modalBg.classList.contains('open'))closeModal();});
 document.querySelectorAll('[data-add]').forEach(b=>b.addEventListener('click',()=>openModal(b.dataset.add)));
 
+/* Helper para escapar HTML */
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
 const btnAddCatPresup=document.getElementById('btnAddCatPresup');
 if(btnAddCatPresup){
   btnAddCatPresup.onclick=()=>{
@@ -1413,41 +1660,40 @@ if(btnNuevoTipoInv2)btnNuevoTipoInv2.onclick=addTipoInv;
 
 function toast(msg,warn){const t=document.getElementById('toast');t.textContent=msg;t.className='toast show'+(warn?' warn':'');setTimeout(()=>t.className='toast'+(warn?' warn':''),2400);}
 
-/* =====================================================
-   📄 INFORME PDF
-===================================================== */
+/* ============================================================
+   INFORME PDF
+============================================================ */
 function generarInformePDF(){
-  const win = window.open('', '_blank');
+  const win=window.open('','_blank');
   if(!win){toast('Permite ventanas emergentes para generar el PDF',true);return;}
-  const fecha = new Date().toLocaleDateString('es-CL',{day:'2-digit',month:'long',year:'numeric'});
-  const hora = new Date().toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'});
-  const ing = totalIngresos();
-  const gas = totalGastos();
-  const ta = totalActivos();
-  const tp = totalPasivos();
-  const pat = ta - tp;
-  const aho = ing - gas;
-  const tasa = ing ? (aho/ing*100) : 0;
-  const tarjetas = getTarjetas();
-  const lineas = getLineasCredito();
-  const otrosPasivos = getOtrosPasivos();
-  const mes = mesActual();
-  const ingMes = data.ingresos.filter(x=>x.fecha?.startsWith(mes)).reduce((s,x)=>s+(+x.monto||0),0);
-  const gasMes = data.gastos.filter(x=>x.fecha?.startsWith(mes)).reduce((s,x)=>s+(+x.monto||0),0);
+  const fecha=new Date().toLocaleDateString('es-CL',{day:'2-digit',month:'long',year:'numeric'});
+  const hora=new Date().toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'});
+  const ing=totalIngresos(),gas=totalGastos();
+  const ta=totalActivos(),tp=totalPasivos(),pat=ta-tp;
+  const aho=ing-gas;
+  const tasa=ing?(aho/ing*100):0;
+  const tarjetas=getTarjetas();
+  const lineas=getLineasCredito();
+  const otrosPasivos=getOtrosPasivos();
+  const mes=mesActual();
+  const ingMes=data.ingresos.filter(x=>x.fecha?.startsWith(mes)).reduce((s,x)=>s+(+x.monto||0),0);
+  const gasMes=data.gastos.filter(x=>x.fecha?.startsWith(mes)).reduce((s,x)=>s+(+x.monto||0),0);
 
-  const catsMes = {};
+  const catsMes={};
   data.gastos.filter(g=>g.fecha?.startsWith(mes)).forEach(g=>catsMes[g.categoria]=(catsMes[g.categoria]||0)+(+g.monto||0));
-  const catsSorted = Object.entries(catsMes).sort((a,b)=>b[1]-a[1]);
-  const totalCatMes = catsSorted.reduce((s,[,v])=>s+v,0);
+  data.pasivos.filter(p=>p.tipo==='Tarjeta').forEach(p=>{
+    (p.pagos||[]).filter(pg=>(pg.fecha||'').startsWith(mes)).forEach(pg=>{
+      const cat=pg.categoria||'Pago de tarjetas';
+      catsMes[cat]=(catsMes[cat]||0)+(+pg.monto||0);
+    });
+  });
+  const catsSorted=Object.entries(catsMes).sort((a,b)=>b[1]-a[1]);
+  const totalCatMes=catsSorted.reduce((s,[,v])=>s+v,0);
 
-  const fmtN = n => '$' + Math.round(+n||0).toLocaleString('es-CL');
-  const esc = s => String(s??'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const fmtN=n=>'$'+Math.round(+n||0).toLocaleString('es-CL');
+  const esch=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-  const html = `<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<title>Informe Mis Finanzas — ${fecha}</title>
+  const html=`<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Informe Mis Finanzas — ${fecha}</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;color:#1a1a1f;background:#fff;padding:32px 40px;font-size:12px;line-height:1.5}
@@ -1491,13 +1737,16 @@ tr.total td{border-top:1.5px solid #333;border-bottom:none;font-weight:700;paddi
 .cuotas-item .m{font-weight:600;font-variant-numeric:tabular-nums}
 .cuotas-total{margin-top:8px;padding-top:8px;border-top:1px dashed #ccc;display:flex;justify-content:space-between;font-size:11.5px;font-weight:700}
 .cuotas-total .val{color:#6e56ff}
+.pagos-hist{margin-top:8px;padding-top:8px;border-top:1px solid #eee}
+.pagos-hist-title{font-size:9.5px;text-transform:uppercase;letter-spacing:.6px;color:#888;font-weight:600;margin-bottom:6px}
+.pago-item{display:flex;justify-content:space-between;font-size:10.5px;padding:2px 0;color:#444}
+.pago-item .f{color:#666}
+.pago-item .m{font-weight:600;font-variant-numeric:tabular-nums}
 .no-print{display:flex;gap:8px;justify-content:center;margin-bottom:20px}
 .no-print button{padding:8px 16px;border:1px solid #ddd;background:#fff;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit}
 .no-print button.p{background:#111;color:#fff;border-color:#111}
 @media print{body{padding:12px 16px} .no-print{display:none}}
-</style>
-</head>
-<body>
+</style></head><body>
 
 <div class="no-print">
   <button class="p" onclick="window.print()">🖨 Guardar como PDF / Imprimir</button>
@@ -1536,17 +1785,17 @@ tr.total td{border-top:1.5px solid #333;border-bottom:none;font-weight:700;paddi
 <table>
   <thead><tr><th>Concepto</th><th>Categoría</th><th>Fecha</th><th style="text-align:right">Monto</th></tr></thead>
   <tbody>
-    ${data.ingresos.slice().sort((a,b)=>(b.fecha||'').localeCompare(a.fecha||'')).slice(0,15).map(i=>`<tr><td>${esc(i.nombre)}</td><td>${esc(i.categoria)}</td><td>${esc(i.fecha)}</td><td class="r pos">+${fmtN(i.monto)}</td></tr>`).join('') || '<tr><td colspan="4" style="color:#999;text-align:center;padding:16px">Sin ingresos</td></tr>'}
+    ${data.ingresos.slice().sort((a,b)=>(b.fecha||'').localeCompare(a.fecha||'')).slice(0,15).map(i=>`<tr><td>${esch(i.nombre)}</td><td>${esch(i.categoria)}</td><td>${esch(i.fecha)}</td><td class="r pos">+${fmtN(i.monto)}</td></tr>`).join('') || '<tr><td colspan="4" style="color:#999;text-align:center;padding:16px">Sin ingresos</td></tr>'}
     <tr class="total"><td colspan="3">Total histórico</td><td class="r pos">+${fmtN(ing)}</td></tr>
   </tbody>
 </table>
 
-<h2>Gastos por categoría (mes actual)</h2>
+<h2>Gastos por categoría (mes actual, incluye pagos de tarjeta)</h2>
 <table>
   <thead><tr><th>Categoría</th><th style="text-align:right">Monto</th><th style="text-align:right">% del total</th></tr></thead>
   <tbody>
-    ${catsSorted.map(([c,v])=>`<tr><td>${esc(c)}<div class="bar"><div class="bar-fill" style="width:${totalCatMes?(v/totalCatMes*100):0}%;background:#6e56ff"></div></div></td><td class="r neg">${fmtN(v)}</td><td class="r">${totalCatMes?((v/totalCatMes)*100).toFixed(1):0}%</td></tr>`).join('') || '<tr><td colspan="3" style="color:#999;text-align:center;padding:16px">Sin gastos</td></tr>'}
-    <tr class="total"><td>Total del mes</td><td class="r neg">${fmtN(gasMes)}</td><td class="r">100%</td></tr>
+    ${catsSorted.map(([c,v])=>`<tr><td>${esch(c)}<div class="bar"><div class="bar-fill" style="width:${totalCatMes?(v/totalCatMes*100):0}%;background:#6e56ff"></div></div></td><td class="r neg">${fmtN(v)}</td><td class="r">${totalCatMes?((v/totalCatMes)*100).toFixed(1):0}%</td></tr>`).join('') || '<tr><td colspan="3" style="color:#999;text-align:center;padding:16px">Sin gastos</td></tr>'}
+    <tr class="total"><td>Total del mes</td><td class="r neg">${fmtN(Object.values(catsMes).reduce((s,v)=>s+v,0))}</td><td class="r">100%</td></tr>
   </tbody>
 </table>
 
@@ -1555,10 +1804,10 @@ tr.total td{border-top:1.5px solid #333;border-bottom:none;font-weight:700;paddi
   <thead><tr><th>Categoría</th><th style="text-align:right">Asignado</th><th style="text-align:right">Gastado</th><th style="text-align:right">Disponible</th><th style="text-align:right">Estado</th></tr></thead>
   <tbody>
     ${data.presupuestos.map(p=>{
-      const g = gastoDeCategoria(p.categoria);
-      const disp = p.asignado - g;
-      const over = g > p.asignado;
-      return `<tr><td>${esc(p.categoria)}</td><td class="r">${fmtN(p.asignado)}</td><td class="r neg">${fmtN(g)}</td><td class="r ${over?'neg':'pos'}">${fmtN(Math.abs(disp))}</td><td class="r"><span class="tag ${over?'neg':'pos'}">${over?'Excedido':(g/p.asignado>0.9?'Al límite':'OK')}</span></td></tr>`;
+      const g=gastoDeCategoria(p.categoria);
+      const disp=p.asignado-g;
+      const over=g>p.asignado;
+      return `<tr><td>${esch(p.categoria)}</td><td class="r">${fmtN(p.asignado)}</td><td class="r neg">${fmtN(g)}</td><td class="r ${over?'neg':'pos'}">${fmtN(Math.abs(disp))}</td><td class="r"><span class="tag ${over?'neg':'pos'}">${over?'Excedido':(g/p.asignado>0.9?'Al límite':'OK')}</span></td></tr>`;
     }).join('') || '<tr><td colspan="5" style="color:#999;text-align:center;padding:16px">Sin presupuestos</td></tr>'}
   </tbody>
 </table>
@@ -1567,7 +1816,7 @@ tr.total td{border-top:1.5px solid #333;border-bottom:none;font-weight:700;paddi
 <table>
   <thead><tr><th>Activo</th><th>Tipo</th><th style="text-align:right">Valor actual</th><th style="text-align:right">Rendimiento</th></tr></thead>
   <tbody>
-    ${data.inversiones.map(i=>`<tr><td>${esc(i.nombre)}</td><td>${esc(i.tipo)}</td><td class="r">${fmtN(i.monto)}</td><td class="r ${(+i.rendimiento||0)>=0?'pos':'neg'}">${(+i.rendimiento||0)>=0?'+':''}${(+i.rendimiento||0).toFixed(1)}%</td></tr>`).join('') || '<tr><td colspan="4" style="color:#999;text-align:center;padding:16px">Sin inversiones</td></tr>'}
+    ${data.inversiones.map(i=>`<tr><td>${esch(i.nombre)}</td><td>${esch(i.tipo)}</td><td class="r">${fmtN(i.monto)}</td><td class="r ${(+i.rendimiento||0)>=0?'pos':'neg'}">${(+i.rendimiento||0)>=0?'+':''}${(+i.rendimiento||0).toFixed(1)}%</td></tr>`).join('') || '<tr><td colspan="4" style="color:#999;text-align:center;padding:16px">Sin inversiones</td></tr>'}
     <tr class="total"><td colspan="2">Total cartera</td><td class="r">${fmtN(data.inversiones.reduce((s,i)=>s+(+i.monto||0),0))}</td><td></td></tr>
   </tbody>
 </table>
@@ -1576,25 +1825,31 @@ tr.total td{border-top:1.5px solid #333;border-bottom:none;font-weight:700;paddi
 <div class="two-col">
   <div>
     ${tarjetas.map(t=>{
-      const deuda = Math.max(0,deudaTarjeta(t));
-      const pct = t.cupo ? (deuda/t.cupo*100) : 0;
-      const cuotasVig = cuotasVigentesDeTarjeta(t.id);
-      const totalMensual = totalMensualCuotasTarjeta(t.id);
-      const cuotasHTML = cuotasVig.length ? `
+      const deuda=Math.max(0,deudaTarjeta(t));
+      const pct=t.cupo?(deuda/t.cupo*100):0;
+      const cuotasVig=cuotasVigentesDeTarjeta(t.id);
+      const totalMensual=totalMensualCuotasTarjeta(t.id);
+      const pagosOrd=[...(t.pagos||[])].sort((a,b)=>(b.fecha||'').localeCompare(a.fecha||'')).slice(0,6);
+      const cuotasHTML=cuotasVig.length?`
         <div class="cuotas-box">
           <div class="cuotas-title">📆 Cuotas vigentes este mes</div>
-          ${cuotasVig.map(g=>`<div class="cuotas-item"><span><strong>${esc(g.nombre)}</strong> · <span class="n">${g.cuotas} cuotas${(+g.tasaCuotas||0)>0?' · '+(+g.tasaCuotas).toFixed(2)+'%':''}</span></span><span class="m">${fmtN(valorCuotaGasto(g))}</span></div>`).join('')}
+          ${cuotasVig.map(g=>`<div class="cuotas-item"><span><strong>${esch(g.nombre)}</strong> · <span class="n">${g.cuotas} cuotas${(+g.tasaCuotas||0)>0?' · '+(+g.tasaCuotas).toFixed(2)+'%':''}</span></span><span class="m">${fmtN(valorCuotaGasto(g))}</span></div>`).join('')}
           <div class="cuotas-total"><span>Total cuotas del mes</span><span class="val">${fmtN(totalMensual)}</span></div>
-        </div>` : '';
-      return `<div class="box"><div class="box-title">💳 ${esc(t.nombre)}</div><div class="box-row"><span class="lbl">Cupo total</span><span class="val">${fmtN(t.cupo)}</span></div><div class="box-row"><span class="lbl">Utilizado</span><span class="val" style="color:#dc2626">${fmtN(deuda)}</span></div><div class="box-row"><span class="lbl">Disponible</span><span class="val" style="color:#16a34a">${fmtN(t.cupo-deuda)}</span></div><div class="bar"><div class="bar-fill" style="width:${pct}%;background:${pct>80?'#dc2626':pct>50?'#f97316':'#16a34a'}"></div></div>${cuotasHTML}</div>`;
+        </div>`:'';
+      const pagosHTML=pagosOrd.length?`
+        <div class="pagos-hist">
+          <div class="pagos-hist-title">Últimos pagos</div>
+          ${pagosOrd.map(pg=>`<div class="pago-item"><span class="f">${esch(pg.fecha)} · ${esch(pg.categoria||'Pago de tarjetas')}</span><span class="m">${fmtN(pg.monto)}</span></div>`).join('')}
+        </div>`:'';
+      return `<div class="box"><div class="box-title">💳 ${esch(t.nombre)}</div><div class="box-row"><span class="lbl">Cupo total</span><span class="val">${fmtN(t.cupo)}</span></div><div class="box-row"><span class="lbl">Utilizado</span><span class="val" style="color:#dc2626">${fmtN(deuda)}</span></div><div class="box-row"><span class="lbl">Disponible</span><span class="val" style="color:#16a34a">${fmtN(t.cupo-deuda)}</span></div><div class="bar"><div class="bar-fill" style="width:${pct}%;background:${pct>80?'#dc2626':pct>50?'#f97316':'#16a34a'}"></div></div>${cuotasHTML}${pagosHTML}</div>`;
     }).join('') || '<div class="box" style="color:#999;text-align:center">Sin tarjetas</div>'}
   </div>
   <div>
     ${lineas.map(l=>{
-      const util = +l.utilizado||0;
-      const cupo = +l.cupo||0;
-      const pct = cupo ? (util/cupo*100) : 0;
-      return `<div class="box"><div class="box-title">🏦 ${esc(l.nombre)}${l.banco?' · '+esc(l.banco):''}</div><div class="box-row"><span class="lbl">Cupo total</span><span class="val">${fmtN(cupo)}</span></div><div class="box-row"><span class="lbl">Utilizado</span><span class="val" style="color:#dc2626">${fmtN(util)}</span></div><div class="box-row"><span class="lbl">Disponible</span><span class="val" style="color:#16a34a">${fmtN(cupo-util)}</span></div>${l.tasa?`<div class="box-row"><span class="lbl">Tasa mensual</span><span class="val">${(+l.tasa).toFixed(2)}%</span></div>`:''}<div class="bar"><div class="bar-fill" style="width:${pct}%;background:${pct>80?'#dc2626':pct>50?'#f97316':'#06b6d4'}"></div></div></div>`;
+      const util=+l.utilizado||0;
+      const cupo=+l.cupo||0;
+      const pct=cupo?(util/cupo*100):0;
+      return `<div class="box"><div class="box-title">🏦 ${esch(l.nombre)}${l.banco?' · '+esch(l.banco):''}</div><div class="box-row"><span class="lbl">Cupo total</span><span class="val">${fmtN(cupo)}</span></div><div class="box-row"><span class="lbl">Utilizado</span><span class="val" style="color:#dc2626">${fmtN(util)}</span></div><div class="box-row"><span class="lbl">Disponible</span><span class="val" style="color:#16a34a">${fmtN(cupo-util)}</span></div>${l.tasa?`<div class="box-row"><span class="lbl">Tasa mensual</span><span class="val">${(+l.tasa).toFixed(2)}%</span></div>`:''}<div class="bar"><div class="bar-fill" style="width:${pct}%;background:${pct>80?'#dc2626':pct>50?'#f97316':'#06b6d4'}"></div></div></div>`;
     }).join('') || '<div class="box" style="color:#999;text-align:center">Sin líneas</div>'}
   </div>
 </div>
@@ -1604,17 +1859,13 @@ tr.total td{border-top:1.5px solid #333;border-bottom:none;font-weight:700;paddi
   <div>
     <table>
       <thead><tr><th>Activo</th><th style="text-align:right">Valor</th></tr></thead>
-      <tbody>
-        ${data.activos.map(a=>`<tr><td>${esc(a.nombre)}<br><span style="font-size:9.5px;color:#888">${esc(a.tipo)}</span></td><td class="r pos">${fmtN(a.valor)}</td></tr>`).join('') || '<tr><td colspan="2" style="color:#999;text-align:center;padding:12px">Sin registros</td></tr>'}
-      </tbody>
+      <tbody>${data.activos.map(a=>`<tr><td>${esch(a.nombre)}<br><span style="font-size:9.5px;color:#888">${esch(a.tipo)}</span></td><td class="r pos">${fmtN(a.valor)}</td></tr>`).join('') || '<tr><td colspan="2" style="color:#999;text-align:center;padding:12px">Sin registros</td></tr>'}</tbody>
     </table>
   </div>
   <div>
     <table>
       <thead><tr><th>Pasivo</th><th style="text-align:right">Saldo</th></tr></thead>
-      <tbody>
-        ${otrosPasivos.map(p=>`<tr><td>${esc(p.nombre)}<br><span style="font-size:9.5px;color:#888">${esc(p.tipo)}</span></td><td class="r neg">${fmtN(p.valor)}</td></tr>`).join('') || '<tr><td colspan="2" style="color:#999;text-align:center;padding:12px">Sin registros</td></tr>'}
-      </tbody>
+      <tbody>${otrosPasivos.map(p=>`<tr><td>${esch(p.nombre)}<br><span style="font-size:9.5px;color:#888">${esch(p.tipo)}</span></td><td class="r neg">${fmtN(p.valor)}</td></tr>`).join('') || '<tr><td colspan="2" style="color:#999;text-align:center;padding:12px">Sin registros</td></tr>'}</tbody>
     </table>
   </div>
 </div>
@@ -1626,10 +1877,10 @@ tr.total td{border-top:1.5px solid #333;border-bottom:none;font-weight:700;paddi
     ${[...data.ingresos.map(i=>({...i,tipo:'ingreso'})),...data.gastos.map(g=>({...g,tipo:'gasto'}))]
       .sort((a,b)=>(b.fecha||'').localeCompare(a.fecha||'')).slice(0,20)
       .map(m=>{
-        const cuotasInfo = m.tipo==='gasto' && (+m.cuotas>1 || +m.tasaCuotas>0)
+        const cuotasInfo=m.tipo==='gasto' && (+m.cuotas>1 || +m.tasaCuotas>0)
           ? `<br><span style="font-size:9.5px;color:#888">${m.cuotas} cuota${(+m.cuotas===1)?'':'s'} de ${fmtN(valorCuotaGasto(m))}${(+m.tasaCuotas||0)>0?' · '+(+m.tasaCuotas).toFixed(2)+'% mensual':''}</span>`
           : '';
-        return `<tr><td>${esc(m.fecha)}</td><td>${esc(m.nombre)}${cuotasInfo}</td><td>${esc(m.categoria)}</td><td class="r ${m.tipo==='ingreso'?'pos':'neg'}">${m.tipo==='ingreso'?'+':'−'}${fmtN(m.monto)}</td></tr>`;
+        return `<tr><td>${esch(m.fecha)}</td><td>${esch(m.nombre)}${cuotasInfo}</td><td>${esch(m.categoria)}</td><td class="r ${m.tipo==='ingreso'?'pos':'neg'}">${m.tipo==='ingreso'?'+':'−'}${fmtN(m.monto)}</td></tr>`;
       }).join('') || '<tr><td colspan="4" style="color:#999;text-align:center;padding:16px">Sin movimientos</td></tr>'}
   </tbody>
 </table>
@@ -1639,23 +1890,18 @@ tr.total td{border-top:1.5px solid #333;border-bottom:none;font-weight:700;paddi
   Documento confidencial · Solo para uso personal de Oscar Norambuena
 </div>
 
-</body>
-</html>`;
+</body></html>`;
 
   win.document.open();
   win.document.write(html);
   win.document.close();
-
-  setTimeout(()=>{
-    try { win.focus(); win.print(); } catch(e){}
-  }, 600);
+  setTimeout(()=>{try{win.focus();win.print();}catch(e){}},600);
 }
 
 ['btnInformePDF','btnInformePDFConfig','btnInformePDFTop'].forEach(id=>{
   const el=document.getElementById(id); if(el) el.onclick=()=>generarInformePDF();
 });
 
-/* ============ RESPALDO JSON LOCAL ============ */
 document.getElementById('btnExport').onclick=()=>{
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
   const a=document.createElement('a');
@@ -1672,7 +1918,21 @@ document.getElementById('fileImport').onchange=e=>{
       if(!j.ingresos||!j.gastos)throw 0;
       if(!j.categorias)j.categorias=structuredClone(seed.categorias);
       if(!j.colores)j.colores=structuredClone(seed.colores);
-      j.pasivos.forEach(p=>{ if(p.tipo==='Tarjeta' && !Array.isArray(p.pagos))p.pagos=[]; });
+      if(!j.categorias.gastos.includes('Pago de tarjetas')){
+        const idxOtros=j.categorias.gastos.indexOf('Otros');
+        if(idxOtros>=0) j.categorias.gastos.splice(idxOtros,0,'Pago de tarjetas');
+        else j.categorias.gastos.push('Pago de tarjetas');
+      }
+      if(!j.colores['Pago de tarjetas']) j.colores['Pago de tarjetas']='#a855f7';
+      j.pasivos.forEach(p=>{
+        if(p.tipo==='Tarjeta'){
+          if(!Array.isArray(p.pagos)) p.pagos=[];
+          p.pagos.forEach(pg=>{
+            if(pg.categoria===undefined) pg.categoria='Pago de tarjetas';
+            if(pg.id===undefined) pg.id=Date.now()+Math.floor(Math.random()*9999);
+          });
+        }
+      });
       j.gastos.forEach(g=>{
         if(g.tarjetaId===undefined)g.tarjetaId=null;
         if(g.cuotas===undefined)g.cuotas=1;
@@ -1697,7 +1957,6 @@ if('serviceWorker' in navigator && location.protocol!=='file:'){
   window.addEventListener('load',()=>{navigator.serviceWorker.register('./sw.js',{scope:'./'}).catch(()=>{});});
 }
 
-/* ============ AUTH ============ */
 let authMode='signin';
 const authForm=document.getElementById('authForm');
 const authTitle=document.getElementById('authTitle');
