@@ -192,7 +192,6 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
 .cc-cuotas-item .monto{font-variant-numeric:tabular-nums;color:var(--text);font-weight:600}
 .cc-cuotas-total{margin-top:8px;padding-top:8px;border-top:1px dashed rgba(255,255,255,.08);display:flex;justify-content:space-between;font-size:11.5px;font-weight:600}
 .cc-cuotas-total .val{color:#c4b5fd;font-variant-numeric:tabular-nums}
-/* Historial de pagos */
 .hist-pagos{margin-top:16px;padding-top:16px;border-top:1px solid var(--border)}
 .hist-pagos-title{font-size:10.5px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);font-weight:600;margin-bottom:10px}
 .hist-pago{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;background:var(--surface-2);border:1px solid var(--border);margin-bottom:6px}
@@ -519,9 +518,6 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
           <button class="chip primary" id="btnInformePDFConfig">📄 Generar informe PDF</button>
           <button class="chip" id="btnExportConfig">↓ Descargar JSON</button>
         </div>
-        <div style="font-size:11px;color:var(--muted);margin-top:12px;line-height:1.6">
-          El informe PDF incluye resumen general, mes en curso, ingresos, gastos por categoría, presupuesto, inversiones, tarjetas, líneas de crédito, otros activos/pasivos y últimos movimientos.
-        </div>
       </div>
 
       <div class="card" style="margin-bottom:12px">
@@ -605,22 +601,22 @@ const APP_URL='https://norambuena25.github.io/Mis-Finanzas/';
 const SUPABASE_URL='https://gieyocpbvrlgjwcojkbo.supabase.co';
 const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdpZXlvY3BidnJsZ2p3Y29qa2JvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAxMjY0ODQsImV4cCI6MjEwNTcwMjQ4NH0.Pmmn6DTAHx2TytXI85eQgVY-XSeVaCDV0_kDZzJsgTM';
 
-const KEY='misfinanzas_v13';
+const KEY='misfinanzas_v14';
 const PALETA=['#6e56ff','#a855f7','#06b6d4','#22c55e','#ec4899','#f97316','#eab308','#f87171','#64748b','#0891b2','#8b5cf6','#10b981'];
+const CAT_PAGO_TC='Pago TC';
 
 const seed={
   categorias:{
-    gastos:['Vivienda','Alimentación','Transporte','Ocio','Salud','Educación','Pago de tarjetas','Otros'],
+    gastos:['Vivienda','Alimentación','Transporte','Ocio','Salud','Educación',CAT_PAGO_TC,'Otros'],
     ingresos:['Sueldo','Freelance','Arriendo','Dividendos','Otros'],
     inversiones:['Acciones','Fondos mutuos','Depósito a plazo','Cripto','APV','Otros']
   },
-  colores:{'Vivienda':'#6e56ff','Alimentación':'#06b6d4','Transporte':'#22c55e','Ocio':'#ec4899','Salud':'#f97316','Educación':'#eab308','Pago de tarjetas':'#a855f7','Otros':'#64748b','Sueldo':'#22c55e','Freelance':'#6e56ff','Arriendo':'#06b6d4','Dividendos':'#f97316','Acciones':'#6e56ff','Fondos mutuos':'#06b6d4','Depósito a plazo':'#22c55e','Cripto':'#f97316','APV':'#ec4899','Tarjeta':'#a855f7','Hipotecario':'#ec4899','Automotriz':'#f97316'},
+  colores:{'Vivienda':'#6e56ff','Alimentación':'#06b6d4','Transporte':'#22c55e','Ocio':'#ec4899','Salud':'#f97316','Educación':'#eab308',[CAT_PAGO_TC]:'#a855f7','Otros':'#64748b','Sueldo':'#22c55e','Freelance':'#6e56ff','Arriendo':'#06b6d4','Dividendos':'#f97316','Acciones':'#6e56ff','Fondos mutuos':'#06b6d4','Depósito a plazo':'#22c55e','Cripto':'#f97316','APV':'#ec4899','Tarjeta':'#a855f7','Hipotecario':'#ec4899','Automotriz':'#f97316'},
   ingresos:[
     {id:1,nombre:'Sueldo septiembre',monto:2450000,categoria:'Sueldo',fecha:'2026-09-01',recurrente:true},
     {id:2,nombre:'Proyecto freelance',monto:620000,categoria:'Freelance',fecha:'2026-09-10',recurrente:false},
     {id:3,nombre:'Arriendo oficina',monto:300000,categoria:'Arriendo',fecha:'2026-09-05',recurrente:true},
-    {id:4,nombre:'Dividendos fondo A',monto:184200,categoria:'Dividendos',fecha:'2026-09-06',recurrente:false},
-    {id:5,nombre:'Sueldo agosto',monto:2380000,categoria:'Sueldo',fecha:'2026-08-01',recurrente:true}
+    {id:4,nombre:'Dividendos fondo A',monto:184200,categoria:'Dividendos',fecha:'2026-09-06',recurrente:false}
   ],
   gastos:[
     {id:1,nombre:'Dividendo depto',monto:633600,categoria:'Vivienda',fecha:'2026-09-03',tarjetaId:null,cuotas:1,tasaCuotas:0},
@@ -629,10 +625,7 @@ const seed={
     {id:4,nombre:'Netflix + Spotify',monto:18990,categoria:'Ocio',fecha:'2026-09-10',tarjetaId:11,cuotas:1,tasaCuotas:0},
     {id:5,nombre:'Farmacias Ahumada',monto:34780,categoria:'Salud',fecha:'2026-09-12',tarjetaId:null,cuotas:1,tasaCuotas:0},
     {id:6,nombre:'Líder Express',monto:41220,categoria:'Alimentación',fecha:'2026-09-14',tarjetaId:11,cuotas:1,tasaCuotas:0},
-    {id:7,nombre:'Uber 6 viajes',monto:28400,categoria:'Transporte',fecha:'2026-09-16',tarjetaId:null,cuotas:1,tasaCuotas:0},
-    {id:8,nombre:'Notebook HP',monto:749990,categoria:'Educación',fecha:'2026-09-18',tarjetaId:10,cuotas:12,tasaCuotas:1.5},
-    {id:9,nombre:'Dividendo depto',monto:633600,categoria:'Vivienda',fecha:'2026-08-03',tarjetaId:null,cuotas:1,tasaCuotas:0},
-    {id:10,nombre:'Supermercado agosto',monto:198000,categoria:'Alimentación',fecha:'2026-08-15',tarjetaId:10,cuotas:1,tasaCuotas:0}
+    {id:7,nombre:'Notebook HP',monto:749990,categoria:'Educación',fecha:'2026-09-18',tarjetaId:10,cuotas:12,tasaCuotas:1.5}
   ],
   inversiones:[
     {id:1,nombre:'Acciones IPSA',tipo:'Acciones',monto:12780000,rendimiento:18.2},
@@ -647,7 +640,7 @@ const seed={
     {id:4,categoria:'Ocio',asignado:250000},
     {id:5,categoria:'Salud',asignado:280000},
     {id:6,categoria:'Educación',asignado:370000},
-    {id:7,categoria:'Pago de tarjetas',asignado:400000}
+    {id:7,categoria:CAT_PAGO_TC,asignado:500000}
   ],
   activos:[
     {id:1,nombre:'Depto Providencia',tipo:'Bien raíz',valor:42000000},
@@ -663,31 +656,52 @@ const seed={
   ]
 };
 
+/* ============ CARGA + MIGRACIÓN ============ */
 let data;
 try{
-  const stored=localStorage.getItem(KEY)||localStorage.getItem('misfinanzas_v12')||localStorage.getItem('misfinanzas_v11')||localStorage.getItem('misfinanzas_v10');
+  const stored=localStorage.getItem(KEY)||localStorage.getItem('misfinanzas_v13')||localStorage.getItem('misfinanzas_v12')||localStorage.getItem('misfinanzas_v11')||localStorage.getItem('misfinanzas_v10');
   data=stored?JSON.parse(stored):structuredClone(seed);
   if(!data.categorias||!data.colores){
     const s=structuredClone(seed);
     data.categorias=data.categorias||s.categorias;
     data.colores=data.colores||s.colores;
   }
-  /* Migración: agregar categoría "Pago de tarjetas" si no existe */
-  if(!data.categorias.gastos.includes('Pago de tarjetas')){
-    /* Insertar antes de 'Otros' si existe, si no al final */
+  /* Migración: renombrar "Pago de tarjetas" → "Pago TC" */
+  const catVieja='Pago de tarjetas';
+  if(data.categorias.gastos.includes(catVieja)){
+    data.categorias.gastos=data.categorias.gastos.map(c=>c===catVieja?CAT_PAGO_TC:c);
+    if(data.colores[catVieja]){
+      data.colores[CAT_PAGO_TC]=data.colores[catVieja];
+      delete data.colores[catVieja];
+    }
+    /* Renombrar en gastos que tuvieran esa categoría */
+    data.gastos.forEach(g=>{ if(g.categoria===catVieja) g.categoria=CAT_PAGO_TC; });
+    /* Renombrar en pagos de tarjeta */
+    data.pasivos.forEach(p=>{
+      if(p.tipo==='Tarjeta' && Array.isArray(p.pagos)){
+        p.pagos.forEach(pg=>{ if(pg.categoria===catVieja) pg.categoria=CAT_PAGO_TC; });
+      }
+    });
+    /* Renombrar en presupuestos */
+    data.presupuestos.forEach(pr=>{ if(pr.categoria===catVieja) pr.categoria=CAT_PAGO_TC; });
+  }
+  /* Garantizar categoría Pago TC en gastos */
+  if(!data.categorias.gastos.includes(CAT_PAGO_TC)){
     const idxOtros=data.categorias.gastos.indexOf('Otros');
-    if(idxOtros>=0) data.categorias.gastos.splice(idxOtros,0,'Pago de tarjetas');
-    else data.categorias.gastos.push('Pago de tarjetas');
+    if(idxOtros>=0) data.categorias.gastos.splice(idxOtros,0,CAT_PAGO_TC);
+    else data.categorias.gastos.push(CAT_PAGO_TC);
   }
-  if(!data.colores['Pago de tarjetas']){
-    data.colores['Pago de tarjetas']='#a855f7';
+  if(!data.colores[CAT_PAGO_TC]) data.colores[CAT_PAGO_TC]='#a855f7';
+  /* Garantizar sobre de presupuesto para Pago TC */
+  if(!data.presupuestos.some(p=>p.categoria===CAT_PAGO_TC)){
+    data.presupuestos.push({id:Date.now()+Math.floor(Math.random()*999),categoria:CAT_PAGO_TC,asignado:500000});
   }
-  /* Migración: agregar categoría a cada pago de tarjeta */
+  /* Migrar pagos de tarjeta existentes: agregar categoría e id */
   data.pasivos.forEach(p=>{
     if(p.tipo==='Tarjeta'){
       if(!Array.isArray(p.pagos)) p.pagos=[];
       p.pagos.forEach(pg=>{
-        if(pg.categoria===undefined) pg.categoria='Pago de tarjetas';
+        if(pg.categoria===undefined || pg.categoria===catVieja) pg.categoria=CAT_PAGO_TC;
         if(pg.id===undefined) pg.id=Date.now()+Math.floor(Math.random()*9999);
       });
     }
@@ -699,6 +713,7 @@ try{
   });
 }catch{data=structuredClone(seed);}
 
+/* ============ SUPABASE ============ */
 let sb=null,user=null,histRango=6;
 if(SUPABASE_URL && SUPABASE_ANON_KEY && window.supabase){
   sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY,{auth:{redirectTo:APP_URL}});
@@ -715,17 +730,29 @@ async function pullCloud(){
   const {data:rows,error}=await sb.from('finanzas').select('data').eq('user_id',user.id).maybeSingle();
   if(!error && rows?.data){
     data=rows.data;
-    if(!data.categorias.gastos.includes('Pago de tarjetas')){
-      const idxOtros=data.categorias.gastos.indexOf('Otros');
-      if(idxOtros>=0) data.categorias.gastos.splice(idxOtros,0,'Pago de tarjetas');
-      else data.categorias.gastos.push('Pago de tarjetas');
+    /* Aplicar mismas migraciones */
+    const catVieja='Pago de tarjetas';
+    if(data.categorias.gastos.includes(catVieja)){
+      data.categorias.gastos=data.categorias.gastos.map(c=>c===catVieja?CAT_PAGO_TC:c);
+      if(data.colores[catVieja]){data.colores[CAT_PAGO_TC]=data.colores[catVieja];delete data.colores[catVieja];}
+      data.gastos.forEach(g=>{ if(g.categoria===catVieja) g.categoria=CAT_PAGO_TC; });
+      data.pasivos.forEach(p=>{ if(p.tipo==='Tarjeta' && Array.isArray(p.pagos)) p.pagos.forEach(pg=>{ if(pg.categoria===catVieja) pg.categoria=CAT_PAGO_TC; }); });
+      data.presupuestos.forEach(pr=>{ if(pr.categoria===catVieja) pr.categoria=CAT_PAGO_TC; });
     }
-    if(!data.colores['Pago de tarjetas']) data.colores['Pago de tarjetas']='#a855f7';
+    if(!data.categorias.gastos.includes(CAT_PAGO_TC)){
+      const idxOtros=data.categorias.gastos.indexOf('Otros');
+      if(idxOtros>=0) data.categorias.gastos.splice(idxOtros,0,CAT_PAGO_TC);
+      else data.categorias.gastos.push(CAT_PAGO_TC);
+    }
+    if(!data.colores[CAT_PAGO_TC]) data.colores[CAT_PAGO_TC]='#a855f7';
+    if(!data.presupuestos.some(p=>p.categoria===CAT_PAGO_TC)){
+      data.presupuestos.push({id:Date.now()+Math.floor(Math.random()*999),categoria:CAT_PAGO_TC,asignado:500000});
+    }
     data.pasivos.forEach(p=>{
       if(p.tipo==='Tarjeta'){
         if(!Array.isArray(p.pagos)) p.pagos=[];
         p.pagos.forEach(pg=>{
-          if(pg.categoria===undefined) pg.categoria='Pago de tarjetas';
+          if(pg.categoria===undefined || pg.categoria===catVieja) pg.categoria=CAT_PAGO_TC;
           if(pg.id===undefined) pg.id=Date.now()+Math.floor(Math.random()*9999);
         });
       }
@@ -750,14 +777,16 @@ function setSync(state){
   dot.className='sync-dot'+(state==='on'?' on':state==='syncing'?' syncing':'');
 }
 
+/* ============ UTILS ============ */
 const uid=()=>Date.now()+Math.floor(Math.random()*9999);
 const clp=n=>'$'+Math.round(+n||0).toLocaleString('es-CL');
 const hoy=()=>new Date().toISOString().slice(0,10);
 function fmtDate(iso){if(!iso)return'';const d=new Date(iso+'T00:00:00');return d.toLocaleDateString('es-CL',{day:'2-digit',month:'short'});}
 function fmtDateLong(iso){if(!iso)return'';const d=new Date(iso+'T00:00:00');return d.toLocaleDateString('es-CL',{day:'2-digit',month:'long',year:'numeric'});}
 function fmtMes(ym){const [y,m]=ym.split('-');const d=new Date(y,m-1);return d.toLocaleDateString('es-CL',{month:'short',year:'2-digit'});}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function iconoCategoria(c){
-  const m={'Vivienda':'🏠','Alimentación':'🛒','Transporte':'🚗','Ocio':'🎬','Salud':'💊','Educación':'📚','Pago de tarjetas':'💳','Sueldo':'💼','Freelance':'💻','Arriendo':'🏘','Dividendos':'📈','Otros':'📦','Acciones':'◉','Fondos mutuos':'◇','Depósito a plazo':'🏦','Cripto':'₿','APV':'💎','Bien raíz':'🏢','Efectivo':'💰','Vehículo':'🚗','Hipotecario':'🏠','Automotriz':'🚙','Tarjeta':'💳','Linea':'🏦','Otro':'●'};
+  const m={'Vivienda':'🏠','Alimentación':'🛒','Transporte':'🚗','Ocio':'🎬','Salud':'💊','Educación':'📚','Pago TC':'💳','Sueldo':'💼','Freelance':'💻','Arriendo':'🏘','Dividendos':'📈','Otros':'📦','Acciones':'◉','Fondos mutuos':'◇','Depósito a plazo':'🏦','Cripto':'₿','APV':'💎','Bien raíz':'🏢','Efectivo':'💰','Vehículo':'🚗','Hipotecario':'🏠','Automotriz':'🚙','Tarjeta':'💳','Linea':'🏦','Otro':'●'};
   return m[c]||'●';
 }
 function colorCategoria(c){
@@ -787,32 +816,57 @@ function totalPasivos(){
   },0);
 }
 
-/* =====================
-   Cálculo de gasto por categoría INCLUYENDO pagos de tarjeta
-   - Gastos normales del mes actual + pagos de tarjeta del mes actual
-===================== */
-function gastoDeCategoria(cat){
-  const mes = mesActual();
-  const gastosMes = data.gastos
-    .filter(g=>g.categoria===cat && (g.fecha||'').startsWith(mes))
-    .reduce((s,g)=>s+(+g.monto||0),0);
-  const pagosMes = data.pasivos
+/* ================================================
+   Suma total de pagos de tarjeta en el mes actual
+   ================================================ */
+function totalPagosTCdelMes(){
+  const mes=mesActual();
+  return data.pasivos
     .filter(p=>p.tipo==='Tarjeta')
     .reduce((s,p)=>{
-      const sum = (p.pagos||[])
-        .filter(pg=>(pg.fecha||'').startsWith(mes) && (pg.categoria||'Pago de tarjetas')===cat)
+      const sum=(p.pagos||[])
+        .filter(pg=>(pg.fecha||'').startsWith(mes))
         .reduce((ss,pg)=>ss+(+pg.monto||0),0);
       return s+sum;
     },0);
-  return gastosMes + pagosMes;
 }
-/* Gasto por categoría solo del mes actual sin pagos de tarjeta, para usos puntuales */
+
+/* =====================================================
+   Gasto por categoría INCLUYE pagos de tarjeta del mes
+   SOLO para la categoría "Pago TC" se suman los pagos.
+   Para el resto de categorías, solo gastos normales.
+===================================================== */
+function gastoDeCategoria(cat){
+  const mes=mesActual();
+  const gastosMes=data.gastos
+    .filter(g=>g.categoria===cat && (g.fecha||'').startsWith(mes))
+    .reduce((s,g)=>s+(+g.monto||0),0);
+
+  if(cat===CAT_PAGO_TC){
+    const pagosMes=data.pasivos
+      .filter(p=>p.tipo==='Tarjeta')
+      .reduce((s,p)=>{
+        const sum=(p.pagos||[])
+          .filter(pg=>(pg.fecha||'').startsWith(mes))
+          .reduce((ss,pg)=>ss+(+pg.monto||0),0);
+        return s+sum;
+      },0);
+    return gastosMes+pagosMes;
+  }
+  return gastosMes;
+}
+
 function gastoDeCategoriaSoloGastos(cat){
-  const mes = mesActual();
+  const mes=mesActual();
   return data.gastos
     .filter(g=>g.categoria===cat && (g.fecha||'').startsWith(mes))
     .reduce((s,g)=>s+(+g.monto||0),0);
 }
+function gastoDeCategoriaSoloPagos(cat){
+  if(cat!==CAT_PAGO_TC) return 0;
+  return totalPagosTCdelMes();
+}
+
 function mesActual(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');}
 
 function infoCuotas(g){
@@ -851,6 +905,13 @@ function datosMensuales(rango){
   }
   data.ingresos.forEach(x=>{const k=(x.fecha||'').slice(0,7);if(meses[k])meses[k].ing+=+x.monto||0;});
   data.gastos.forEach(x=>{const k=(x.fecha||'').slice(0,7);if(meses[k])meses[k].gas+=+x.monto||0;});
+  /* Sumar pagos de tarjeta al total de gastos del mes */
+  data.pasivos.filter(p=>p.tipo==='Tarjeta').forEach(p=>{
+    (p.pagos||[]).forEach(pg=>{
+      const k=(pg.fecha||'').slice(0,7);
+      if(meses[k])meses[k].gas+=(+pg.monto||0);
+    });
+  });
   return Object.entries(meses).map(([k,v])=>({mes:k,ing:v.ing,gas:v.gas,ahorro:v.ing-v.gas,tasa:v.ing?(v.ing-v.gas)/v.ing*100:0}));
 }
 function irA(view){
@@ -897,10 +958,14 @@ function donutSVG(segmentos,size=160,stroke=20){
 }
 
 function renderDashboard(){
-  const ing=totalIngresos(),gas=totalGastos(),pat=totalActivos()-totalPasivos(),aho=ing?((ing-gas)/ing*100):0;
+  const ing=totalIngresos();
+  /* El total gastos incluye gastos normales + pagos de tarjeta */
+  const gas=totalGastos()+data.pasivos.filter(p=>p.tipo==='Tarjeta').reduce((s,p)=>s+(+p.pagos||[]).reduce((ss,pg)=>ss+(+pg.monto||0),0),0);
+  const pat=totalActivos()-totalPasivos();
+  const aho=ing?((ing-gas)/ing*100):0;
   const mes=mesActual();
   const ingMes=data.ingresos.filter(x=>x.fecha?.startsWith(mes)).reduce((s,x)=>s+(+x.monto||0),0);
-  const gasMes=data.gastos.filter(x=>x.fecha?.startsWith(mes)).reduce((s,x)=>s+(+x.monto||0),0);
+  const gasMes=data.gastos.filter(x=>x.fecha?.startsWith(mes)).reduce((s,x)=>s+(+x.monto||0),0)+totalPagosTCdelMes();
   const ahoMes=ingMes-gasMes;
   const ta=totalActivos(),tp=totalPasivos();
   const tarjetas=getTarjetas();
@@ -949,7 +1014,7 @@ function renderDashboard(){
     <div class="card">
       <div class="kpi-label">Gastos del mes</div>
       <div class="kpi-value neg"><span class="cur">$</span>${gasMes.toLocaleString('es-CL')}</div>
-      <div class="kpi-foot">Histórico ${clp(gas)}</div>
+      <div class="kpi-foot">Incluye pagos TC ${clp(totalPagosTCdelMes())}</div>
     </div>
     <div class="card">
       <div class="kpi-label">Ahorro del mes</div>
@@ -1012,16 +1077,12 @@ function renderDashboard(){
     lCont.innerHTML='<div class="empty"><strong>Sin líneas de crédito</strong>Agrega tu primera línea en Gastos y crédito</div>';
   }
 
-  /* Gastos por categoría incluyendo pagos de tarjeta */
+  /* Gastos por categoría (incluye Pago TC con sus pagos) */
   const cats={};
   data.gastos.filter(g=>g.fecha?.startsWith(mes)).forEach(g=>cats[g.categoria]=(cats[g.categoria]||0)+(+g.monto||0));
-  /* Sumar pagos de tarjeta del mes por su categoría */
-  data.pasivos.filter(p=>p.tipo==='Tarjeta').forEach(p=>{
-    (p.pagos||[]).filter(pg=>(pg.fecha||'').startsWith(mes)).forEach(pg=>{
-      const cat=pg.categoria||'Pago de tarjetas';
-      cats[cat]=(cats[cat]||0)+(+pg.monto||0);
-    });
-  });
+  /* Sumar pagos de tarjeta del mes solo a la categoría Pago TC */
+  const pagosMes=totalPagosTCdelMes();
+  if(pagosMes>0) cats[CAT_PAGO_TC]=(cats[CAT_PAGO_TC]||0)+pagosMes;
   const totalCat=Object.values(cats).reduce((s,v)=>s+v,0);
   const sorted=Object.entries(cats).sort((a,b)=>b[1]-a[1]).slice(0,6);
   document.getElementById('dashCat').innerHTML=sorted.length?sorted.map(([c,v])=>`
@@ -1101,7 +1162,7 @@ function renderHistorico(){
   const tasaProm=promIng?((promIng-promGas)/promIng*100):0;
   document.getElementById('histKpis').innerHTML=`
     <div class="card"><div class="kpi-label">Promedio ingresos</div><div class="kpi-value pos"><span class="cur">$</span>${Math.round(promIng).toLocaleString('es-CL')}</div><div class="kpi-foot">Mensual</div></div>
-    <div class="card"><div class="kpi-label">Promedio gastos</div><div class="kpi-value neg"><span class="cur">$</span>${Math.round(promGas).toLocaleString('es-CL')}</div><div class="kpi-foot">Mensual</div></div>
+    <div class="card"><div class="kpi-label">Promedio gastos</div><div class="kpi-value neg"><span class="cur">$</span>${Math.round(promGas).toLocaleString('es-CL')}</div><div class="kpi-foot">Incluye pagos TC</div></div>
     <div class="card"><div class="kpi-label">Tasa ahorro promedio</div><div class="kpi-value ${tasaProm<0?'neg':(tasaProm>=20?'pos':'')}">${tasaProm.toFixed(1)}<span class="cur" style="font-size:16px">%</span></div><div class="kpi-foot"><span class="badge ${tasaProm<0?'b-down':(tasaProm>=20?'b-up':'b-warn')}">${tasaProm<0?'Negativa':(tasaProm>=20?'Saludable':'A mejorar')}</span></div></div>`;
   document.getElementById('histChart').innerHTML=datos.map(d=>`<div class="chart-col"><div class="chart-val">${d.ing?clpShort(d.ing):''}</div><div class="chart-pair"><div class="chart-bar ing" style="height:${d.ing/maxVal*100}%"></div><div class="chart-bar gas" style="height:${d.gas/maxVal*100}%"></div></div><div class="chart-lbl">${fmtMes(d.mes)}</div></div>`).join('');
   const maxAho=Math.max(1,...datos.map(d=>Math.abs(d.ahorro)));
@@ -1124,13 +1185,16 @@ function renderIngresos(){
 }
 
 function renderGastos(){
-  const t=totalGastos();
+  /* El total gastos en la vista incluye gastos normales + pagos de tarjeta */
+  const tGastos=data.gastos.reduce((s,g)=>s+(+g.monto||0),0);
+  const tPagos=data.pasivos.filter(p=>p.tipo==='Tarjeta').reduce((s,p)=>s+(+p.pagos||[]).reduce((ss,pg)=>ss+(+pg.monto||0),0),0);
+  const t=tGastos+tPagos;
   const over=data.presupuestos.filter(p=>gastoDeCategoria(p.categoria)>p.asignado).length;
   const conTarjeta=data.gastos.filter(g=>g.tarjetaId).reduce((s,g)=>s+(+g.monto||0),0);
-  document.getElementById('subGastos').textContent=`${data.gastos.length} transacciones · ${clp(t)}`;
+  document.getElementById('subGastos').textContent=`${data.gastos.length} transacciones · pagos TC ${clp(tPagos)}`;
   document.getElementById('gasKpis').innerHTML=`
-    <div class="card"><div class="kpi-label">Total gastado</div><div class="kpi-value neg"><span class="cur">$</span>${t.toLocaleString('es-CL')}</div><div class="kpi-foot">${data.gastos.length} transacciones</div></div>
-    <div class="card"><div class="kpi-label">Con tarjeta</div><div class="kpi-value"><span class="cur">$</span>${conTarjeta.toLocaleString('es-CL')}</div><div class="kpi-foot">${t?((conTarjeta/t)*100).toFixed(1):0}% del total</div></div>
+    <div class="card"><div class="kpi-label">Total gastado</div><div class="kpi-value neg"><span class="cur">$</span>${t.toLocaleString('es-CL')}</div><div class="kpi-foot">${data.gastos.length} transacciones + pagos TC</div></div>
+    <div class="card"><div class="kpi-label">Con tarjeta</div><div class="kpi-value"><span class="cur">$</span>${conTarjeta.toLocaleString('es-CL')}</div><div class="kpi-foot">${tGastos?((conTarjeta/tGastos)*100).toFixed(1):0}% de compras</div></div>
     <div class="card"><div class="kpi-label">Sobre presupuesto</div><div class="kpi-value ${over?'neg':''}">${over}</div><div class="kpi-foot"><span class="badge ${over?'b-warn':'b-up'}">${over?'Revisar':'Todo ok'}</span></div></div>`;
 
   const tarjetas=getTarjetas();
@@ -1165,7 +1229,7 @@ function renderGastos(){
           ${cuotasVig.length>5?`<div class="cc-cuotas-item" style="color:var(--muted);font-style:italic">+${cuotasVig.length-5} más…</div>`:''}
           <div class="cc-cuotas-total"><span>Total cuotas del mes</span><span class="val">${clp(totalMensualCuotas)}</span></div>
         </div>`:'';
-      return `<div class="cc-card ${warnClass}"><div class="cc-head"><div><div class="cc-name">💳 ${t.nombre}</div><div class="cc-tipo">Tarjeta de crédito</div></div><div class="cc-actions-top"><button data-act="edit-tarjeta" data-id="${t.id}">✎</button><button class="del" data-act="del-tarjeta" data-id="${t.id}">🗑</button></div></div><div class="cc-nums"><div class="cc-num"><div class="l">Cupo total</div><div class="v">${clp(t.cupo)}</div></div><div class="cc-num"><div class="l">Utilizado</div><div class="v" style="color:${col}">${clp(deuda)}</div></div><div class="cc-num"><div class="l">Disponible</div><div class="v pos">${clp(disp)}</div></div></div><div class="cc-bar"><div class="cc-bar-fill" style="width:${pct}%;background:${col}"></div></div><div class="cc-bar-lbl"><span>${pct.toFixed(1)}% usado</span><span>${gastos.length} movs · ${numPagos} pagos</span></div>${cuotasHTML}<div class="cc-actions"><button class="cc-btn primary" data-act="pagar-tarjeta" data-id="${t.id}">${numPagos?'💵 Registrar pago / ver historial':'💵 Registrar pago'}</button><button class="cc-btn" data-act="nuevo-gasto-tarjeta" data-id="${t.id}">+ Gasto</button></div></div>`;
+      return `<div class="cc-card ${warnClass}"><div class="cc-head"><div><div class="cc-name">💳 ${t.nombre}</div><div class="cc-tipo">Tarjeta de crédito</div></div><div class="cc-actions-top"><button data-act="edit-tarjeta" data-id="${t.id}">✎</button><button class="del" data-act="del-tarjeta" data-id="${t.id}">🗑</button></div></div><div class="cc-nums"><div class="cc-num"><div class="l">Cupo total</div><div class="v">${clp(t.cupo)}</div></div><div class="cc-num"><div class="l">Utilizado</div><div class="v" style="color:${col}">${clp(deuda)}</div></div><div class="cc-num"><div class="l">Disponible</div><div class="v pos">${clp(disp)}</div></div></div><div class="cc-bar"><div class="cc-bar-fill" style="width:${pct}%;background:${col}"></div></div><div class="cc-bar-lbl"><span>${pct.toFixed(1)}% usado</span><span>${gastos.length} movs · ${numPagos} pagos</span></div>${cuotasHTML}<div class="cc-actions"><button class="cc-btn primary" data-act="pagar-tarjeta" data-id="${t.id}">${numPagos?'💵 Pagos / historial':'💵 Registrar pago'}</button><button class="cc-btn" data-act="nuevo-gasto-tarjeta" data-id="${t.id}">+ Gasto</button></div></div>`;
     }).join('');
     document.querySelectorAll('[data-act="edit-tarjeta"]').forEach(b=>b.onclick=e=>{e.stopPropagation();openModal('tarjeta',+b.dataset.id);});
     document.querySelectorAll('[data-act="del-tarjeta"]').forEach(b=>b.onclick=e=>{e.stopPropagation();delTarjeta(+b.dataset.id);});
@@ -1197,16 +1261,12 @@ function renderGastos(){
   if(!lista.length){cont.innerHTML='<div class="empty"><strong>Sin gastos</strong>Agrega tu primer gasto</div>';}
   else{cont.innerHTML=lista.map(g=>{const tarjeta=g.tarjetaId?getTarjetaById(g.tarjetaId):null;const sub=`${g.categoria} · ${fmtDate(g.fecha)}${tarjeta?' · 💳 '+tarjeta.nombre:''}${infoCuotas(g)}`;return `<div class="row" data-edit="gasto" data-id="${g.id}"><div class="row-ic">${iconoCategoria(g.categoria)}</div><div class="row-main"><div class="row-t">${g.nombre}</div><div class="row-s">${sub}</div></div><div class="row-actions"><button data-act="edit">✎</button><button class="del" data-act="del">🗑</button></div><div class="row-amt neg">−${clp(g.monto)}</div></div>`;}).join('');}
 
-  /* Ranking incluye pagos de tarjeta */
+  /* Ranking por categoría del mes actual (incluye Pago TC) */
   const mes=mesActual();
   const catsRank={};
   data.gastos.filter(g=>(g.fecha||'').startsWith(mes)).forEach(g=>catsRank[g.categoria]=(catsRank[g.categoria]||0)+(+g.monto||0));
-  data.pasivos.filter(p=>p.tipo==='Tarjeta').forEach(p=>{
-    (p.pagos||[]).filter(pg=>(pg.fecha||'').startsWith(mes)).forEach(pg=>{
-      const cat=pg.categoria||'Pago de tarjetas';
-      catsRank[cat]=(catsRank[cat]||0)+(+pg.monto||0);
-    });
-  });
+  const pagosMes=totalPagosTCdelMes();
+  if(pagosMes>0) catsRank[CAT_PAGO_TC]=(catsRank[CAT_PAGO_TC]||0)+pagosMes;
   const rank=Object.entries(catsRank).sort((a,b)=>b[1]-a[1]);
   const max=rank[0]?rank[0][1]:1;
   document.getElementById('rankGastos').innerHTML=rank.length?rank.map(([c,v])=>`<div class="bar-row"><div class="bar-top"><span>${iconoCategoria(c)} ${c}</span><span class="amt">${clp(v)}</span></div><div class="bar-track"><div class="bar-fill" style="width:${v/max*100}%;background:${colorCategoria(c)}"></div></div></div>`).join(''):'<div class="empty">Sin datos</div>';
@@ -1226,16 +1286,16 @@ function renderPresupuesto(){
   if(!data.presupuestos.length){cont.innerHTML='<div class="card"><div class="empty"><strong>Sin presupuestos</strong>Crea tu primer sobre</div></div>';return;}
   cont.innerHTML=data.presupuestos.map(p=>{
     const g=gastoDeCategoria(p.categoria);
-    /* Desglose: gastos normales vs pagos tarjeta */
-    const mes=mesActual();
-    const soloGastos=data.gastos.filter(x=>x.categoria===p.categoria && (x.fecha||'').startsWith(mes)).reduce((s,x)=>s+(+x.monto||0),0);
-    const soloPagos=data.pasivos.filter(x=>x.tipo==='Tarjeta').reduce((s,x)=>{
-      const sum=(x.pagos||[]).filter(pg=>(pg.fecha||'').startsWith(mes) && (pg.categoria||'Pago de tarjetas')===p.categoria).reduce((ss,pg)=>ss+(+pg.monto||0),0);
-      return s+sum;
-    },0);
+    const soloGastos=gastoDeCategoriaSoloGastos(p.categoria);
+    const soloPagos=gastoDeCategoriaSoloPagos(p.categoria);
     const pct=p.asignado?Math.min(100,g/p.asignado*100):0;
     const over=g>p.asignado;
-    const desglose = soloPagos>0 ? `<div style="font-size:10px;color:var(--muted);margin-top:6px;line-height:1.5">💳 Pagos de tarjeta: <strong style="color:var(--text-2)">${clp(soloPagos)}</strong>${soloGastos>0?' · Gastos: '+clp(soloGastos):''}</div>` : '';
+    const esPagoTC=p.categoria===CAT_PAGO_TC;
+    const desglose = esPagoTC ? `
+      <div style="font-size:10.5px;color:var(--muted);margin-top:8px;line-height:1.6;display:flex;flex-direction:column;gap:2px">
+        <div style="display:flex;justify-content:space-between"><span>💳 Pagos de tarjeta del mes</span><strong style="color:var(--accent-2)">${clp(soloPagos)}</strong></div>
+        ${soloGastos>0?`<div style="display:flex;justify-content:space-between"><span>Otros gastos en esta categoría</span><strong style="color:var(--text-2)">${clp(soloGastos)}</strong></div>`:''}
+      </div>` : '';
     return `<div class="card" ${over?'style="border-color:rgba(248,113,113,.3)"':''}>
       <div class="card-head" style="margin-bottom:10px">
         <div class="card-title">${iconoCategoria(p.categoria)} ${p.categoria}</div>
@@ -1310,7 +1370,7 @@ function renderPatrimonio(){
         <div style="flex:1">
           <div style="font-size:12.5px;font-weight:600;margin-bottom:3px">Tarjetas y líneas de crédito</div>
           <div style="font-size:11.5px;color:var(--text-2);line-height:1.55;font-weight:400">
-            La gestión de tarjetas (${tarjetas.length}) y líneas (${lineas.length}) está en <strong style="color:var(--accent-2);cursor:pointer" onclick="irA('gastos')">Gastos y crédito →</strong><br>
+            La gestión está en <strong style="color:var(--accent-2);cursor:pointer" onclick="irA('gastos')">Gastos y crédito →</strong><br>
             Deuda tarjetas: <strong style="color:var(--red)">${clp(totalDeudaTarjetas)}</strong> · Líneas utilizadas: <strong style="color:var(--red)">${clp(totalUtilizadoLineas)}</strong>
           </div>
         </div>
@@ -1380,10 +1440,10 @@ const modalBg=document.getElementById('modalBg');
 const modalForm=document.getElementById('modalForm');
 const modalTitle=document.getElementById('modalTitle');
 let currentTipo=null,currentId=null,currentTarjetaPreset=null;
-let currentPagoTarjetaId=null; // id del pago en edición (para pagos de tarjeta)
+let currentPagoTarjetaId=null;
 
 function inputField(name,label,type='text',value='',attrs=''){return `<div class="field"><label>${label}</label><input name="${name}" type="${type}" value="${value}" ${attrs}></div>`;}
-function selectField(name,label,options,value){return `<div class="field"><label>${label}</label><select name="${name}">${options.map(o=>`<option value="${o}" ${o===value?'selected':''}>${o}</option>`).join('')}</select></div>`;}
+function selectField(name,label,options,value){return `<div class="field"><label>${label}</label><select name="${name}">${options.map(o=>`<option value="${esc(o)}" ${o===value?'selected':''}>${esc(o)}</option>`).join('')}</select></div>`;}
 
 function openModal(tipo,id=null,tarjetaPreset=null){
   currentTipo=tipo;currentId=id;currentTarjetaPreset=tarjetaPreset;
@@ -1403,7 +1463,7 @@ function openModal(tipo,id=null,tarjetaPreset=null){
     html+=inputField('monto','Monto (CLP)','number',item?.monto||'',"required min=0 step=1 placeholder='0'");
     html+=selectField('categoria','Categoría',data.categorias.gastos,item?.categoria||data.categorias.gastos[0]);
     html+=inputField('fecha','Fecha','date',item?.fecha||hoy(),"required");
-    html+=`<div class="field"><label>Medio de pago</label><select name="tarjetaId"><option value="" ${!tarjetaIdActual?'selected':''}>Efectivo / Débito</option>${tarjetas.map(t=>`<option value="${t.id}" ${tarjetaIdActual===t.id?'selected':''}>💳 ${t.nombre} · disp. ${clp(cupoDisponible(t))}</option>`).join('')}</select></div>`;
+    html+=`<div class="field"><label>Medio de pago</label><select name="tarjetaId"><option value="" ${!tarjetaIdActual?'selected':''}>Efectivo / Débito</option>${tarjetas.map(t=>`<option value="${t.id}" ${tarjetaIdActual===t.id?'selected':''}>💳 ${esc(t.nombre)} · disp. ${clp(cupoDisponible(t))}</option>`).join('')}</select></div>`;
     html+=`<div class="field-row">
       <div class="field"><label>N° cuotas</label><input name="cuotas" type="number" min="1" max="48" step="1" value="${cuotasActual}" placeholder="1"></div>
       <div class="field"><label>Tasa mensual (%)</label><input name="tasaCuotas" type="number" min="0" step="0.01" value="${tasaActual}" placeholder="0"></div>
@@ -1432,16 +1492,8 @@ function openModal(tipo,id=null,tarjetaPreset=null){
         const cuotas=Math.max(1,+inpCuotas?.value||1);
         const tasa=Math.max(0,+inpTasa?.value||0);
         const esTarjeta=selTarjeta?.value;
-        if(!esTarjeta){
-          prev.innerHTML='Cuotas solo aplican a compras con tarjeta de crédito.';
-          prev.style.color='var(--muted)';
-          return;
-        }
-        if(cuotas<=1 && tasa<=0){
-          prev.innerHTML='Compra en <strong style="color:var(--text)">1 cuota sin interés</strong> — se cobrará '+clp(monto)+' este mes.';
-          prev.style.color='var(--muted)';
-          return;
-        }
+        if(!esTarjeta){prev.innerHTML='Cuotas solo aplican a compras con tarjeta de crédito.';prev.style.color='var(--muted)';return;}
+        if(cuotas<=1 && tasa<=0){prev.innerHTML='Compra en <strong style="color:var(--text)">1 cuota sin interés</strong> — se cobrará '+clp(monto)+' este mes.';prev.style.color='var(--muted)';return;}
         const total=monto*(1+(tasa/100)*cuotas);
         const valorCuota=total/cuotas;
         const intereses=total-monto;
@@ -1475,10 +1527,9 @@ function openModalPago(cardId, pagoId=null){
   const pagoEdit = esEdicion ? (card.pagos||[]).find(pg=>pg.id===pagoId) : null;
   const montoVal = pagoEdit ? pagoEdit.monto : '';
   const fechaVal = pagoEdit ? pagoEdit.fecha : hoy();
-  const catVal = pagoEdit ? (pagoEdit.categoria||'Pago de tarjetas') : 'Pago de tarjetas';
+  const catVal = pagoEdit ? (pagoEdit.categoria||CAT_PAGO_TC) : CAT_PAGO_TC;
   const notaVal = pagoEdit ? (pagoEdit.nota||'') : '';
 
-  /* Historial de pagos */
   const pagosOrdenados=[...(card.pagos||[])].sort((a,b)=>(b.fecha||'').localeCompare(a.fecha||''));
   const historialHTML = pagosOrdenados.length ? `
     <div class="hist-pagos">
@@ -1487,7 +1538,7 @@ function openModalPago(cardId, pagoId=null){
         <div class="hist-pago">
           <div class="hist-pago-info">
             <div class="hist-pago-fecha">${fmtDateLong(pg.fecha)}</div>
-            <div class="hist-pago-cat">${esc(pg.categoria||'Pago de tarjetas')}${pg.nota?' · '+esc(pg.nota):''}</div>
+            <div class="hist-pago-cat">${esc(pg.categoria||CAT_PAGO_TC)}${pg.nota?' · '+esc(pg.nota):''}</div>
           </div>
           <div class="hist-pago-monto">${clp(pg.monto)}</div>
           <div class="hist-pago-acciones">
@@ -1519,7 +1570,7 @@ function openModalPago(cardId, pagoId=null){
   html += `<div class="field"><label>Categoría de presupuesto</label><select name="categoria">
     ${data.categorias.gastos.map(c=>`<option value="${esc(c)}" ${c===catVal?'selected':''}>${iconoCategoria(c)} ${esc(c)}</option>`).join('')}
   </select></div>`;
-  html += `<div style="font-size:10.5px;color:var(--muted);margin-top:-6px;margin-bottom:10px;line-height:1.55;font-weight:400">El pago se descontará del presupuesto de esta categoría en el mes correspondiente.</div>`;
+  html += `<div style="font-size:10.5px;color:var(--muted);margin-top:-6px;margin-bottom:10px;line-height:1.55;font-weight:400">El pago se sumará al presupuesto de esta categoría en el mes correspondiente. Por defecto se usa <strong style="color:var(--accent-2)">${CAT_PAGO_TC}</strong>.</div>`;
   html += `<div class="field"><label>Nota (opcional)</label><input name="nota" type="text" value="${esc(notaVal)}" placeholder="Ej: Pago mínimo / Total"></div>`;
   html += historialHTML;
 
@@ -1527,12 +1578,10 @@ function openModalPago(cardId, pagoId=null){
   modalBg.classList.add('open');
   setTimeout(()=>modalForm.querySelector('[name=monto]')?.focus(),80);
 
-  /* Botones de editar/eliminar pagos */
   modalForm.querySelectorAll('[data-act="edit-pago"]').forEach(b=>{
     b.onclick=(e)=>{
       e.preventDefault();
-      const pid=+b.dataset.pagoId;
-      openModalPago(cardId, pid);
+      openModalPago(cardId, +b.dataset.pagoId);
     };
   });
   modalForm.querySelectorAll('[data-act="del-pago"]').forEach(b=>{
@@ -1544,17 +1593,14 @@ function openModalPago(cardId, pagoId=null){
       if(!confirm(`¿Eliminar el pago del ${fmtDateLong(pg.fecha)} por ${clp(pg.monto)}?`)) return;
       card.pagos=(card.pagos||[]).filter(x=>x.id!==pid);
       save();
-      /* Si estábamos editando este mismo pago, cerramos y volvemos a abrir el modal limpio */
-      if(currentPagoTarjetaId===pid){
-        currentPagoTarjetaId=null;
+      const pagoIdActual=currentPagoTarjetaId;
+      if(pagoIdActual===pid){
         openModalPago(cardId);
       } else {
-        /* Solo re-render del modal para actualizar el historial */
-        const pagoIdActual=currentPagoTarjetaId;
         openModalPago(cardId, pagoIdActual);
       }
       renderAll();
-      toast('Pago eliminado');
+      toast('Pago eliminado · '+clp(pg.monto));
     };
   });
   const btnCancelarEd=document.getElementById('cancelarEdicionPago');
@@ -1569,13 +1615,9 @@ function openModalPago(cardId, pagoId=null){
 function closeModal(){modalBg.classList.remove('open');modalForm.reset();currentPagoTarjetaId=null;}
 document.getElementById('btnCancel').onclick=closeModal;
 
-/* ============================================================
-   GUARDAR
-============================================================ */
 document.getElementById('btnSave').onclick=e=>{
   e.preventDefault();
 
-  /* ---------- PAGO DE TARJETA (crear o editar) ---------- */
   if(currentTipo==='pagoTarjeta'){
     const fd=new FormData(modalForm);
     const card=data.pasivos.find(x=>x.id===currentId);
@@ -1583,24 +1625,21 @@ document.getElementById('btnSave').onclick=e=>{
     const monto=+fd.get('monto');
     if(!monto||monto<=0){toast('Monto inválido',true);return;}
     const fecha=fd.get('fecha')||hoy();
-    const categoria=fd.get('categoria')||'Pago de tarjetas';
+    const categoria=fd.get('categoria')||CAT_PAGO_TC;
     const nota=fd.get('nota')||'';
 
     card.pagos=card.pagos||[];
     if(currentPagoTarjetaId){
-      /* Editar pago existente */
       const idx=card.pagos.findIndex(pg=>pg.id===currentPagoTarjetaId);
       if(idx<0){toast('Pago no encontrado',true);return;}
       card.pagos[idx]={...card.pagos[idx],monto,fecha,categoria,nota};
       toast('Pago actualizado · '+clp(monto));
     } else {
-      /* Crear nuevo pago */
       card.pagos.push({id:uid(),monto,fecha,categoria,nota});
-      toast('Pago registrado · '+clp(monto));
+      toast('Pago registrado · '+clp(monto)+' → '+categoria);
     }
 
     save();
-    /* Reabrir el modal para mostrar el historial actualizado, o cerrar si es nuevo */
     if(currentPagoTarjetaId){
       openModalPago(card.id, currentPagoTarjetaId);
     } else {
@@ -1610,7 +1649,6 @@ document.getElementById('btnSave').onclick=e=>{
     return;
   }
 
-  /* ---------- GUARDADO NORMAL ---------- */
   const fd=new FormData(modalForm);
   const obj={};
   for(const [k,v] of fd.entries()){
@@ -1634,9 +1672,6 @@ document.getElementById('btnSave').onclick=e=>{
 modalBg.onclick=e=>{if(e.target===modalBg)closeModal();};
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modalBg.classList.contains('open'))closeModal();});
 document.querySelectorAll('[data-add]').forEach(b=>b.addEventListener('click',()=>openModal(b.dataset.add)));
-
-/* Helper para escapar HTML */
-function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 
 const btnAddCatPresup=document.getElementById('btnAddCatPresup');
 if(btnAddCatPresup){
@@ -1668,7 +1703,9 @@ function generarInformePDF(){
   if(!win){toast('Permite ventanas emergentes para generar el PDF',true);return;}
   const fecha=new Date().toLocaleDateString('es-CL',{day:'2-digit',month:'long',year:'numeric'});
   const hora=new Date().toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'});
-  const ing=totalIngresos(),gas=totalGastos();
+  const ing=totalIngresos();
+  const tPagos=data.pasivos.filter(p=>p.tipo==='Tarjeta').reduce((s,p)=>s+(+p.pagos||[]).reduce((ss,pg)=>ss+(+pg.monto||0),0),0);
+  const gas=totalGastos()+tPagos;
   const ta=totalActivos(),tp=totalPasivos(),pat=ta-tp;
   const aho=ing-gas;
   const tasa=ing?(aho/ing*100):0;
@@ -1677,21 +1714,16 @@ function generarInformePDF(){
   const otrosPasivos=getOtrosPasivos();
   const mes=mesActual();
   const ingMes=data.ingresos.filter(x=>x.fecha?.startsWith(mes)).reduce((s,x)=>s+(+x.monto||0),0);
-  const gasMes=data.gastos.filter(x=>x.fecha?.startsWith(mes)).reduce((s,x)=>s+(+x.monto||0),0);
+  const gasMes=data.gastos.filter(x=>x.fecha?.startsWith(mes)).reduce((s,x)=>s+(+x.monto||0),0)+totalPagosTCdelMes();
 
   const catsMes={};
   data.gastos.filter(g=>g.fecha?.startsWith(mes)).forEach(g=>catsMes[g.categoria]=(catsMes[g.categoria]||0)+(+g.monto||0));
-  data.pasivos.filter(p=>p.tipo==='Tarjeta').forEach(p=>{
-    (p.pagos||[]).filter(pg=>(pg.fecha||'').startsWith(mes)).forEach(pg=>{
-      const cat=pg.categoria||'Pago de tarjetas';
-      catsMes[cat]=(catsMes[cat]||0)+(+pg.monto||0);
-    });
-  });
+  const pagosMes=totalPagosTCdelMes();
+  if(pagosMes>0) catsMes[CAT_PAGO_TC]=(catsMes[CAT_PAGO_TC]||0)+pagosMes;
   const catsSorted=Object.entries(catsMes).sort((a,b)=>b[1]-a[1]);
   const totalCatMes=catsSorted.reduce((s,[,v])=>s+v,0);
 
   const fmtN=n=>'$'+Math.round(+n||0).toLocaleString('es-CL');
-  const esch=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
   const html=`<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Informe Mis Finanzas — ${fecha}</title>
 <style>
@@ -1737,11 +1769,6 @@ tr.total td{border-top:1.5px solid #333;border-bottom:none;font-weight:700;paddi
 .cuotas-item .m{font-weight:600;font-variant-numeric:tabular-nums}
 .cuotas-total{margin-top:8px;padding-top:8px;border-top:1px dashed #ccc;display:flex;justify-content:space-between;font-size:11.5px;font-weight:700}
 .cuotas-total .val{color:#6e56ff}
-.pagos-hist{margin-top:8px;padding-top:8px;border-top:1px solid #eee}
-.pagos-hist-title{font-size:9.5px;text-transform:uppercase;letter-spacing:.6px;color:#888;font-weight:600;margin-bottom:6px}
-.pago-item{display:flex;justify-content:space-between;font-size:10.5px;padding:2px 0;color:#444}
-.pago-item .f{color:#666}
-.pago-item .m{font-weight:600;font-variant-numeric:tabular-nums}
 .no-print{display:flex;gap:8px;justify-content:center;margin-bottom:20px}
 .no-print button{padding:8px 16px;border:1px solid #ddd;background:#fff;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit}
 .no-print button.p{background:#111;color:#fff;border-color:#111}
@@ -1776,25 +1803,16 @@ tr.total td{border-top:1.5px solid #333;border-bottom:none;font-weight:700;paddi
 <h2>Mes en curso (${new Date().toLocaleDateString('es-CL',{month:'long',year:'numeric'})})</h2>
 <div class="kpis">
   <div class="kpi"><div class="l">Ingresos del mes</div><div class="v pos">${fmtN(ingMes)}</div></div>
-  <div class="kpi"><div class="l">Gastos del mes</div><div class="v neg">${fmtN(gasMes)}</div></div>
+  <div class="kpi"><div class="l">Gastos del mes</div><div class="v neg">${fmtN(gasMes)}</div><div class="s">Incluye pagos TC</div></div>
   <div class="kpi"><div class="l">Ahorro del mes</div><div class="v ${ingMes-gasMes<0?'neg':'pos'}">${fmtN(Math.abs(ingMes-gasMes))}</div></div>
-  <div class="kpi"><div class="l">Movimientos</div><div class="v">${data.ingresos.filter(x=>x.fecha?.startsWith(mes)).length + data.gastos.filter(x=>x.fecha?.startsWith(mes)).length}</div></div>
+  <div class="kpi"><div class="l">Pagos TC del mes</div><div class="v">${fmtN(pagosMes)}</div></div>
 </div>
 
-<h2>Ingresos</h2>
-<table>
-  <thead><tr><th>Concepto</th><th>Categoría</th><th>Fecha</th><th style="text-align:right">Monto</th></tr></thead>
-  <tbody>
-    ${data.ingresos.slice().sort((a,b)=>(b.fecha||'').localeCompare(a.fecha||'')).slice(0,15).map(i=>`<tr><td>${esch(i.nombre)}</td><td>${esch(i.categoria)}</td><td>${esch(i.fecha)}</td><td class="r pos">+${fmtN(i.monto)}</td></tr>`).join('') || '<tr><td colspan="4" style="color:#999;text-align:center;padding:16px">Sin ingresos</td></tr>'}
-    <tr class="total"><td colspan="3">Total histórico</td><td class="r pos">+${fmtN(ing)}</td></tr>
-  </tbody>
-</table>
-
-<h2>Gastos por categoría (mes actual, incluye pagos de tarjeta)</h2>
+<h2>Gastos por categoría (mes actual)</h2>
 <table>
   <thead><tr><th>Categoría</th><th style="text-align:right">Monto</th><th style="text-align:right">% del total</th></tr></thead>
   <tbody>
-    ${catsSorted.map(([c,v])=>`<tr><td>${esch(c)}<div class="bar"><div class="bar-fill" style="width:${totalCatMes?(v/totalCatMes*100):0}%;background:#6e56ff"></div></div></td><td class="r neg">${fmtN(v)}</td><td class="r">${totalCatMes?((v/totalCatMes)*100).toFixed(1):0}%</td></tr>`).join('') || '<tr><td colspan="3" style="color:#999;text-align:center;padding:16px">Sin gastos</td></tr>'}
+    ${catsSorted.map(([c,v])=>`<tr><td>${c}<div class="bar"><div class="bar-fill" style="width:${totalCatMes?(v/totalCatMes*100):0}%;background:#6e56ff"></div></div></td><td class="r neg">${fmtN(v)}</td><td class="r">${totalCatMes?((v/totalCatMes)*100).toFixed(1):0}%</td></tr>`).join('') || '<tr><td colspan="3" style="color:#999;text-align:center;padding:16px">Sin gastos</td></tr>'}
     <tr class="total"><td>Total del mes</td><td class="r neg">${fmtN(Object.values(catsMes).reduce((s,v)=>s+v,0))}</td><td class="r">100%</td></tr>
   </tbody>
 </table>
@@ -1807,7 +1825,7 @@ tr.total td{border-top:1.5px solid #333;border-bottom:none;font-weight:700;paddi
       const g=gastoDeCategoria(p.categoria);
       const disp=p.asignado-g;
       const over=g>p.asignado;
-      return `<tr><td>${esch(p.categoria)}</td><td class="r">${fmtN(p.asignado)}</td><td class="r neg">${fmtN(g)}</td><td class="r ${over?'neg':'pos'}">${fmtN(Math.abs(disp))}</td><td class="r"><span class="tag ${over?'neg':'pos'}">${over?'Excedido':(g/p.asignado>0.9?'Al límite':'OK')}</span></td></tr>`;
+      return `<tr><td>${p.categoria}</td><td class="r">${fmtN(p.asignado)}</td><td class="r neg">${fmtN(g)}</td><td class="r ${over?'neg':'pos'}">${fmtN(Math.abs(disp))}</td><td class="r"><span class="tag ${over?'neg':'pos'}">${over?'Excedido':(g/p.asignado>0.9?'Al límite':'OK')}</span></td></tr>`;
     }).join('') || '<tr><td colspan="5" style="color:#999;text-align:center;padding:16px">Sin presupuestos</td></tr>'}
   </tbody>
 </table>
@@ -1816,8 +1834,7 @@ tr.total td{border-top:1.5px solid #333;border-bottom:none;font-weight:700;paddi
 <table>
   <thead><tr><th>Activo</th><th>Tipo</th><th style="text-align:right">Valor actual</th><th style="text-align:right">Rendimiento</th></tr></thead>
   <tbody>
-    ${data.inversiones.map(i=>`<tr><td>${esch(i.nombre)}</td><td>${esch(i.tipo)}</td><td class="r">${fmtN(i.monto)}</td><td class="r ${(+i.rendimiento||0)>=0?'pos':'neg'}">${(+i.rendimiento||0)>=0?'+':''}${(+i.rendimiento||0).toFixed(1)}%</td></tr>`).join('') || '<tr><td colspan="4" style="color:#999;text-align:center;padding:16px">Sin inversiones</td></tr>'}
-    <tr class="total"><td colspan="2">Total cartera</td><td class="r">${fmtN(data.inversiones.reduce((s,i)=>s+(+i.monto||0),0))}</td><td></td></tr>
+    ${data.inversiones.map(i=>`<tr><td>${i.nombre}</td><td>${i.tipo}</td><td class="r">${fmtN(i.monto)}</td><td class="r ${(+i.rendimiento||0)>=0?'pos':'neg'}">${(+i.rendimiento||0)>=0?'+':''}${(+i.rendimiento||0).toFixed(1)}%</td></tr>`).join('') || '<tr><td colspan="4" style="color:#999;text-align:center;padding:16px">Sin inversiones</td></tr>'}
   </tbody>
 </table>
 
@@ -1829,19 +1846,13 @@ tr.total td{border-top:1.5px solid #333;border-bottom:none;font-weight:700;paddi
       const pct=t.cupo?(deuda/t.cupo*100):0;
       const cuotasVig=cuotasVigentesDeTarjeta(t.id);
       const totalMensual=totalMensualCuotasTarjeta(t.id);
-      const pagosOrd=[...(t.pagos||[])].sort((a,b)=>(b.fecha||'').localeCompare(a.fecha||'')).slice(0,6);
       const cuotasHTML=cuotasVig.length?`
         <div class="cuotas-box">
           <div class="cuotas-title">📆 Cuotas vigentes este mes</div>
-          ${cuotasVig.map(g=>`<div class="cuotas-item"><span><strong>${esch(g.nombre)}</strong> · <span class="n">${g.cuotas} cuotas${(+g.tasaCuotas||0)>0?' · '+(+g.tasaCuotas).toFixed(2)+'%':''}</span></span><span class="m">${fmtN(valorCuotaGasto(g))}</span></div>`).join('')}
+          ${cuotasVig.map(g=>`<div class="cuotas-item"><span><strong>${g.nombre}</strong> · <span class="n">${g.cuotas} cuotas${(+g.tasaCuotas||0)>0?' · '+(+g.tasaCuotas).toFixed(2)+'%':''}</span></span><span class="m">${fmtN(valorCuotaGasto(g))}</span></div>`).join('')}
           <div class="cuotas-total"><span>Total cuotas del mes</span><span class="val">${fmtN(totalMensual)}</span></div>
         </div>`:'';
-      const pagosHTML=pagosOrd.length?`
-        <div class="pagos-hist">
-          <div class="pagos-hist-title">Últimos pagos</div>
-          ${pagosOrd.map(pg=>`<div class="pago-item"><span class="f">${esch(pg.fecha)} · ${esch(pg.categoria||'Pago de tarjetas')}</span><span class="m">${fmtN(pg.monto)}</span></div>`).join('')}
-        </div>`:'';
-      return `<div class="box"><div class="box-title">💳 ${esch(t.nombre)}</div><div class="box-row"><span class="lbl">Cupo total</span><span class="val">${fmtN(t.cupo)}</span></div><div class="box-row"><span class="lbl">Utilizado</span><span class="val" style="color:#dc2626">${fmtN(deuda)}</span></div><div class="box-row"><span class="lbl">Disponible</span><span class="val" style="color:#16a34a">${fmtN(t.cupo-deuda)}</span></div><div class="bar"><div class="bar-fill" style="width:${pct}%;background:${pct>80?'#dc2626':pct>50?'#f97316':'#16a34a'}"></div></div>${cuotasHTML}${pagosHTML}</div>`;
+      return `<div class="box"><div class="box-title">💳 ${t.nombre}</div><div class="box-row"><span class="lbl">Cupo total</span><span class="val">${fmtN(t.cupo)}</span></div><div class="box-row"><span class="lbl">Utilizado</span><span class="val" style="color:#dc2626">${fmtN(deuda)}</span></div><div class="box-row"><span class="lbl">Disponible</span><span class="val" style="color:#16a34a">${fmtN(t.cupo-deuda)}</span></div><div class="bar"><div class="bar-fill" style="width:${pct}%;background:${pct>80?'#dc2626':pct>50?'#f97316':'#16a34a'}"></div></div>${cuotasHTML}</div>`;
     }).join('') || '<div class="box" style="color:#999;text-align:center">Sin tarjetas</div>'}
   </div>
   <div>
@@ -1849,7 +1860,7 @@ tr.total td{border-top:1.5px solid #333;border-bottom:none;font-weight:700;paddi
       const util=+l.utilizado||0;
       const cupo=+l.cupo||0;
       const pct=cupo?(util/cupo*100):0;
-      return `<div class="box"><div class="box-title">🏦 ${esch(l.nombre)}${l.banco?' · '+esch(l.banco):''}</div><div class="box-row"><span class="lbl">Cupo total</span><span class="val">${fmtN(cupo)}</span></div><div class="box-row"><span class="lbl">Utilizado</span><span class="val" style="color:#dc2626">${fmtN(util)}</span></div><div class="box-row"><span class="lbl">Disponible</span><span class="val" style="color:#16a34a">${fmtN(cupo-util)}</span></div>${l.tasa?`<div class="box-row"><span class="lbl">Tasa mensual</span><span class="val">${(+l.tasa).toFixed(2)}%</span></div>`:''}<div class="bar"><div class="bar-fill" style="width:${pct}%;background:${pct>80?'#dc2626':pct>50?'#f97316':'#06b6d4'}"></div></div></div>`;
+      return `<div class="box"><div class="box-title">🏦 ${l.nombre}${l.banco?' · '+l.banco:''}</div><div class="box-row"><span class="lbl">Cupo total</span><span class="val">${fmtN(cupo)}</span></div><div class="box-row"><span class="lbl">Utilizado</span><span class="val" style="color:#dc2626">${fmtN(util)}</span></div><div class="box-row"><span class="lbl">Disponible</span><span class="val" style="color:#16a34a">${fmtN(cupo-util)}</span></div>${l.tasa?`<div class="box-row"><span class="lbl">Tasa mensual</span><span class="val">${(+l.tasa).toFixed(2)}%</span></div>`:''}<div class="bar"><div class="bar-fill" style="width:${pct}%;background:${pct>80?'#dc2626':pct>50?'#f97316':'#06b6d4'}"></div></div></div>`;
     }).join('') || '<div class="box" style="color:#999;text-align:center">Sin líneas</div>'}
   </div>
 </div>
@@ -1859,31 +1870,16 @@ tr.total td{border-top:1.5px solid #333;border-bottom:none;font-weight:700;paddi
   <div>
     <table>
       <thead><tr><th>Activo</th><th style="text-align:right">Valor</th></tr></thead>
-      <tbody>${data.activos.map(a=>`<tr><td>${esch(a.nombre)}<br><span style="font-size:9.5px;color:#888">${esch(a.tipo)}</span></td><td class="r pos">${fmtN(a.valor)}</td></tr>`).join('') || '<tr><td colspan="2" style="color:#999;text-align:center;padding:12px">Sin registros</td></tr>'}</tbody>
+      <tbody>${data.activos.map(a=>`<tr><td>${a.nombre}<br><span style="font-size:9.5px;color:#888">${a.tipo}</span></td><td class="r pos">${fmtN(a.valor)}</td></tr>`).join('')}</tbody>
     </table>
   </div>
   <div>
     <table>
       <thead><tr><th>Pasivo</th><th style="text-align:right">Saldo</th></tr></thead>
-      <tbody>${otrosPasivos.map(p=>`<tr><td>${esch(p.nombre)}<br><span style="font-size:9.5px;color:#888">${esch(p.tipo)}</span></td><td class="r neg">${fmtN(p.valor)}</td></tr>`).join('') || '<tr><td colspan="2" style="color:#999;text-align:center;padding:12px">Sin registros</td></tr>'}</tbody>
+      <tbody>${otrosPasivos.map(p=>`<tr><td>${p.nombre}<br><span style="font-size:9.5px;color:#888">${p.tipo}</span></td><td class="r neg">${fmtN(p.valor)}</td></tr>`).join('') || '<tr><td colspan="2" style="color:#999;text-align:center;padding:12px">Sin registros</td></tr>'}</tbody>
     </table>
   </div>
 </div>
-
-<h2>Últimos movimientos</h2>
-<table>
-  <thead><tr><th>Fecha</th><th>Concepto</th><th>Categoría</th><th style="text-align:right">Monto</th></tr></thead>
-  <tbody>
-    ${[...data.ingresos.map(i=>({...i,tipo:'ingreso'})),...data.gastos.map(g=>({...g,tipo:'gasto'}))]
-      .sort((a,b)=>(b.fecha||'').localeCompare(a.fecha||'')).slice(0,20)
-      .map(m=>{
-        const cuotasInfo=m.tipo==='gasto' && (+m.cuotas>1 || +m.tasaCuotas>0)
-          ? `<br><span style="font-size:9.5px;color:#888">${m.cuotas} cuota${(+m.cuotas===1)?'':'s'} de ${fmtN(valorCuotaGasto(m))}${(+m.tasaCuotas||0)>0?' · '+(+m.tasaCuotas).toFixed(2)+'% mensual':''}</span>`
-          : '';
-        return `<tr><td>${esch(m.fecha)}</td><td>${esch(m.nombre)}${cuotasInfo}</td><td>${esch(m.categoria)}</td><td class="r ${m.tipo==='ingreso'?'pos':'neg'}">${m.tipo==='ingreso'?'+':'−'}${fmtN(m.monto)}</td></tr>`;
-      }).join('') || '<tr><td colspan="4" style="color:#999;text-align:center;padding:16px">Sin movimientos</td></tr>'}
-  </tbody>
-</table>
 
 <div class="footer">
   Informe generado automáticamente por Mis Finanzas · ${fecha} a las ${hora} hrs<br>
@@ -1918,17 +1914,26 @@ document.getElementById('fileImport').onchange=e=>{
       if(!j.ingresos||!j.gastos)throw 0;
       if(!j.categorias)j.categorias=structuredClone(seed.categorias);
       if(!j.colores)j.colores=structuredClone(seed.colores);
-      if(!j.categorias.gastos.includes('Pago de tarjetas')){
-        const idxOtros=j.categorias.gastos.indexOf('Otros');
-        if(idxOtros>=0) j.categorias.gastos.splice(idxOtros,0,'Pago de tarjetas');
-        else j.categorias.gastos.push('Pago de tarjetas');
+      const catVieja='Pago de tarjetas';
+      if(j.categorias.gastos.includes(catVieja)){
+        j.categorias.gastos=j.categorias.gastos.map(c=>c===catVieja?CAT_PAGO_TC:c);
+        if(j.colores[catVieja]){j.colores[CAT_PAGO_TC]=j.colores[catVieja];delete j.colores[catVieja];}
+        j.gastos.forEach(g=>{ if(g.categoria===catVieja) g.categoria=CAT_PAGO_TC; });
       }
-      if(!j.colores['Pago de tarjetas']) j.colores['Pago de tarjetas']='#a855f7';
+      if(!j.categorias.gastos.includes(CAT_PAGO_TC)){
+        const idxOtros=j.categorias.gastos.indexOf('Otros');
+        if(idxOtros>=0) j.categorias.gastos.splice(idxOtros,0,CAT_PAGO_TC);
+        else j.categorias.gastos.push(CAT_PAGO_TC);
+      }
+      if(!j.colores[CAT_PAGO_TC]) j.colores[CAT_PAGO_TC]='#a855f7';
+      if(!j.presupuestos.some(p=>p.categoria===CAT_PAGO_TC)){
+        j.presupuestos.push({id:Date.now()+Math.floor(Math.random()*999),categoria:CAT_PAGO_TC,asignado:500000});
+      }
       j.pasivos.forEach(p=>{
         if(p.tipo==='Tarjeta'){
           if(!Array.isArray(p.pagos)) p.pagos=[];
           p.pagos.forEach(pg=>{
-            if(pg.categoria===undefined) pg.categoria='Pago de tarjetas';
+            if(pg.categoria===undefined || pg.categoria===catVieja) pg.categoria=CAT_PAGO_TC;
             if(pg.id===undefined) pg.id=Date.now()+Math.floor(Math.random()*9999);
           });
         }
