@@ -12,13 +12,7 @@
 <title>Mis Finanzas</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg:#0a0a0f;--surface:#111116;--surface-2:#16161c;--surface-3:#1c1c23;
-  --border:rgba(255,255,255,.055);--border-2:rgba(255,255,255,.09);
-  --text:#e8e8ee;--text-2:#a8a8b3;--muted:#6e6e7a;--muted-2:#4a4a55;
-  --accent:#6e56ff;--accent-2:#a78bfa;--green:#22c55e;--red:#f87171;--orange:#f97316;--cyan:#06b6d4;--pink:#ec4899;
-  --r:12px;--r-sm:8px;
-}
+:root{--bg:#0a0a0f;--surface:#111116;--surface-2:#16161c;--surface-3:#1c1c23;--border:rgba(255,255,255,.055);--border-2:rgba(255,255,255,.09);--text:#e8e8ee;--text-2:#a8a8b3;--muted:#6e6e7a;--muted-2:#4a4a55;--accent:#6e56ff;--accent-2:#a78bfa;--green:#22c55e;--red:#f87171;--orange:#f97316;--cyan:#06b6d4;--pink:#ec4899;--r:12px;--r-sm:8px}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
 body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;min-height:100vh;font-size:14px;line-height:1.5}
@@ -222,7 +216,6 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
 .sug-title{font-size:12.5px;font-weight:600;color:var(--text);margin-bottom:3px}
 .sug-text{font-size:11.5px;color:var(--text-2);line-height:1.55;font-weight:400}
 .sug-text strong{color:var(--text);font-weight:600}
-/* ============ ESTRATEGIAS DEUDA ============ */
 .estrategias-wrap{margin-top:12px}
 .estrategias-head{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding:0 4px}
 .estrategias-head .icon{width:36px;height:36px;flex:0 0 36px;border-radius:9px;background:rgba(110,86,255,.14);display:grid;place-items:center;font-size:16px}
@@ -314,28 +307,8 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
 .bn-badge{position:absolute;top:3px;right:calc(50% - 12px);width:5px;height:5px;border-radius:50%;background:var(--orange);animation:pulse 1.5s infinite;display:none}
 #bnCuenta:not(.logged){color:var(--accent-2)}
 #bnCuenta:not(.logged) .bn-badge{display:block}
-@media(max-width:1080px){
-  .g4{grid-template-columns:repeat(2,1fr)}
-  .g3,.g21,.g12{grid-template-columns:1fr}
-  .hero-card{grid-template-columns:1fr 1fr;padding:22px 24px;gap:20px}
-  .hero-main{grid-column:span 2}
-  .estrategia-resumen{grid-template-columns:1fr 1fr}
-}
-@media(max-width:720px){
-  .sidebar{display:none}
-  .main{padding:18px 16px 88px}
-  .g4,.g3,.g2{grid-template-columns:1fr}
-  .hero-card{grid-template-columns:1fr;padding:20px;gap:16px}
-  .hero-main{grid-column:span 1}
-  .hero-value{font-size:30px}
-  .page-title{font-size:19px}
-  .field-row{grid-template-columns:1fr}
-  .cc-nums{grid-template-columns:1fr 1fr;gap:10px}
-  .bottom-nav{display:flex}
-  .card{padding:15px}
-  .kpi-value{font-size:20px}
-  .estrategia-resumen{grid-template-columns:1fr}
-}
+@media(max-width:1080px){.g4{grid-template-columns:repeat(2,1fr)}.g3,.g21,.g12{grid-template-columns:1fr}.hero-card{grid-template-columns:1fr 1fr;padding:22px 24px;gap:20px}.hero-main{grid-column:span 2}.estrategia-resumen{grid-template-columns:1fr 1fr}}
+@media(max-width:720px){.sidebar{display:none}.main{padding:18px 16px 88px}.g4,.g3,.g2{grid-template-columns:1fr}.hero-card{grid-template-columns:1fr;padding:20px;gap:16px}.hero-main{grid-column:span 1}.hero-value{font-size:30px}.page-title{font-size:19px}.field-row{grid-template-columns:1fr}.cc-nums{grid-template-columns:1fr 1fr;gap:10px}.bottom-nav{display:flex}.card{padding:15px}.kpi-value{font-size:20px}.estrategia-resumen{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -376,7 +349,6 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
   </aside>
 
   <main class="main">
-    <!-- DASHBOARD -->
     <section class="view active" id="view-dashboard">
       <div class="topbar">
         <div>
@@ -389,11 +361,8 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
           <button class="chip" id="btnInformePDFTop">📄 PDF</button>
         </div>
       </div>
-
       <div id="heroPatrimonio"></div>
-
       <div class="grid g4" id="dashKpis"></div>
-
       <div class="grid g2">
         <div class="card">
           <div class="card-head">
@@ -410,7 +379,6 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
           <div id="dashLinChart"></div>
         </div>
       </div>
-
       <div class="grid g2">
         <div class="card">
           <div class="card-head"><div class="card-title">Gastos por categoría<small>Mes actual</small></div></div>
@@ -421,18 +389,14 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
           <div id="dashPresupuesto"></div>
         </div>
       </div>
-
       <div class="card">
         <div class="card-head"><div class="card-title">Movimientos recientes</div></div>
         <div class="list" id="dashMovs"></div>
       </div>
-
       <div class="suggestions" id="sugerencias"></div>
-
       <div class="estrategias-wrap" id="estrategiasDeuda"></div>
     </section>
 
-    <!-- HISTÓRICO -->
     <section class="view" id="view-historico">
       <div class="topbar">
         <div><div class="page-title">Histórico</div><div class="page-sub" id="subHist"></div></div>
@@ -458,7 +422,6 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
       </div>
     </section>
 
-    <!-- INGRESOS -->
     <section class="view" id="view-ingresos">
       <div class="topbar">
         <div><div class="page-title">Ingresos</div><div class="page-sub" id="subIngresos"></div></div>
@@ -468,7 +431,6 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
       <div class="card"><div class="card-head"><div class="card-title">Todos los ingresos</div></div><div class="list" id="listIngresos"></div></div>
     </section>
 
-    <!-- GASTOS Y CRÉDITO -->
     <section class="view" id="view-gastos">
       <div class="topbar">
         <div><div class="page-title">Gastos y crédito</div><div class="page-sub" id="subGastos"></div></div>
@@ -478,19 +440,15 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
           <button class="chip primary" data-add="gasto">+ Gasto</button>
         </div>
       </div>
-
       <div class="grid g3" id="gasKpis"></div>
-
       <div id="tarjetasBox" style="display:none">
         <div class="section-title">💳 Tarjetas de crédito <span id="subTarjetas" style="text-transform:none;letter-spacing:0;color:var(--muted-2);font-weight:400;font-size:10.5px;margin-left:6px"></span></div>
         <div id="listTarjetas"></div>
       </div>
-
       <div id="lineasBox" style="display:none">
         <div class="section-title">🏦 Líneas de crédito <span id="subLineas" style="text-transform:none;letter-spacing:0;color:var(--muted-2);font-weight:400;font-size:10.5px;margin-left:6px"></span></div>
         <div id="listLineas"></div>
       </div>
-
       <div class="section-title">📋 Transacciones</div>
       <div class="card" style="margin-bottom:12px"><div class="pill-row" id="filtrosGasto"></div></div>
       <div class="grid g21">
@@ -499,7 +457,6 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
       </div>
     </section>
 
-    <!-- PRESUPUESTO -->
     <section class="view" id="view-presupuesto">
       <div class="topbar">
         <div><div class="page-title">Presupuesto</div><div class="page-sub" id="subPresup"></div></div>
@@ -512,7 +469,6 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
       <div class="grid g2" id="sobresPresup"></div>
     </section>
 
-    <!-- INVERSIONES -->
     <section class="view" id="view-inversiones">
       <div class="topbar">
         <div><div class="page-title">Inversiones</div><div class="page-sub" id="subInv"></div></div>
@@ -532,7 +488,6 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
       </div>
     </section>
 
-    <!-- PATRIMONIO -->
     <section class="view" id="view-patrimonio">
       <div class="topbar">
         <div><div class="page-title">Patrimonio</div><div class="page-sub" id="subPatrim"></div></div>
@@ -542,29 +497,23 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
         </div>
       </div>
       <div class="grid g3" id="patrimKpis"></div>
-
       <div class="grid g2">
         <div class="card"><div class="card-head"><div class="card-title">Activos</div><div id="totActivos" style="font-size:12.5px;font-weight:600;color:var(--green)"></div></div><div class="list" id="listActivos"></div></div>
         <div class="card"><div class="card-head"><div class="card-title">Otros pasivos</div><div id="totPasivos" style="font-size:12.5px;font-weight:600;color:var(--red)"></div></div><div class="list" id="listPasivos"></div></div>
       </div>
     </section>
 
-    <!-- CONFIGURACIÓN -->
     <section class="view" id="view-config">
       <div class="topbar">
         <div><div class="page-title">Configuración</div><div class="page-sub">Categorías, informes y sincronización</div></div>
       </div>
-
       <div class="card" style="margin-bottom:12px">
-        <div class="card-head">
-          <div class="card-title">Informe y respaldos</div>
-        </div>
+        <div class="card-head"><div class="card-title">Informe y respaldos</div></div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
           <button class="chip primary" id="btnInformePDFConfig">📄 Generar informe PDF</button>
           <button class="chip" id="btnExportConfig">↓ Descargar JSON</button>
         </div>
       </div>
-
       <div class="card" style="margin-bottom:12px">
         <div class="card-head">
           <div class="card-title">Categorías de gastos</div>
@@ -572,7 +521,6 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
         </div>
         <div id="catsGastos"></div>
       </div>
-
       <div class="card" style="margin-bottom:12px">
         <div class="card-head">
           <div class="card-title">Categorías de ingresos</div>
@@ -580,7 +528,6 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
         </div>
         <div id="catsIngresos"></div>
       </div>
-
       <div class="card" style="margin-bottom:12px">
         <div class="card-head">
           <div class="card-title">Tipos de inversión</div>
@@ -588,14 +535,12 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
         </div>
         <div id="catsInversiones"></div>
       </div>
-
       <div class="card" id="cardSync">
         <div class="card-head"><div class="card-title">Sincronización en la nube</div></div>
         <div id="syncConfig"></div>
       </div>
     </section>
 
-    <!-- LOGIN -->
     <section class="view" id="view-login">
       <div class="auth-wrap">
         <h2 id="authTitle">Inicia sesión</h2>
@@ -645,7 +590,6 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
 const APP_URL='https://norambuena25.github.io/Mis-Finanzas/';
 const SUPABASE_URL='https://gieyocpbvrlgjwcojkbo.supabase.co';
 const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdpZXlvY3BidnJsZ2p3Y29qa2JvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAxMjY0ODQsImV4cCI6MjEwNTcwMjQ4NH0.Pmmn6DTAHx2TytXI85eQgVY-XSeVaCDV0_kDZzJsgTM';
-
 const KEY='misfinanzas_v15';
 const PALETA=['#6e56ff','#a855f7','#06b6d4','#22c55e','#ec4899','#f97316','#eab308','#f87171','#64748b','#0891b2','#8b5cf6','#10b981'];
 const CAT_PAGO_TC='Pago TC';
@@ -742,6 +686,9 @@ try{
 let sb=null,user=null,histRango=6;
 if(SUPABASE_URL && SUPABASE_ANON_KEY && window.supabase){
   sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY,{auth:{redirectTo:APP_URL}});
+  sb.auth.onAuthStateChange((event,session)=>{
+    if(event==='SIGNED_OUT'){localStorage.removeItem(KEY);}
+  });
 }
 async function pushCloud(){
   if(!sb||!user)return;
@@ -760,8 +707,6 @@ async function pullCloud(){
       data.categorias.gastos=data.categorias.gastos.map(c=>c===catVieja?CAT_PAGO_TC:c);
       if(data.colores[catVieja]){data.colores[CAT_PAGO_TC]=data.colores[catVieja];delete data.colores[catVieja];}
       data.gastos.forEach(g=>{ if(g.categoria===catVieja) g.categoria=CAT_PAGO_TC; });
-      data.pasivos.forEach(p=>{ if(p.tipo==='Tarjeta' && Array.isArray(p.pagos)) p.pagos.forEach(pg=>{ if(pg.categoria===catVieja) pg.categoria=CAT_PAGO_TC; }); });
-      data.presupuestos.forEach(pr=>{ if(pr.categoria===catVieja) pr.categoria=CAT_PAGO_TC; });
     }
     if(!data.categorias.gastos.includes(CAT_PAGO_TC)){
       const idxOtros=data.categorias.gastos.indexOf('Otros');
@@ -838,75 +783,48 @@ function totalPasivos(){
     return s+(+p.valor||0);
   },0);
 }
-
 function totalPagosTCdelMes(){
   const mes=mesActual();
-  return data.pasivos
-    .filter(p=>p.tipo==='Tarjeta')
-    .reduce((s,p)=>{
-      const sum=(p.pagos||[])
-        .filter(pg=>(pg.fecha||'').startsWith(mes))
-        .reduce((ss,pg)=>ss+(+pg.monto||0),0);
-      return s+sum;
-    },0);
+  return data.pasivos.filter(p=>p.tipo==='Tarjeta').reduce((s,p)=>{
+    const sum=(p.pagos||[]).filter(pg=>(pg.fecha||'').startsWith(mes)).reduce((ss,pg)=>ss+(+pg.monto||0),0);
+    return s+sum;
+  },0);
 }
-
 function gastoDeCategoria(cat){
   const mes=mesActual();
-  const gastosMes=data.gastos
-    .filter(g=>g.categoria===cat && (g.fecha||'').startsWith(mes))
-    .reduce((s,g)=>s+(+g.monto||0),0);
+  const gastosMes=data.gastos.filter(g=>g.categoria===cat && (g.fecha||'').startsWith(mes)).reduce((s,g)=>s+(+g.monto||0),0);
   if(cat===CAT_PAGO_TC){
-    const pagosMes=data.pasivos
-      .filter(p=>p.tipo==='Tarjeta')
-      .reduce((s,p)=>{
-        const sum=(p.pagos||[])
-          .filter(pg=>(pg.fecha||'').startsWith(mes))
-          .reduce((ss,pg)=>ss+(+pg.monto||0),0);
-        return s+sum;
-      },0);
+    const pagosMes=data.pasivos.filter(p=>p.tipo==='Tarjeta').reduce((s,p)=>{
+      const sum=(p.pagos||[]).filter(pg=>(pg.fecha||'').startsWith(mes)).reduce((ss,pg)=>ss+(+pg.monto||0),0);
+      return s+sum;
+    },0);
     return gastosMes+pagosMes;
   }
   return gastosMes;
 }
 function gastoDeCategoriaSoloGastos(cat){
   const mes=mesActual();
-  return data.gastos
-    .filter(g=>g.categoria===cat && (g.fecha||'').startsWith(mes))
-    .reduce((s,g)=>s+(+g.monto||0),0);
+  return data.gastos.filter(g=>g.categoria===cat && (g.fecha||'').startsWith(mes)).reduce((s,g)=>s+(+g.monto||0),0);
 }
 function gastoDeCategoriaSoloPagos(cat){
   if(cat!==CAT_PAGO_TC) return 0;
   return totalPagosTCdelMes();
 }
 function mesActual(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');}
-
 function infoCuotas(g){
-  const cuotas=+g.cuotas||1;
-  const tasa=+g.tasaCuotas||0;
+  const cuotas=+g.cuotas||1;const tasa=+g.tasaCuotas||0;
   if(cuotas<=1 && tasa<=0) return '';
   const total=g.monto*(1+(tasa/100)*cuotas);
   const valorCuota=total/cuotas;
   return ` · ${cuotas} cuota${cuotas===1?'':'s'} de ${clp(valorCuota)}`;
 }
 function valorCuotaGasto(g){
-  const cuotas=+g.cuotas||1;
-  const tasa=+g.tasaCuotas||0;
+  const cuotas=+g.cuotas||1;const tasa=+g.tasaCuotas||0;
   if(cuotas<=1 && tasa<=0) return 0;
   return (g.monto*(1+(tasa/100)*cuotas))/cuotas;
 }
-function totalConInteresGasto(g){
-  const cuotas=+g.cuotas||1;
-  const tasa=+g.tasaCuotas||0;
-  return g.monto*(1+(tasa/100)*cuotas);
-}
-function cuotasVigentesDeTarjeta(tarjetaId){
-  return data.gastos.filter(g=>g.tarjetaId===tarjetaId && (+g.cuotas||1)>=2);
-}
-function totalMensualCuotasTarjeta(tarjetaId){
-  return cuotasVigentesDeTarjeta(tarjetaId).reduce((s,g)=>s+valorCuotaGasto(g),0);
-}
-
+function cuotasVigentesDeTarjeta(tarjetaId){return data.gastos.filter(g=>g.tarjetaId===tarjetaId && (+g.cuotas||1)>=2);}
+function totalMensualCuotasTarjeta(tarjetaId){return cuotasVigentesDeTarjeta(tarjetaId).reduce((s,g)=>s+valorCuotaGasto(g),0);}
 function datosMensuales(rango){
   const meses={};
   const hoyD=new Date();
@@ -949,10 +867,6 @@ function renderAll(){
   renderConfig();
   bindRowClicks();
 }
-
-/* =====================================================
-   SALUDO DINÁMICO CON EMAIL
-===================================================== */
 function updateSaludo(){
   const el=document.getElementById('saludoDashboard');
   if(!el) return;
@@ -962,7 +876,6 @@ function updateSaludo(){
     el.textContent='Hola Oscar 👋';
   }
 }
-
 function donutSVG(segmentos,size=160,stroke=20){
   const r=(size-stroke)/2;
   const c=2*Math.PI*r;
@@ -975,10 +888,7 @@ function donutSVG(segmentos,size=160,stroke=20){
     offset+=dash;
     return el;
   }).join('');
-  return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
-    <circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="rgba(255,255,255,.04)" stroke-width="${stroke}"/>
-    ${cir}
-  </svg>`;
+  return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="rgba(255,255,255,.04)" stroke-width="${stroke}"/>${cir}</svg>`;
 }
 
 function renderDashboard(){
@@ -996,19 +906,13 @@ function renderDashboard(){
   const lineas=getLineasCredito();
   const totalDeudaTarjetas=tarjetas.reduce((s,t)=>s+Math.max(0,deudaTarjeta(t)),0);
   const totalUtilizadoLineas=lineas.reduce((s,l)=>s+(+l.utilizado||0),0);
-
   document.getElementById('dashSub').textContent=new Date().toLocaleDateString('es-CL',{month:'long',year:'numeric'});
-
   document.getElementById('heroPatrimonio').innerHTML=`
     <div class="hero-card">
       <div class="hero-main">
         <div class="hero-label">Patrimonio neto</div>
-        <div class="hero-value ${pat<0?'negative':''}">
-          <span class="cur">$</span>${Math.abs(pat).toLocaleString('es-CL')}
-        </div>
-        <div class="hero-foot">
-          ${pat<0?'⚠ Patrimonio negativo · Deuda mayor que activos':'Balance consolidado de todos tus activos y pasivos'}
-        </div>
+        <div class="hero-value ${pat<0?'negative':''}"><span class="cur">$</span>${Math.abs(pat).toLocaleString('es-CL')}</div>
+        <div class="hero-foot">${pat<0?'⚠ Patrimonio negativo · Deuda mayor que activos':'Balance consolidado de todos tus activos y pasivos'}</div>
       </div>
       <div class="hero-stat">
         <div class="hero-stat-label">Activos</div>
@@ -1023,34 +927,14 @@ function renderDashboard(){
       <div class="hero-stat">
         <div class="hero-stat-label">Ratio deuda/activo</div>
         <div class="hero-stat-value ${(ta&&(tp/ta*100)>60)?'neg':''}">${ta?((tp/ta)*100).toFixed(1):'0.0'}%</div>
-        <div class="hero-bar">
-          <div class="hero-bar-fill" style="width:${ta?Math.min(100,tp/ta*100):0}%;background:${(ta&&(tp/ta*100)>60)?'var(--red)':'var(--accent)'}"></div>
-        </div>
+        <div class="hero-bar"><div class="hero-bar-fill" style="width:${ta?Math.min(100,tp/ta*100):0}%;background:${(ta&&(tp/ta*100)>60)?'var(--red)':'var(--accent)'}"></div></div>
       </div>
     </div>`;
-
   document.getElementById('dashKpis').innerHTML=`
-    <div class="card">
-      <div class="kpi-label">Ingresos del mes</div>
-      <div class="kpi-value pos"><span class="cur">$</span>${ingMes.toLocaleString('es-CL')}</div>
-      <div class="kpi-foot">Histórico ${clp(ing)}</div>
-    </div>
-    <div class="card">
-      <div class="kpi-label">Gastos del mes</div>
-      <div class="kpi-value neg"><span class="cur">$</span>${gasMes.toLocaleString('es-CL')}</div>
-      <div class="kpi-foot">Incluye pagos TC ${clp(totalPagosTCdelMes())}</div>
-    </div>
-    <div class="card">
-      <div class="kpi-label">Ahorro del mes</div>
-      <div class="kpi-value ${ahoMes<0?'neg':'pos'}"><span class="cur">$</span>${Math.abs(ahoMes).toLocaleString('es-CL')}</div>
-      <div class="kpi-foot">${ahoMes<0?'⚠ Estás gastando más de lo que ingresas':'Flujo positivo'}</div>
-    </div>
-    <div class="card">
-      <div class="kpi-label">Tasa de ahorro</div>
-      <div class="kpi-value ${aho<0?'neg':(aho>=20?'pos':'')}">${aho.toFixed(1)}<span class="cur" style="font-size:16px">%</span></div>
-      <div class="kpi-foot"><span class="badge ${aho<0?'b-down':(aho>=20?'b-up':'b-warn')}">${aho<0?'Negativa':(aho>=20?'Saludable':'A mejorar')}</span></div>
-    </div>`;
-
+    <div class="card"><div class="kpi-label">Ingresos del mes</div><div class="kpi-value pos"><span class="cur">$</span>${ingMes.toLocaleString('es-CL')}</div><div class="kpi-foot">Histórico ${clp(ing)}</div></div>
+    <div class="card"><div class="kpi-label">Gastos del mes</div><div class="kpi-value neg"><span class="cur">$</span>${gasMes.toLocaleString('es-CL')}</div><div class="kpi-foot">Incluye pagos TC ${clp(totalPagosTCdelMes())}</div></div>
+    <div class="card"><div class="kpi-label">Ahorro del mes</div><div class="kpi-value ${ahoMes<0?'neg':'pos'}"><span class="cur">$</span>${Math.abs(ahoMes).toLocaleString('es-CL')}</div><div class="kpi-foot">${ahoMes<0?'⚠ Estás gastando más de lo que ingresas':'Flujo positivo'}</div></div>
+    <div class="card"><div class="kpi-label">Tasa de ahorro</div><div class="kpi-value ${aho<0?'neg':(aho>=20?'pos':'')}">${aho.toFixed(1)}<span class="cur" style="font-size:16px">%</span></div><div class="kpi-foot"><span class="badge ${aho<0?'b-down':(aho>=20?'b-up':'b-warn')}">${aho<0?'Negativa':(aho>=20?'Saludable':'A mejorar')}</span></div></div>`;
   const tSub=document.getElementById('dashTarjSub');
   const tCont=document.getElementById('dashTarjChart');
   if(tarjetas.length){
@@ -1058,24 +942,8 @@ function renderDashboard(){
     const totalDisp=totalCupo-totalDeudaTarjetas;
     const pctTotal=totalCupo?(totalDeudaTarjetas/totalCupo*100):0;
     tSub.textContent=`${tarjetas.length} activas · ${pctTotal.toFixed(0)}% del cupo`;
-    tCont.innerHTML=`
-      <div class="chart-donut">
-        ${donutSVG([{valor:totalDeudaTarjetas,color:'#ec4899'},{valor:totalDisp,color:'rgba(255,255,255,.06)'}])}
-        <div class="donut-center">
-          <div class="dc-l">Utilizado</div>
-          <div class="dc-v ${pctTotal>80?'neg':''}">${clp(totalDeudaTarjetas)}</div>
-          <div class="dc-s">de ${clp(totalCupo)}</div>
-        </div>
-      </div>
-      <div class="chart-legend">
-        <div class="leg"><span class="sw" style="background:#ec4899"></span>Utilizado<span class="val">${clp(totalDeudaTarjetas)}</span><span class="pct">${pctTotal.toFixed(0)}%</span></div>
-        <div class="leg"><span class="sw" style="background:rgba(255,255,255,.2)"></span>Disponible<span class="val">${clp(totalDisp)}</span><span class="pct">${(100-pctTotal).toFixed(0)}%</span></div>
-      </div>`;
-  }else{
-    tSub.textContent='Sin tarjetas';
-    tCont.innerHTML='<div class="empty"><strong>Sin tarjetas</strong>Agrega tu primera tarjeta en Gastos y crédito</div>';
-  }
-
+    tCont.innerHTML=`<div class="chart-donut">${donutSVG([{valor:totalDeudaTarjetas,color:'#ec4899'},{valor:totalDisp,color:'rgba(255,255,255,.06)'}])}<div class="donut-center"><div class="dc-l">Utilizado</div><div class="dc-v ${pctTotal>80?'neg':''}">${clp(totalDeudaTarjetas)}</div><div class="dc-s">de ${clp(totalCupo)}</div></div></div><div class="chart-legend"><div class="leg"><span class="sw" style="background:#ec4899"></span>Utilizado<span class="val">${clp(totalDeudaTarjetas)}</span><span class="pct">${pctTotal.toFixed(0)}%</span></div><div class="leg"><span class="sw" style="background:rgba(255,255,255,.2)"></span>Disponible<span class="val">${clp(totalDisp)}</span><span class="pct">${(100-pctTotal).toFixed(0)}%</span></div></div>`;
+  }else{tSub.textContent='Sin tarjetas';tCont.innerHTML='<div class="empty"><strong>Sin tarjetas</strong>Agrega tu primera tarjeta en Gastos y crédito</div>';}
   const lSub=document.getElementById('dashLinSub');
   const lCont=document.getElementById('dashLinChart');
   if(lineas.length){
@@ -1083,66 +951,23 @@ function renderDashboard(){
     const totalDispL=totalCupoL-totalUtilizadoLineas;
     const pctTotalL=totalCupoL?(totalUtilizadoLineas/totalCupoL*100):0;
     lSub.textContent=`${lineas.length} activas · ${pctTotalL.toFixed(0)}% del cupo`;
-    lCont.innerHTML=`
-      <div class="chart-donut">
-        ${donutSVG([{valor:totalUtilizadoLineas,color:'#06b6d4'},{valor:totalDispL,color:'rgba(255,255,255,.06)'}])}
-        <div class="donut-center">
-          <div class="dc-l">Utilizado</div>
-          <div class="dc-v ${pctTotalL>80?'neg':''}">${clp(totalUtilizadoLineas)}</div>
-          <div class="dc-s">de ${clp(totalCupoL)}</div>
-        </div>
-      </div>
-      <div class="chart-legend">
-        <div class="leg"><span class="sw" style="background:#06b6d4"></span>Utilizado<span class="val">${clp(totalUtilizadoLineas)}</span><span class="pct">${pctTotalL.toFixed(0)}%</span></div>
-        <div class="leg"><span class="sw" style="background:rgba(255,255,255,.2)"></span>Disponible<span class="val">${clp(totalDispL)}</span><span class="pct">${(100-pctTotalL).toFixed(0)}%</span></div>
-      </div>`;
-  }else{
-    lSub.textContent='Sin líneas';
-    lCont.innerHTML='<div class="empty"><strong>Sin líneas de crédito</strong>Agrega tu primera línea en Gastos y crédito</div>';
-  }
-
+    lCont.innerHTML=`<div class="chart-donut">${donutSVG([{valor:totalUtilizadoLineas,color:'#06b6d4'},{valor:totalDispL,color:'rgba(255,255,255,.06)'}])}<div class="donut-center"><div class="dc-l">Utilizado</div><div class="dc-v ${pctTotalL>80?'neg':''}">${clp(totalUtilizadoLineas)}</div><div class="dc-s">de ${clp(totalCupoL)}</div></div></div><div class="chart-legend"><div class="leg"><span class="sw" style="background:#06b6d4"></span>Utilizado<span class="val">${clp(totalUtilizadoLineas)}</span><span class="pct">${pctTotalL.toFixed(0)}%</span></div><div class="leg"><span class="sw" style="background:rgba(255,255,255,.2)"></span>Disponible<span class="val">${clp(totalDispL)}</span><span class="pct">${(100-pctTotalL).toFixed(0)}%</span></div></div>`;
+  }else{lSub.textContent='Sin líneas';lCont.innerHTML='<div class="empty"><strong>Sin líneas de crédito</strong>Agrega tu primera línea en Gastos y crédito</div>';}
   const cats={};
   data.gastos.filter(g=>g.fecha?.startsWith(mes)).forEach(g=>cats[g.categoria]=(cats[g.categoria]||0)+(+g.monto||0));
   const pagosMes=totalPagosTCdelMes();
   if(pagosMes>0) cats[CAT_PAGO_TC]=(cats[CAT_PAGO_TC]||0)+pagosMes;
   const totalCat=Object.values(cats).reduce((s,v)=>s+v,0);
   const sorted=Object.entries(cats).sort((a,b)=>b[1]-a[1]).slice(0,6);
-  document.getElementById('dashCat').innerHTML=sorted.length?sorted.map(([c,v])=>`
-    <div class="bar-row">
-      <div class="bar-top"><span>${iconoCategoria(c)} ${c}</span>
-      <span class="amt">${clp(v)} <small>${((v/totalCat)*100).toFixed(0)}%</small></span></div>
-      <div class="bar-track"><div class="bar-fill" style="width:${v/totalCat*100}%;background:${colorCategoria(c)}"></div></div>
-    </div>`).join(''):'<div class="empty">Sin gastos este mes</div>';
-
-  const top=data.presupuestos.slice(0,4).map(p=>{
-    const g=gastoDeCategoria(p.categoria);const pct=p.asignado?Math.min(100,g/p.asignado*100):0;const over=g>p.asignado;
-    return `<div class="bar-row">
-      <div class="bar-top"><span>${iconoCategoria(p.categoria)} ${p.categoria}</span>
-      <span class="amt ${over?'neg':''}">${clp(g)} <small>/ ${clp(p.asignado)}</small></span></div>
-      <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${over?'var(--red)':(pct>90?'var(--orange)':'var(--accent)')}"></div></div>
-    </div>`;
-  }).join('');
+  document.getElementById('dashCat').innerHTML=sorted.length?sorted.map(([c,v])=>`<div class="bar-row"><div class="bar-top"><span>${iconoCategoria(c)} ${c}</span><span class="amt">${clp(v)} <small>${((v/totalCat)*100).toFixed(0)}%</small></span></div><div class="bar-track"><div class="bar-fill" style="width:${v/totalCat*100}%;background:${colorCategoria(c)}"></div></div></div>`).join(''):'<div class="empty">Sin gastos este mes</div>';
+  const top=data.presupuestos.slice(0,4).map(p=>{const g=gastoDeCategoria(p.categoria);const pct=p.asignado?Math.min(100,g/p.asignado*100):0;const over=g>p.asignado;return `<div class="bar-row"><div class="bar-top"><span>${iconoCategoria(p.categoria)} ${p.categoria}</span><span class="amt ${over?'neg':''}">${clp(g)} <small>/ ${clp(p.asignado)}</small></span></div><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${over?'var(--red)':(pct>90?'var(--orange)':'var(--accent)')}"></div></div></div>`;}).join('');
   document.getElementById('dashPresupuesto').innerHTML=top||'<div class="empty">Sin presupuestos</div>';
-
-  const movs=[...data.ingresos.map(i=>({...i,tipo:'ingreso'})),...data.gastos.map(g=>({...g,tipo:'gasto'}))]
-    .sort((a,b)=>(b.fecha||'').localeCompare(a.fecha||'')).slice(0,6);
-  document.getElementById('dashMovs').innerHTML=movs.length?movs.map(m=>{
-    const tarjeta=m.tarjetaId?getTarjetaById(m.tarjetaId):null;
-    const sub=`${m.categoria} · ${fmtDate(m.fecha)}${tarjeta?' · 💳 '+tarjeta.nombre:''}${m.tipo==='gasto'?infoCuotas(m):''}`;
-    return `<div class="row" data-edit="${m.tipo}" data-id="${m.id}">
-      <div class="row-ic">${iconoCategoria(m.categoria)}</div>
-      <div class="row-main"><div class="row-t">${m.nombre}</div><div class="row-s">${sub}</div></div>
-      <div class="row-amt ${m.tipo==='ingreso'?'pos':'neg'}">${m.tipo==='ingreso'?'+':'−'}${clp(m.monto)}</div>
-    </div>`;
-  }).join(''):'<div class="empty">Sin movimientos</div>';
-
+  const movs=[...data.ingresos.map(i=>({...i,tipo:'ingreso'})),...data.gastos.map(g=>({...g,tipo:'gasto'}))].sort((a,b)=>(b.fecha||'').localeCompare(a.fecha||'')).slice(0,6);
+  document.getElementById('dashMovs').innerHTML=movs.length?movs.map(m=>{const tarjeta=m.tarjetaId?getTarjetaById(m.tarjetaId):null;const sub=`${m.categoria} · ${fmtDate(m.fecha)}${tarjeta?' · 💳 '+tarjeta.nombre:''}${m.tipo==='gasto'?infoCuotas(m):''}`;return `<div class="row" data-edit="${m.tipo}" data-id="${m.id}"><div class="row-ic">${iconoCategoria(m.categoria)}</div><div class="row-main"><div class="row-t">${m.nombre}</div><div class="row-s">${sub}</div></div><div class="row-amt ${m.tipo==='ingreso'?'pos':'neg'}">${m.tipo==='ingreso'?'+':'−'}${clp(m.monto)}</div></div>`;}).join(''):'<div class="empty">Sin movimientos</div>';
   renderSugerencias({ing,gas,pat,ta,tp,ahoMes,aho,tarjetas,lineas,totalDeudaTarjetas,totalUtilizadoLineas,ingMes,gasMes});
   renderEstrategiasDeuda();
 }
 
-/* =====================================================
-   SUGERENCIAS
-===================================================== */
 function renderSugerencias(ctx){
   const sug=[];
   const {ing,pat,ta,tp,ahoMes,aho,tarjetas,lineas,totalDeudaTarjetas,totalUtilizadoLineas,gasMes}=ctx;
@@ -1168,163 +993,59 @@ function renderSugerencias(ctx){
     else if(ratio<30 && ratio>0) sug.push({tipo:'ok',icon:'⚖',title:'Ratio deuda/activo saludable',text:`Solo el <strong>${ratio.toFixed(0)}%</strong> de tus activos están financiados con deuda. Tienes margen para invertir o apalancarte con prudencia.`});
   }
   const totalCuotasMes=tarjetas.reduce((s,t)=>s+totalMensualCuotasTarjeta(t.id),0);
-  if(totalCuotasMes>0){
-    sug.push({tipo:'info',icon:'📆',title:'Cuotas vigentes este mes',text:`Tienes <strong>${clp(totalCuotasMes)}</strong> comprometidos en cuotas de tarjetas este mes. Considéralo al planificar tus gastos variables.`});
-  }
+  if(totalCuotasMes>0){sug.push({tipo:'info',icon:'📆',title:'Cuotas vigentes este mes',text:`Tienes <strong>${clp(totalCuotasMes)}</strong> comprometidos en cuotas de tarjetas este mes. Considéralo al planificar tus gastos variables.`});}
   if(gasMes>0 && !sug.some(x=>x.tipo==='alert')) sug.push({tipo:'info',icon:'🛡',title:'Fondo de emergencia recomendado',text:`Con tus gastos actuales (${clp(gasMes)} al mes), un fondo de emergencia de 3–6 meses equivale a <strong>${clp(gasMes*3)} – ${clp(gasMes*6)}</strong>. Considéralo antes de invertir a largo plazo.`});
   if(!data.ingresos.length && !data.gastos.length) sug.push({tipo:'info',icon:'✦',title:'Empieza a registrar',text:'Agrega tus ingresos y gastos del mes para que la app pueda darte sugerencias personalizadas basadas en tus finanzas reales.'});
   const cont=document.getElementById('sugerencias');
-  cont.innerHTML=`<div class="sug-head"><span class="dot"></span> Sugerencias</div>
-    ${sug.map(s=>`<div class="sug-item"><div class="sug-icon ${s.tipo}">${s.icon}</div><div class="sug-body"><div class="sug-title">${s.title}</div><div class="sug-text">${s.text}</div></div></div>`).join('')}`;
+  cont.innerHTML=`<div class="sug-head"><span class="dot"></span> Sugerencias</div>${sug.map(s=>`<div class="sug-item"><div class="sug-icon ${s.tipo}">${s.icon}</div><div class="sug-body"><div class="sug-title">${s.title}</div><div class="sug-text">${s.text}</div></div></div>`).join('')}`;
 }
 
-/* =====================================================
-   ESTRATEGIAS PARA SALIR DE DEUDAS
-===================================================== */
 function generarEstrategiasDeuda(){
   const deudas=[];
-
-  /* Tarjetas de crédito */
   data.pasivos.filter(p=>p.tipo==='Tarjeta').forEach(t=>{
     const deuda=Math.max(0,deudaTarjeta(t));
-    if(deuda>0){
-      deudas.push({
-        nombre:t.nombre,
-        monto:deuda,
-        tasaMensual:3.5, /* promedio tarjetas Chile */
-        tipo:'Tarjeta de crédito',
-        icon:'💳',
-        color:'#ec4899'
-      });
-    }
+    if(deuda>0){deudas.push({nombre:t.nombre,monto:deuda,tasaMensual:3.5,tipo:'Tarjeta de crédito',icon:'💳',color:'#ec4899'});}
   });
-
-  /* Líneas de crédito */
   data.pasivos.filter(p=>p.tipo==='Linea').forEach(l=>{
     const util=+l.utilizado||0;
-    if(util>0){
-      deudas.push({
-        nombre:l.nombre,
-        monto:util,
-        tasaMensual:(+l.tasa)||1.5,
-        tipo:'Línea de crédito',
-        icon:'🏦',
-        color:'#06b6d4'
-      });
-    }
+    if(util>0){deudas.push({nombre:l.nombre,monto:util,tasaMensual:(+l.tasa)||1.5,tipo:'Línea de crédito',icon:'🏦',color:'#06b6d4'});}
   });
-
-  /* Otros pasivos (créditos) */
   data.pasivos.filter(p=>p.tipo!=='Tarjeta' && p.tipo!=='Linea').forEach(p=>{
     const monto=+p.valor||0;
     if(monto>0){
       const tasas={Hipotecario:0.45,Automotriz:0.9,Otro:1.5};
-      deudas.push({
-        nombre:p.nombre,
-        monto:monto,
-        tasaMensual:tasas[p.tipo]||1.5,
-        tipo:p.tipo,
-        icon:iconoCategoria(p.tipo),
-        color:'#a855f7'
-      });
+      deudas.push({nombre:p.nombre,monto:monto,tasaMensual:tasas[p.tipo]||1.5,tipo:p.tipo,icon:iconoCategoria(p.tipo),color:'#a855f7'});
     }
   });
-
   if(deudas.length===0) return null;
-
   const ordenBolaNieve=[...deudas].sort((a,b)=>a.monto-b.monto);
   const ordenAvalancha=[...deudas].sort((a,b)=>b.tasaMensual-a.tasaMensual);
-
   const total=deudas.reduce((s,d)=>s+d.monto,0);
   const interesMensualActual=deudas.reduce((s,d)=>s+d.monto*d.tasaMensual/100,0);
   const tasaPromedioPonderada=total?deudas.reduce((s,d)=>s+d.monto*d.tasaMensual,0)/total:0;
-
-  /* Deuda más pequeña y más cara */
   const deudaMasPequena=ordenBolaNieve[0];
   const deudaMasCara=ordenAvalancha[0];
-
-  /* Simulación consolidación: crédito al 0.9% mensual por 48 meses */
   const tasaConsol=0.9/100;
   const nMeses=48;
   const cuotaConsol=total*(tasaConsol*Math.pow(1+tasaConsol,nMeses))/(Math.pow(1+tasaConsol,nMeses)-1);
   const totalPagadoConsol=cuotaConsol*nMeses;
   const interesesConsol=totalPagadoConsol-total;
-
-  return {
-    deudas, ordenBolaNieve, ordenAvalancha,
-    total, interesMensualActual, tasaPromedioPonderada,
-    deudaMasPequena, deudaMasCara,
-    consolidacion:{cuotaConsol,totalPagadoConsol,interesesConsol,tasaMensual:0.9,meses:nMeses}
-  };
+  return {deudas,ordenBolaNieve,ordenAvalancha,total,interesMensualActual,tasaPromedioPonderada,deudaMasPequena,deudaMasCara,consolidacion:{cuotaConsol,totalPagadoConsol,interesesConsol,tasaMensual:0.9,meses:nMeses}};
 }
 
 function renderEstrategiasDeuda(){
   const cont=document.getElementById('estrategiasDeuda');
   if(!cont) return;
   const est=generarEstrategiasDeuda();
-
   if(!est){
-    cont.innerHTML=`
-      <div class="suggestions">
-        <div class="sug-head"><span class="dot"></span> Estrategias para salir de deudas</div>
-        <div style="display:flex;gap:12px;padding:6px 0">
-          <div class="sug-icon ok">✓</div>
-          <div class="sug-body">
-            <div class="sug-title">¡Sin deudas registradas!</div>
-            <div class="sug-text">No tienes deudas pendientes. Mantén el hábito de no usar más del 30% de tus cupos y destina el excedente al ahorro o inversión.</div>
-          </div>
-        </div>
-      </div>`;
+    cont.innerHTML=`<div class="suggestions"><div class="sug-head"><span class="dot"></span> Estrategias para salir de deudas</div><div style="display:flex;gap:12px;padding:6px 0"><div class="sug-icon ok">✓</div><div class="sug-body"><div class="sug-title">¡Sin deudas registradas!</div><div class="sug-text">No tienes deudas pendientes. Mantén el hábito de no usar más del 30% de tus cupos y destina el excedente al ahorro o inversión.</div></div></div></div>`;
     return;
   }
-
-  /* Colores para los pasos */
-  const pasoColor=(i,total)=>i===0?'var(--accent)':i===1?'var(--accent-2)':i<total?'var(--muted)':'var(--muted-2)';
-
-  /* Avalancha: ordenar de mayor a menor tasa */
-  const pasosAvalancha=est.ordenAvalancha.map((d,i)=>`
-    <li>
-      <span class="num" style="background:${d.color}22;color:${d.color};border-color:${d.color}44">${i+1}</span>
-      <span class="info">
-        <strong>${esc(d.nombre)}</strong><br>
-        <span class="tasa">${d.icon} ${esc(d.tipo)} · ${d.tasaMensual.toFixed(2)}% mensual</span>
-      </span>
-      <span class="monto">${clp(d.monto)}</span>
-    </li>`).join('');
-
-  /* Bola de nieve: ordenar de menor a mayor monto */
-  const pasosBolaNieve=est.ordenBolaNieve.map((d,i)=>`
-    <li>
-      <span class="num" style="background:${d.color}22;color:${d.color};border-color:${d.color}44">${i+1}</span>
-      <span class="info">
-        <strong>${esc(d.nombre)}</strong><br>
-        <span class="tasa">${d.icon} ${esc(d.tipo)} · ${d.tasaMensual.toFixed(2)}% mensual</span>
-      </span>
-      <span class="monto">${clp(d.monto)}</span>
-    </li>`).join('');
-
-  /* Híbrida: primero la deuda más pequeña si tiene tasa alta, luego avalancha */
-  const hibridaOrden=(()=>{
-    /* Buscar la deuda más pequeña con tasa > promedio */
-    const promo=est.tasaPromedioPonderada;
-    const candidatas=est.ordenBolaNieve.filter(d=>d.tasaMensual>=promo);
-    const primera=candidatas[0]||est.ordenBolaNieve[0];
-    const resto=est.ordenAvalancha.filter(d=>d!==primera);
-    return [primera,...resto];
-  })();
-  const pasosHibrida=hibridaOrden.map((d,i)=>`
-    <li>
-      <span class="num" style="background:${d.color}22;color:${d.color};border-color:${d.color}44">${i+1}</span>
-      <span class="info">
-        <strong>${esc(d.nombre)}</strong>${i===0?' <span style="color:#22d3ee;font-weight:600">← empezar aquí</span>':''}<br>
-        <span class="tasa">${d.icon} ${esc(d.tipo)} · ${d.tasaMensual.toFixed(2)}% mensual</span>
-      </span>
-      <span class="monto">${clp(d.monto)}</span>
-    </li>`).join('');
-
-  /* Ahorro estimado avalancha vs bola de nieve (aprox 15-25% de intereses totales en el tiempo) */
+  const pasosAvalancha=est.ordenAvalancha.map((d,i)=>`<li><span class="num" style="background:${d.color}22;color:${d.color};border-color:${d.color}44">${i+1}</span><span class="info"><strong>${esc(d.nombre)}</strong><br><span class="tasa">${d.icon} ${esc(d.tipo)} · ${d.tasaMensual.toFixed(2)}% mensual</span></span><span class="monto">${clp(d.monto)}</span></li>`).join('');
+  const pasosBolaNieve=est.ordenBolaNieve.map((d,i)=>`<li><span class="num" style="background:${d.color}22;color:${d.color};border-color:${d.color}44">${i+1}</span><span class="info"><strong>${esc(d.nombre)}</strong><br><span class="tasa">${d.icon} ${esc(d.tipo)} · ${d.tasaMensual.toFixed(2)}% mensual</span></span><span class="monto">${clp(d.monto)}</span></li>`).join('');
+  const hibridaOrden=(()=>{const promo=est.tasaPromedioPonderada;const candidatas=est.ordenBolaNieve.filter(d=>d.tasaMensual>=promo);const primera=candidatas[0]||est.ordenBolaNieve[0];const resto=est.ordenAvalancha.filter(d=>d!==primera);return [primera,...resto];})();
+  const pasosHibrida=hibridaOrden.map((d,i)=>`<li><span class="num" style="background:${d.color}22;color:${d.color};border-color:${d.color}44">${i+1}</span><span class="info"><strong>${esc(d.nombre)}</strong>${i===0?' <span style="color:#22d3ee;font-weight:600">← empezar aquí</span>':''}<br><span class="tasa">${d.icon} ${esc(d.tipo)} · ${d.tasaMensual.toFixed(2)}% mensual</span></span><span class="monto">${clp(d.monto)}</span></li>`).join('');
   const ahorroAvalancha=est.interesMensualActual*12*0.25;
-
   cont.innerHTML=`
     <div class="suggestions" style="padding:22px 24px">
       <div class="estrategias-head">
@@ -1334,126 +1055,147 @@ function renderEstrategiasDeuda(){
           <div class="sub">Analizamos tus ${est.deudas.length} deuda${est.deudas.length===1?'':'s'} y te proponemos 4 formas de atacarlas.</div>
         </div>
       </div>
-
       <div class="estrategia-resumen">
-        <div class="item">
-          <div class="lbl">Deuda total</div>
-          <div class="val neg">${clp(est.total)}</div>
-        </div>
-        <div class="item">
-          <div class="lbl">Interés mensual estimado</div>
-          <div class="val neg">${clp(est.interesMensualActual)}</div>
-        </div>
-        <div class="item">
-          <div class="lbl">Tasa promedio ponderada</div>
-          <div class="val">${est.tasaPromedioPonderada.toFixed(2)}%</div>
-        </div>
+        <div class="item"><div class="lbl">Deuda total</div><div class="val neg">${clp(est.total)}</div></div>
+        <div class="item"><div class="lbl">Interés mensual estimado</div><div class="val neg">${clp(est.interesMensualActual)}</div></div>
+        <div class="item"><div class="lbl">Tasa promedio ponderada</div><div class="val">${est.tasaPromedioPonderada.toFixed(2)}%</div></div>
       </div>
-
-      <!-- 1. AVALANCHA -->
       <div class="estrategia-card optima">
-        <div class="estrategia-head">
-          <div class="estrategia-icon pur">🏔</div>
-          <div style="flex:1">
-            <div class="estrategia-title">Método Avalancha<span class="estrategia-tag tag-optima">Matemáticamente óptima</span></div>
-            <div class="estrategia-sub">Ahorras la mayor cantidad de intereses a largo plazo</div>
-          </div>
-        </div>
-        <div class="estrategia-body">
-          Pagas el <strong>mínimo en todas</strong> las deudas, y el dinero extra lo destinas a la deuda con la <strong>tasa de interés más alta</strong>. Cuando esa se termina, pasas a la siguiente.
-        </div>
-        <ul class="estrategia-pasos">
-          ${pasosAvalancha}
-        </ul>
-        <div class="estrategia-foot">
-          ✅ <strong>Ventaja:</strong> pagas menos intereses en total. <strong>Ahorro estimado:</strong> ~${clp(ahorroAvalancha)} a 12 meses.<br>
-          ⚠️ <strong>Desventaja:</strong> las primeras victorias tardan porque las deudas más caras suelen ser las más grandes.
-        </div>
+        <div class="estrategia-head"><div class="estrategia-icon pur">🏔</div><div style="flex:1"><div class="estrategia-title">Método Avalancha<span class="estrategia-tag tag-optima">Matemáticamente óptima</span></div><div class="estrategia-sub">Ahorras la mayor cantidad de intereses a largo plazo</div></div></div>
+        <div class="estrategia-body">Pagas el <strong>mínimo en todas</strong> las deudas, y el dinero extra lo destinas a la deuda con la <strong>tasa de interés más alta</strong>. Cuando esa se termina, pasas a la siguiente.</div>
+        <ul class="estrategia-pasos">${pasosAvalancha}</ul>
+        <div class="estrategia-foot">✅ <strong>Ventaja:</strong> pagas menos intereses en total. <strong>Ahorro estimado:</strong> ~${clp(ahorroAvalancha)} a 12 meses.<br>⚠️ <strong>Desventaja:</strong> las primeras victorias tardan porque las deudas más caras suelen ser las más grandes.</div>
       </div>
-
-      <!-- 2. BOLA DE NIEVE -->
       <div class="estrategia-card">
-        <div class="estrategia-head">
-          <div class="estrategia-icon pur">⛄</div>
-          <div style="flex:1">
-            <div class="estrategia-title">Método Bola de Nieve<span class="estrategia-tag tag-motivadora">Psicológicamente motivadora</span></div>
-            <div class="estrategia-sub">Eliminas deudas rápido y ganas impulso</div>
-          </div>
-        </div>
-        <div class="estrategia-body">
-          Pagas el <strong>mínimo en todas</strong>, y el dinero extra lo destinas a la deuda con el <strong>saldo más pequeño</strong> (sin importar la tasa). Cuando la liquidas, sigues con la siguiente más pequeña.
-        </div>
-        <ul class="estrategia-pasos">
-          ${pasosBolaNieve}
-        </ul>
-        <div class="estrategia-foot">
-          ✅ <strong>Ventaja:</strong> victorias rápidas que te mantienen motivado. Con tu primera deuda (${clp(est.deudaMasPequena.monto)}) la liquidarías en pocos meses.<br>
-          ⚠️ <strong>Desventaja:</strong> podrías pagar más intereses totales si dejas las deudas caras para el final.
-        </div>
+        <div class="estrategia-head"><div class="estrategia-icon pur">⛄</div><div style="flex:1"><div class="estrategia-title">Método Bola de Nieve<span class="estrategia-tag tag-motivadora">Psicológicamente motivadora</span></div><div class="estrategia-sub">Eliminas deudas rápido y ganas impulso</div></div></div>
+        <div class="estrategia-body">Pagas el <strong>mínimo en todas</strong>, y el dinero extra lo destinas a la deuda con el <strong>saldo más pequeño</strong> (sin importar la tasa). Cuando la liquidas, sigues con la siguiente más pequeña.</div>
+        <ul class="estrategia-pasos">${pasosBolaNieve}</ul>
+        <div class="estrategia-foot">✅ <strong>Ventaja:</strong> victorias rápidas que te mantienen motivado. Con tu primera deuda (${clp(est.deudaMasPequena.monto)}) la liquidarías en pocos meses.<br>⚠️ <strong>Desventaja:</strong> podrías pagar más intereses totales si dejas las deudas caras para el final.</div>
       </div>
-
-      <!-- 3. HÍBRIDA -->
       <div class="estrategia-card">
-        <div class="estrategia-head">
-          <div class="estrategia-icon cyn">⚡</div>
-          <div style="flex:1">
-            <div class="estrategia-title">Método Híbrido<span class="estrategia-tag tag-hibrida">Balance</span></div>
-            <div class="estrategia-sub">Lo mejor de ambos mundos</div>
-          </div>
-        </div>
-        <div class="estrategia-body">
-          Empiezas con la deuda más <strong>pequeña pero cara</strong> (para tener una victoria temprana), y luego sigues con la avalancha pura (mayor tasa primero).
-        </div>
-        <ul class="estrategia-pasos">
-          ${pasosHibrida}
-        </ul>
-        <div class="estrategia-foot">
-          ✅ <strong>Ideal para ti si:</strong> tu deuda más pequeña (${clp(est.deudaMasPequena.monto)}) tiene tasa superior al promedio (${est.tasaPromedioPonderada.toFixed(2)}%).<br>
-          ⚠️ <strong>Desventaja:</strong> no es ni el más óptimo matemáticamente ni el más motivador, pero es un buen punto medio.
-        </div>
+        <div class="estrategia-head"><div class="estrategia-icon cyn">⚡</div><div style="flex:1"><div class="estrategia-title">Método Híbrido<span class="estrategia-tag tag-hibrida">Balance</span></div><div class="estrategia-sub">Lo mejor de ambos mundos</div></div></div>
+        <div class="estrategia-body">Empiezas con la deuda más <strong>pequeña pero cara</strong> (para tener una victoria temprana), y luego sigues con la avalancha pura (mayor tasa primero).</div>
+        <ul class="estrategia-pasos">${pasosHibrida}</ul>
+        <div class="estrategia-foot">✅ <strong>Ideal para ti si:</strong> tu deuda más pequeña (${clp(est.deudaMasPequena.monto)}) tiene tasa superior al promedio (${est.tasaPromedioPonderada.toFixed(2)}%).<br>⚠️ <strong>Desventaja:</strong> no es ni el más óptimo matemáticamente ni el más motivador, pero es un buen punto medio.</div>
       </div>
-
-      <!-- 4. CONSOLIDACIÓN -->
       <div class="estrategia-card">
-        <div class="estrategia-head">
-          <div class="estrategia-icon org">🔀</div>
-          <div style="flex:1">
-            <div class="estrategia-title">Consolidación / Refinanciamiento<span class="estrategia-tag tag-consolidar">Reduce cuota mensual</span></div>
-            <div class="estrategia-sub">Unificas todas las deudas en una sola con menor tasa</div>
-          </div>
-        </div>
-        <div class="estrategia-body">
-          Pides un <strong>crédito de consumo</strong> por el total adeudado (${clp(est.total)}) y con ese dinero pagas todas tus deudas actuales. Quedas con una sola cuota mensual al <strong>0,9% mensual</strong> promedio del mercado.
-        </div>
+        <div class="estrategia-head"><div class="estrategia-icon org">🔀</div><div style="flex:1"><div class="estrategia-title">Consolidación / Refinanciamiento<span class="estrategia-tag tag-consolidar">Reduce cuota mensual</span></div><div class="estrategia-sub">Unificas todas las deudas en una sola con menor tasa</div></div></div>
+        <div class="estrategia-body">Pides un <strong>crédito de consumo</strong> por el total adeudado (${clp(est.total)}) y con ese dinero pagas todas tus deudas actuales. Quedas con una sola cuota mensual al <strong>0,9% mensual</strong> promedio del mercado.</div>
         <ul class="estrategia-pasos">
-          <li>
-            <span class="num" style="background:rgba(249,115,22,.15);color:#fb923c;border-color:rgba(249,115,22,.3)">1</span>
-            <span class="info"><strong>Solicita el crédito</strong><br><span class="tasa">Monto: ${clp(est.total)} · Plazo sugerido 48 meses</span></span>
-            <span class="monto">${clp(est.total)}</span>
-          </li>
-          <li>
-            <span class="num" style="background:rgba(249,115,22,.15);color:#fb923c;border-color:rgba(249,115,22,.3)">2</span>
-            <span class="info"><strong>Paga todas tus deudas actuales</strong><br><span class="tasa">Tarjetas, líneas y créditos chicos</span></span>
-            <span class="monto">${clp(est.total)}</span>
-          </li>
-          <li>
-            <span class="num" style="background:rgba(249,115,22,.15);color:#fb923c;border-color:rgba(249,115,22,.3)">3</span>
-            <span class="info"><strong>Queda 1 sola cuota mensual</strong><br><span class="tasa">48 meses · 0,9% mensual</span></span>
-            <span class="monto">${clp(est.consolidacion.cuotaConsol)}/mes</span>
-          </li>
+          <li><span class="num" style="background:rgba(249,115,22,.15);color:#fb923c;border-color:rgba(249,115,22,.3)">1</span><span class="info"><strong>Solicita el crédito</strong><br><span class="tasa">Monto: ${clp(est.total)} · Plazo sugerido 48 meses</span></span><span class="monto">${clp(est.total)}</span></li>
+          <li><span class="num" style="background:rgba(249,115,22,.15);color:#fb923c;border-color:rgba(249,115,22,.3)">2</span><span class="info"><strong>Paga todas tus deudas actuales</strong><br><span class="tasa">Tarjetas, líneas y créditos chicos</span></span><span class="monto">${clp(est.total)}</span></li>
+          <li><span class="num" style="background:rgba(249,115,22,.15);color:#fb923c;border-color:rgba(249,115,22,.3)">3</span><span class="info"><strong>Queda 1 sola cuota mensual</strong><br><span class="tasa">48 meses · 0,9% mensual</span></span><span class="monto">${clp(est.consolidacion.cuotaConsol)}/mes</span></li>
         </ul>
-        <div class="estrategia-foot">
-          ✅ <strong>Ventaja:</strong> reduces drásticamente la cantidad de pagos y la cuota mensual es fija. Interés total estimado: ${clp(est.consolidacion.interesesConsol)}.<br>
-          ⚠️ <strong>Cuidado:</strong> no uses las tarjetas liberadas para nuevas compras — caerías en el mismo problema. Compara tasas en varios bancos antes de firmar.
-        </div>
+        <div class="estrategia-foot">✅ <strong>Ventaja:</strong> reduces drásticamente la cantidad de pagos y la cuota mensual es fija. Interés total estimado: ${clp(est.consolidacion.interesesConsol)}.<br>⚠️ <strong>Cuidado:</strong> no uses las tarjetas liberadas para nuevas compras — caerías en el mismo problema. Compara tasas en varios bancos antes de firmar.</div>
       </div>
 
+      <div class="estrategia-card" style="margin-top:16px;border-color:rgba(249,115,22,.3);background:linear-gradient(135deg,rgba(249,115,22,.03),transparent 60%)">
+        <div class="estrategia-head">
+          <div class="estrategia-icon org" style="background:rgba(249,115,22,.18);font-size:16px">🏦</div>
+          <div style="flex:1">
+            <div class="estrategia-title">Opciones crediticias con bancos en Chile</div>
+            <div class="estrategia-sub">Analizamos qué producto te conviene según tu situación actual</div>
+          </div>
+        </div>
+        <div style="font-size:11.5px;color:var(--text-2);line-height:1.6;font-weight:400;margin-bottom:14px">
+          Para consolidar tu deuda de <strong style="color:var(--red)">${clp(est.total)}</strong> tienes 3 caminos principales. Cada uno tiene requisitos, tasas y ventajas distintas:
+        </div>
+
+        <div style="border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px;background:var(--surface-2)">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+            <div style="width:28px;height:28px;flex:0 0 28px;border-radius:8px;background:rgba(110,86,255,.15);display:grid;place-items:center;font-size:13px">💳</div>
+            <div style="flex:1">
+              <div style="font-size:12.5px;font-weight:600">Crédito de consumo / Compra de cartera</div>
+              <div style="font-size:10.5px;color:var(--muted);margin-top:1px">El más rápido · Requiere buen historial crediticio</div>
+            </div>
+            <div style="text-align:right">
+              <div style="font-size:13px;font-weight:700;color:var(--accent-2)">12–28%</div>
+              <div style="font-size:9.5px;color:var(--muted)">anual</div>
+            </div>
+          </div>
+          <div style="font-size:11px;color:var(--text-2);line-height:1.55;font-weight:400">
+            Un banco paga todas tus deudas actuales y quedas con una sola cuota mensual. <strong>Plazo típico: 12 a 48 meses.</strong> El monto máximo suele ser hasta <strong>${clp(Math.round((ing || 1000000) * 8))}</strong> (8× tu ingreso mensual estimado).
+          </div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">
+            <span style="font-size:9.5px;font-weight:600;padding:2px 8px;border-radius:5px;background:rgba(34,197,94,.1);color:#4ade80">✓ Rápido (24–48 hrs)</span>
+            <span style="font-size:9.5px;font-weight:600;padding:2px 8px;border-radius:5px;background:rgba(34,197,94,.1);color:#4ade80">✓ No exige garantía</span>
+            <span style="font-size:9.5px;font-weight:600;padding:2px 8px;border-radius:5px;background:rgba(249,115,22,.1);color:#fb923c">⚠ Tasa variable según perfil</span>
+          </div>
+        </div>
+
+        <div style="border:1px solid rgba(34,197,94,.25);border-radius:10px;padding:14px;margin-bottom:10px;background:var(--surface-2)">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+            <div style="width:28px;height:28px;flex:0 0 28px;border-radius:8px;background:rgba(34,197,94,.15);display:grid;place-items:center;font-size:13px">🏠</div>
+            <div style="flex:1">
+              <div style="font-size:12.5px;font-weight:600">Crédito con garantía hipotecaria</div>
+              <div style="font-size:10.5px;color:var(--muted);margin-top:1px">La tasa más baja · Requiere propiedad</div>
+            </div>
+            <div style="text-align:right">
+              <div style="font-size:13px;font-weight:700;color:var(--green)">6–8%</div>
+              <div style="font-size:9.5px;color:var(--muted)">anual</div>
+            </div>
+          </div>
+          <div style="font-size:11px;color:var(--text-2);line-height:1.55;font-weight:400">
+            Usas tu propiedad como garantía y obtienes la <strong>tasa más baja del mercado</strong>. Por cada $10.000.000 consolidados, pagarías ~$150.000/mes vs ~$280.000/mes en consumo. <strong>Plazo típico: 5 a 20 años.</strong>
+          </div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">
+            <span style="font-size:9.5px;font-weight:600;padding:2px 8px;border-radius:5px;background:rgba(34,197,94,.1);color:#4ade80">✓ Tasa más baja</span>
+            <span style="font-size:9.5px;font-weight:600;padding:2px 8px;border-radius:5px;background:rgba(34,197,94,.1);color:#4ade80">✓ Cuota mensual mínima</span>
+            <span style="font-size:9.5px;font-weight:600;padding:2px 8px;border-radius:5px;background:rgba(248,113,113,.1);color:#f87171">⚠ Riesgo: puedes perder la propiedad</span>
+          </div>
+        </div>
+
+        <div style="border:1px solid rgba(6,182,212,.25);border-radius:10px;padding:14px;margin-bottom:10px;background:var(--surface-2)">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+            <div style="width:28px;height:28px;flex:0 0 28px;border-radius:8px;background:rgba(6,182,212,.15);display:grid;place-items:center;font-size:13px">📋</div>
+            <div style="flex:1">
+              <div style="font-size:12.5px;font-weight:600">REDEC + Portabilidad financiera</div>
+              <div style="font-size:10.5px;color:var(--muted);margin-top:1px">Desde abril 2026 · Mejores condiciones por buen historial</div>
+            </div>
+            <div style="text-align:right">
+              <div style="font-size:11px;font-weight:700;color:var(--cyan)">-2 a -5 pts</div>
+              <div style="font-size:9.5px;color:var(--muted)">vs. tasa normal</div>
+            </div>
+          </div>
+          <div style="font-size:11px;color:var(--text-2);line-height:1.55;font-weight:400">
+            Con la <strong>Ley N° 21.680 (REDEC)</strong>, los bancos ahora ven tu comportamiento de pago positivo, no solo las moras. Si tienes buen historial, puedes negociar tasas más bajas. Además, la <strong>portabilidad financiera</strong> te permite cambiar tu crédito a otro banco con mejores condiciones sin costo.
+          </div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">
+            <span style="font-size:9.5px;font-weight:600;padding:2px 8px;border-radius:5px;background:rgba(34,197,94,.1);color:#4ade80">✓ Mejores tasas por buen historial</span>
+            <span style="font-size:9.5px;font-weight:600;padding:2px 8px;border-radius:5px;background:rgba(34,197,94,.1);color:#4ade80">✓ Sin costo de cambio</span>
+          </div>
+        </div>
+
+        <div style="margin-top:16px;padding-top:14px;border-top:1px dashed var(--border)">
+          <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:10px">🔍 Dónde comparar antes de firmar</div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <a href="https://www.sernac.cl/portal/619/w3-propertyvalue-2660.html" target="_blank" style="text-decoration:none;display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;background:var(--surface-2);border:1px solid var(--border)">
+              <span style="font-size:14px">🏛</span>
+              <span style="flex:1">
+                <span style="display:block;font-size:11.5px;font-weight:600;color:var(--text)">Simulador de Créditos SERNAC</span>
+                <span style="display:block;font-size:10.5px;color:var(--muted);margin-top:1px">Compara todos los bancos, cajas y cooperativas. Gratuito y oficial.</span>
+              </span>
+              <span style="font-size:12px;color:var(--accent-2)">→</span>
+            </a>
+            <a href="https://www.cmfchile.cl/portal/principal/613/w3-propertyvalue-28139.html" target="_blank" style="text-decoration:none;display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;background:var(--surface-2);border:1px solid var(--border)">
+              <span style="font-size:14px">📊</span>
+              <span style="flex:1">
+                <span style="display:block;font-size:11.5px;font-weight:600;color:var(--text)">CMF Chile — Tasas vigentes</span>
+                <span style="display:block;font-size:10.5px;color:var(--muted);margin-top:1px">Revisa la Tasa Máxima Convencional y las tasas promedio del mercado.</span>
+              </span>
+              <span style="font-size:12px;color:var(--accent-2)">→</span>
+            </a>
+          </div>
+        </div>
+        <div style="font-size:10.5px;color:var(--muted);margin-top:14px;line-height:1.6;font-weight:400;padding:10px 12px;border-radius:8px;background:rgba(249,115,22,.04);border:1px solid rgba(249,115,22,.15)">
+          ⚠️ <strong style="color:#fb923c">Antes de firmar:</strong> pide siempre la <strong>CAE</strong> (Carga Anual Equivalente), no solo la tasa. La CAE incluye todos los costos del crédito. Compara al menos 3 ofertas. Y si consolidas, <strong>corta o guarda las tarjetas</strong> para no volver a endeudarte.
+        </div>
+      </div>
       <div style="font-size:10.5px;color:var(--muted);margin-top:14px;line-height:1.6;text-align:center;font-weight:400">
         Las tasas usadas son estimaciones del mercado chileno: tarjetas 3,5% · líneas 1,5% · hipotecario 0,45% · automotriz 0,9% · consumo 0,9% mensual.<br>
         Ajusta las tasas reales de cada deuda en <strong style="color:var(--text-2)">Gastos y crédito</strong> para un análisis más preciso.
       </div>
-    </div>
-  `;
+    </div>`;
 }
 
 function renderHistorico(){
@@ -1464,10 +1206,7 @@ function renderHistorico(){
   const promIng=datos.length?datos.reduce((s,d)=>s+d.ing,0)/datos.length:0;
   const promGas=datos.length?datos.reduce((s,d)=>s+d.gas,0)/datos.length:0;
   const tasaProm=promIng?((promIng-promGas)/promIng*100):0;
-  document.getElementById('histKpis').innerHTML=`
-    <div class="card"><div class="kpi-label">Promedio ingresos</div><div class="kpi-value pos"><span class="cur">$</span>${Math.round(promIng).toLocaleString('es-CL')}</div><div class="kpi-foot">Mensual</div></div>
-    <div class="card"><div class="kpi-label">Promedio gastos</div><div class="kpi-value neg"><span class="cur">$</span>${Math.round(promGas).toLocaleString('es-CL')}</div><div class="kpi-foot">Incluye pagos TC</div></div>
-    <div class="card"><div class="kpi-label">Tasa ahorro promedio</div><div class="kpi-value ${tasaProm<0?'neg':(tasaProm>=20?'pos':'')}">${tasaProm.toFixed(1)}<span class="cur" style="font-size:16px">%</span></div><div class="kpi-foot"><span class="badge ${tasaProm<0?'b-down':(tasaProm>=20?'b-up':'b-warn')}">${tasaProm<0?'Negativa':(tasaProm>=20?'Saludable':'A mejorar')}</span></div></div>`;
+  document.getElementById('histKpis').innerHTML=`<div class="card"><div class="kpi-label">Promedio ingresos</div><div class="kpi-value pos"><span class="cur">$</span>${Math.round(promIng).toLocaleString('es-CL')}</div><div class="kpi-foot">Mensual</div></div><div class="card"><div class="kpi-label">Promedio gastos</div><div class="kpi-value neg"><span class="cur">$</span>${Math.round(promGas).toLocaleString('es-CL')}</div><div class="kpi-foot">Incluye pagos TC</div></div><div class="card"><div class="kpi-label">Tasa ahorro promedio</div><div class="kpi-value ${tasaProm<0?'neg':(tasaProm>=20?'pos':'')}">${tasaProm.toFixed(1)}<span class="cur" style="font-size:16px">%</span></div><div class="kpi-foot"><span class="badge ${tasaProm<0?'b-down':(tasaProm>=20?'b-up':'b-warn')}">${tasaProm<0?'Negativa':(tasaProm>=20?'Saludable':'A mejorar')}</span></div></div>`;
   document.getElementById('histChart').innerHTML=datos.map(d=>`<div class="chart-col"><div class="chart-val">${d.ing?clpShort(d.ing):''}</div><div class="chart-pair"><div class="chart-bar ing" style="height:${d.ing/maxVal*100}%"></div><div class="chart-bar gas" style="height:${d.gas/maxVal*100}%"></div></div><div class="chart-lbl">${fmtMes(d.mes)}</div></div>`).join('');
   const maxAho=Math.max(1,...datos.map(d=>Math.abs(d.ahorro)));
   document.getElementById('histAhorro').innerHTML=datos.length?datos.map(d=>{const pos=d.ahorro>=0;return `<div class="bar-row"><div class="bar-top"><span>${fmtMes(d.mes)}</span><span class="amt ${pos?'':'neg'}">${pos?'+':'−'}${clp(Math.abs(d.ahorro))} <small>${d.tasa.toFixed(0)}%</small></span></div><div class="bar-track"><div class="bar-fill" style="width:${Math.abs(d.ahorro)/maxAho*100}%;background:${pos?'var(--green)':'var(--red)'}"></div></div></div>`;}).join(''):'<div class="empty">Sin datos</div>';
@@ -1479,10 +1218,7 @@ function renderIngresos(){
   const t=totalIngresos();
   const rec=data.ingresos.filter(i=>i.recurrente).reduce((s,i)=>s+(+i.monto||0),0);
   document.getElementById('subIngresos').textContent=`${data.ingresos.length} fuentes · ${clp(t)}`;
-  document.getElementById('ingKpis').innerHTML=`
-    <div class="card"><div class="kpi-label">Total ingresos</div><div class="kpi-value pos"><span class="cur">$</span>${t.toLocaleString('es-CL')}</div><div class="kpi-foot">${data.ingresos.length} registros</div></div>
-    <div class="card"><div class="kpi-label">Recurrente</div><div class="kpi-value"><span class="cur">$</span>${rec.toLocaleString('es-CL')}</div><div class="kpi-foot">${t?((rec/t)*100).toFixed(1):0}% del total</div></div>
-    <div class="card"><div class="kpi-label">Variable / extra</div><div class="kpi-value"><span class="cur">$</span>${(t-rec).toLocaleString('es-CL')}</div><div class="kpi-foot">${t?(100-(rec/t)*100).toFixed(1):0}% del total</div></div>`;
+  document.getElementById('ingKpis').innerHTML=`<div class="card"><div class="kpi-label">Total ingresos</div><div class="kpi-value pos"><span class="cur">$</span>${t.toLocaleString('es-CL')}</div><div class="kpi-foot">${data.ingresos.length} registros</div></div><div class="card"><div class="kpi-label">Recurrente</div><div class="kpi-value"><span class="cur">$</span>${rec.toLocaleString('es-CL')}</div><div class="kpi-foot">${t?((rec/t)*100).toFixed(1):0}% del total</div></div><div class="card"><div class="kpi-label">Variable / extra</div><div class="kpi-value"><span class="cur">$</span>${(t-rec).toLocaleString('es-CL')}</div><div class="kpi-foot">${t?(100-(rec/t)*100).toFixed(1):0}% del total</div></div>`;
   const list=document.getElementById('listIngresos');
   if(!data.ingresos.length){list.innerHTML='<div class="empty"><strong>Sin ingresos</strong>Agrega tu primer ingreso</div>';return;}
   list.innerHTML=data.ingresos.slice().sort((a,b)=>(b.fecha||'').localeCompare(a.fecha||'')).map(i=>`<div class="row" data-edit="ingreso" data-id="${i.id}"><div class="row-ic">${iconoCategoria(i.categoria)}</div><div class="row-main"><div class="row-t">${i.nombre}${i.recurrente?' ↻':''}</div><div class="row-s">${i.categoria} · ${fmtDate(i.fecha)}</div></div><div class="row-actions"><button data-act="edit">✎</button><button class="del" data-act="del">🗑</button></div><div class="row-amt pos">+${clp(i.monto)}</div></div>`).join('');
@@ -1495,18 +1231,13 @@ function renderGastos(){
   const over=data.presupuestos.filter(p=>gastoDeCategoria(p.categoria)>p.asignado).length;
   const conTarjeta=data.gastos.filter(g=>g.tarjetaId).reduce((s,g)=>s+(+g.monto||0),0);
   document.getElementById('subGastos').textContent=`${data.gastos.length} transacciones · pagos TC ${clp(tPagos)}`;
-  document.getElementById('gasKpis').innerHTML=`
-    <div class="card"><div class="kpi-label">Total gastado</div><div class="kpi-value neg"><span class="cur">$</span>${t.toLocaleString('es-CL')}</div><div class="kpi-foot">${data.gastos.length} transacciones + pagos TC</div></div>
-    <div class="card"><div class="kpi-label">Con tarjeta</div><div class="kpi-value"><span class="cur">$</span>${conTarjeta.toLocaleString('es-CL')}</div><div class="kpi-foot">${tGastos?((conTarjeta/tGastos)*100).toFixed(1):0}% de compras</div></div>
-    <div class="card"><div class="kpi-label">Sobre presupuesto</div><div class="kpi-value ${over?'neg':''}">${over}</div><div class="kpi-foot"><span class="badge ${over?'b-warn':'b-up'}">${over?'Revisar':'Todo ok'}</span></div></div>`;
-
+  document.getElementById('gasKpis').innerHTML=`<div class="card"><div class="kpi-label">Total gastado</div><div class="kpi-value neg"><span class="cur">$</span>${t.toLocaleString('es-CL')}</div><div class="kpi-foot">${data.gastos.length} transacciones + pagos TC</div></div><div class="card"><div class="kpi-label">Con tarjeta</div><div class="kpi-value"><span class="cur">$</span>${conTarjeta.toLocaleString('es-CL')}</div><div class="kpi-foot">${tGastos?((conTarjeta/tGastos)*100).toFixed(1):0}% de compras</div></div><div class="card"><div class="kpi-label">Sobre presupuesto</div><div class="kpi-value ${over?'neg':''}">${over}</div><div class="kpi-foot"><span class="badge ${over?'b-warn':'b-up'}">${over?'Revisar':'Todo ok'}</span></div></div>`;
   const tarjetas=getTarjetas();
   const lineas=getLineasCredito();
   const totalDeudaTarjetas=tarjetas.reduce((s,t)=>s+Math.max(0,deudaTarjeta(t)),0);
   const totalCupo=tarjetas.reduce((s,t)=>s+(+t.cupo||0),0);
   const totalUtilizadoLineas=lineas.reduce((s,l)=>s+(+l.utilizado||0),0);
   const totalCupoLineas=lineas.reduce((s,l)=>s+(+l.cupo||0),0);
-
   const tarjBox=document.getElementById('tarjetasBox');
   if(tarjetas.length){
     tarjBox.style.display='block';
@@ -1520,18 +1251,7 @@ function renderGastos(){
       const cuotasVig=cuotasVigentesDeTarjeta(t.id);
       const totalMensualCuotas=totalMensualCuotasTarjeta(t.id);
       const numPagos=(t.pagos||[]).length;
-      const cuotasHTML=cuotasVig.length?`
-        <div class="cc-cuotas">
-          <div class="cc-cuotas-title">📆 Cuotas vigentes este mes</div>
-          ${cuotasVig.slice(0,5).map(g=>`
-            <div class="cc-cuotas-item">
-              <span><strong>${g.nombre}</strong> · ${g.cuotas} cuotas${(+g.tasaCuotas||0)>0?' · '+(+g.tasaCuotas).toFixed(2)+'%':''}</span>
-              <span class="monto">${clp(valorCuotaGasto(g))}</span>
-            </div>
-          `).join('')}
-          ${cuotasVig.length>5?`<div class="cc-cuotas-item" style="color:var(--muted);font-style:italic">+${cuotasVig.length-5} más…</div>`:''}
-          <div class="cc-cuotas-total"><span>Total cuotas del mes</span><span class="val">${clp(totalMensualCuotas)}</span></div>
-        </div>`:'';
+      const cuotasHTML=cuotasVig.length?`<div class="cc-cuotas"><div class="cc-cuotas-title">📆 Cuotas vigentes este mes</div>${cuotasVig.slice(0,5).map(g=>`<div class="cc-cuotas-item"><span><strong>${g.nombre}</strong> · ${g.cuotas} cuotas${(+g.tasaCuotas||0)>0?' · '+(+g.tasaCuotas).toFixed(2)+'%':''}</span><span class="monto">${clp(valorCuotaGasto(g))}</span></div>`).join('')}${cuotasVig.length>5?`<div class="cc-cuotas-item" style="color:var(--muted);font-style:italic">+${cuotasVig.length-5} más…</div>`:''}<div class="cc-cuotas-total"><span>Total cuotas del mes</span><span class="val">${clp(totalMensualCuotas)}</span></div></div>`:'';
       return `<div class="cc-card ${warnClass}"><div class="cc-head"><div><div class="cc-name">💳 ${t.nombre}</div><div class="cc-tipo">Tarjeta de crédito</div></div><div class="cc-actions-top"><button data-act="edit-tarjeta" data-id="${t.id}">✎</button><button class="del" data-act="del-tarjeta" data-id="${t.id}">🗑</button></div></div><div class="cc-nums"><div class="cc-num"><div class="l">Cupo total</div><div class="v">${clp(t.cupo)}</div></div><div class="cc-num"><div class="l">Utilizado</div><div class="v" style="color:${col}">${clp(deuda)}</div></div><div class="cc-num"><div class="l">Disponible</div><div class="v pos">${clp(disp)}</div></div></div><div class="cc-bar"><div class="cc-bar-fill" style="width:${pct}%;background:${col}"></div></div><div class="cc-bar-lbl"><span>${pct.toFixed(1)}% usado</span><span>${gastos.length} movs · ${numPagos} pagos</span></div>${cuotasHTML}<div class="cc-actions"><button class="cc-btn primary" data-act="pagar-tarjeta" data-id="${t.id}">${numPagos?'💵 Pagos / historial':'💵 Registrar pago'}</button><button class="cc-btn" data-act="nuevo-gasto-tarjeta" data-id="${t.id}">+ Gasto</button></div></div>`;
     }).join('');
     document.querySelectorAll('[data-act="edit-tarjeta"]').forEach(b=>b.onclick=e=>{e.stopPropagation();openModal('tarjeta',+b.dataset.id);});
@@ -1539,7 +1259,6 @@ function renderGastos(){
     document.querySelectorAll('[data-act="pagar-tarjeta"]').forEach(b=>b.onclick=e=>{e.stopPropagation();openModalPago(+b.dataset.id);});
     document.querySelectorAll('[data-act="nuevo-gasto-tarjeta"]').forEach(b=>b.onclick=e=>{e.stopPropagation();openModal('gasto',null,+b.dataset.id);});
   }else{tarjBox.style.display='none';}
-
   const linBox=document.getElementById('lineasBox');
   if(lineas.length){
     linBox.style.display='block';
@@ -1555,7 +1274,6 @@ function renderGastos(){
     document.querySelectorAll('[data-act="del-linea"]').forEach(b=>b.onclick=e=>{e.stopPropagation();delLinea(+b.dataset.id);});
     document.querySelectorAll('[data-act="actualizar-linea"]').forEach(b=>b.onclick=e=>{e.stopPropagation();openModal('linea',+b.dataset.id);});
   }else{linBox.style.display='none';}
-
   const cats=['Todas',...data.categorias.gastos];
   document.getElementById('filtrosGasto').innerHTML=cats.map(c=>`<button class="pill ${filtroGasto===c?'on':''}" data-cat="${c}">${c==='Todas'?'Todas':iconoCategoria(c)+' '+c}</button>`).join('');
   document.querySelectorAll('#filtrosGasto .pill').forEach(p=>p.addEventListener('click',()=>{filtroGasto=p.dataset.cat;renderGastos();bindRowClicks();}));
@@ -1563,7 +1281,6 @@ function renderGastos(){
   const cont=document.getElementById('listGastos');
   if(!lista.length){cont.innerHTML='<div class="empty"><strong>Sin gastos</strong>Agrega tu primer gasto</div>';}
   else{cont.innerHTML=lista.map(g=>{const tarjeta=g.tarjetaId?getTarjetaById(g.tarjetaId):null;const sub=`${g.categoria} · ${fmtDate(g.fecha)}${tarjeta?' · 💳 '+tarjeta.nombre:''}${infoCuotas(g)}`;return `<div class="row" data-edit="gasto" data-id="${g.id}"><div class="row-ic">${iconoCategoria(g.categoria)}</div><div class="row-main"><div class="row-t">${g.nombre}</div><div class="row-s">${sub}</div></div><div class="row-actions"><button data-act="edit">✎</button><button class="del" data-act="del">🗑</button></div><div class="row-amt neg">−${clp(g.monto)}</div></div>`;}).join('');}
-
   const mes=mesActual();
   const catsRank={};
   data.gastos.filter(g=>(g.fecha||'').startsWith(mes)).forEach(g=>catsRank[g.categoria]=(catsRank[g.categoria]||0)+(+g.monto||0));
@@ -1580,10 +1297,7 @@ function renderPresupuesto(){
   const disp=totalAsig-totalGas;
   const over=data.presupuestos.filter(p=>gastoDeCategoria(p.categoria)>p.asignado).length;
   document.getElementById('subPresup').textContent=`${data.presupuestos.length} sobres · ${clp(totalAsig)}`;
-  document.getElementById('presKpis').innerHTML=`
-    <div class="card"><div class="kpi-label">Asignado</div><div class="kpi-value"><span class="cur">$</span>${totalAsig.toLocaleString('es-CL')}</div><div class="kpi-foot">${data.presupuestos.length} sobres</div></div>
-    <div class="card"><div class="kpi-label">Gastado</div><div class="kpi-value neg"><span class="cur">$</span>${totalGas.toLocaleString('es-CL')}</div><div class="kpi-foot">${totalAsig?((totalGas/totalAsig)*100).toFixed(1):0}% del presupuesto</div></div>
-    <div class="card"><div class="kpi-label">Disponible</div><div class="kpi-value ${disp<0?'neg':'pos'}"><span class="cur">$</span>${Math.abs(disp).toLocaleString('es-CL')}</div><div class="kpi-foot"><span class="badge ${over?'b-warn':'b-up'}">${over?over+' sobrepasado(s)':'Todo en orden'}</span></div></div>`;
+  document.getElementById('presKpis').innerHTML=`<div class="card"><div class="kpi-label">Asignado</div><div class="kpi-value"><span class="cur">$</span>${totalAsig.toLocaleString('es-CL')}</div><div class="kpi-foot">${data.presupuestos.length} sobres</div></div><div class="card"><div class="kpi-label">Gastado</div><div class="kpi-value neg"><span class="cur">$</span>${totalGas.toLocaleString('es-CL')}</div><div class="kpi-foot">${totalAsig?((totalGas/totalAsig)*100).toFixed(1):0}% del presupuesto</div></div><div class="card"><div class="kpi-label">Disponible</div><div class="kpi-value ${disp<0?'neg':'pos'}"><span class="cur">$</span>${Math.abs(disp).toLocaleString('es-CL')}</div><div class="kpi-foot"><span class="badge ${over?'b-warn':'b-up'}">${over?over+' sobrepasado(s)':'Todo en orden'}</span></div></div>`;
   const cont=document.getElementById('sobresPresup');
   if(!data.presupuestos.length){cont.innerHTML='<div class="card"><div class="empty"><strong>Sin presupuestos</strong>Crea tu primer sobre</div></div>';return;}
   cont.innerHTML=data.presupuestos.map(p=>{
@@ -1593,28 +1307,8 @@ function renderPresupuesto(){
     const pct=p.asignado?Math.min(100,g/p.asignado*100):0;
     const over=g>p.asignado;
     const esPagoTC=p.categoria===CAT_PAGO_TC;
-    const desglose=esPagoTC?`
-      <div style="font-size:10.5px;color:var(--muted);margin-top:8px;line-height:1.6;display:flex;flex-direction:column;gap:2px">
-        <div style="display:flex;justify-content:space-between"><span>💳 Pagos de tarjeta del mes</span><strong style="color:var(--accent-2)">${clp(soloPagos)}</strong></div>
-        ${soloGastos>0?`<div style="display:flex;justify-content:space-between"><span>Otros gastos en esta categoría</span><strong style="color:var(--text-2)">${clp(soloGastos)}</strong></div>`:''}
-      </div>`:'';
-    return `<div class="card" ${over?'style="border-color:rgba(248,113,113,.3)"':''}>
-      <div class="card-head" style="margin-bottom:10px">
-        <div class="card-title">${iconoCategoria(p.categoria)} ${p.categoria}</div>
-        <div style="display:flex;gap:4px;align-items:center">
-          <span class="badge ${over?'b-down':(pct>90?'b-warn':'b-up')}">${over?'Excedido':(pct>90?'Al límite':'En curso')}</span>
-          <button data-act="edit-pres" data-id="${p.id}" style="width:22px;height:22px;border-radius:5px;background:transparent;border:1px solid var(--border);color:var(--muted);cursor:pointer;font-size:10px">✎</button>
-          <button data-act="del-pres" data-id="${p.id}" style="width:22px;height:22px;border-radius:5px;background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.2);color:var(--red);cursor:pointer;font-size:10px">🗑</button>
-        </div>
-      </div>
-      <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:7px">
-        <div style="font-size:17px;font-weight:600;letter-spacing:-.3px;font-variant-numeric:tabular-nums;${over?'color:var(--red)':''}">${clp(g)}</div>
-        <div style="font-size:11px;color:var(--muted);font-weight:400">/ ${clp(p.asignado)}</div>
-      </div>
-      <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${over?'var(--red)':(pct>90?'var(--orange)':'var(--accent)')}"></div></div>
-      <div class="kpi-foot" style="margin-top:8px;justify-content:space-between"><span>${over?'Exceso':'Disponible'}</span><strong style="color:${over?'var(--red)':'var(--green)'};font-weight:600">${clp(Math.abs(p.asignado-g))}</strong></div>
-      ${desglose}
-    </div>`;
+    const desglose=esPagoTC?`<div style="font-size:10.5px;color:var(--muted);margin-top:8px;line-height:1.6;display:flex;flex-direction:column;gap:2px"><div style="display:flex;justify-content:space-between"><span>💳 Pagos de tarjeta del mes</span><strong style="color:var(--accent-2)">${clp(soloPagos)}</strong></div>${soloGastos>0?`<div style="display:flex;justify-content:space-between"><span>Otros gastos en esta categoría</span><strong style="color:var(--text-2)">${clp(soloGastos)}</strong></div>`:''}</div>`:'';
+    return `<div class="card" ${over?'style="border-color:rgba(248,113,113,.3)"':''}><div class="card-head" style="margin-bottom:10px"><div class="card-title">${iconoCategoria(p.categoria)} ${p.categoria}</div><div style="display:flex;gap:4px;align-items:center"><span class="badge ${over?'b-down':(pct>90?'b-warn':'b-up')}">${over?'Excedido':(pct>90?'Al límite':'En curso')}</span><button data-act="edit-pres" data-id="${p.id}" style="width:22px;height:22px;border-radius:5px;background:transparent;border:1px solid var(--border);color:var(--muted);cursor:pointer;font-size:10px">✎</button><button data-act="del-pres" data-id="${p.id}" style="width:22px;height:22px;border-radius:5px;background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.2);color:var(--red);cursor:pointer;font-size:10px">🗑</button></div></div><div style="display:flex;align-items:baseline;gap:6px;margin-bottom:7px"><div style="font-size:17px;font-weight:600;letter-spacing:-.3px;font-variant-numeric:tabular-nums;${over?'color:var(--red)':''}">${clp(g)}</div><div style="font-size:11px;color:var(--muted);font-weight:400">/ ${clp(p.asignado)}</div></div><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${over?'var(--red)':(pct>90?'var(--orange)':'var(--accent)')}"></div></div><div class="kpi-foot" style="margin-top:8px;justify-content:space-between"><span>${over?'Exceso':'Disponible'}</span><strong style="color:${over?'var(--red)':'var(--green)'};font-weight:600">${clp(Math.abs(p.asignado-g))}</strong></div>${desglose}</div>`;
   }).join('');
   document.querySelectorAll('[data-act="edit-pres"]').forEach(b=>b.onclick=e=>{e.stopPropagation();openModal('presupuesto',+b.dataset.id);});
   document.querySelectorAll('[data-act="del-pres"]').forEach(b=>b.onclick=e=>{e.stopPropagation();delRegistro('presupuestos',+b.dataset.id);});
@@ -1624,10 +1318,7 @@ function renderInversiones(){
   const tot=data.inversiones.reduce((s,i)=>s+(+i.monto||0),0);
   const gan=data.inversiones.reduce((s,i)=>s+((+i.monto||0)*(+i.rendimiento||0)/100),0);
   document.getElementById('subInv').textContent=`${data.inversiones.length} activos · ${clp(tot)}`;
-  document.getElementById('invKpis').innerHTML=`
-    <div class="card"><div class="kpi-label">Valor cartera</div><div class="kpi-value"><span class="cur">$</span>${tot.toLocaleString('es-CL')}</div><div class="kpi-foot">${data.inversiones.length} activos</div></div>
-    <div class="card"><div class="kpi-label">Ganancia estimada</div><div class="kpi-value ${gan<0?'neg':'pos'}"><span class="cur">$</span>${Math.abs(Math.round(gan)).toLocaleString('es-CL')}</div><div class="kpi-foot">${tot?((gan/tot)*100).toFixed(1):0}% rentabilidad</div></div>
-    <div class="card"><div class="kpi-label">Peso sobre activos</div><div class="kpi-value">${totalActivos()?((tot/totalActivos())*100).toFixed(0):0}<span class="cur" style="font-size:16px">%</span></div><div class="kpi-foot">del total de activos</div></div>`;
+  document.getElementById('invKpis').innerHTML=`<div class="card"><div class="kpi-label">Valor cartera</div><div class="kpi-value"><span class="cur">$</span>${tot.toLocaleString('es-CL')}</div><div class="kpi-foot">${data.inversiones.length} activos</div></div><div class="card"><div class="kpi-label">Ganancia estimada</div><div class="kpi-value ${gan<0?'neg':'pos'}"><span class="cur">$</span>${Math.abs(Math.round(gan)).toLocaleString('es-CL')}</div><div class="kpi-foot">${tot?((gan/tot)*100).toFixed(1):0}% rentabilidad</div></div><div class="card"><div class="kpi-label">Peso sobre activos</div><div class="kpi-value">${totalActivos()?((tot/totalActivos())*100).toFixed(0):0}<span class="cur" style="font-size:16px">%</span></div><div class="kpi-foot">del total de activos</div></div>`;
   const cont=document.getElementById('listInversiones');
   if(!data.inversiones.length){cont.innerHTML='<div class="empty"><strong>Sin inversiones</strong>Agrega tu primer activo</div>';}
   else{cont.innerHTML=data.inversiones.map(i=>{const col=colorCategoria(i.tipo);const rend=+i.rendimiento||0;return `<div class="asset" data-edit="inversion" data-id="${i.id}"><div class="asset-logo" style="color:${col}">${iconoCategoria(i.tipo)}</div><div class="asset-info"><div class="asset-n">${i.nombre}</div><div class="asset-c">${i.tipo}</div></div><div class="row-actions"><button data-act="edit">✎</button><button class="del" data-act="del">🗑</button></div><div class="asset-val"><div class="asset-p">${clp(i.monto)}</div><div class="asset-d ${rend>=0?'pos':'neg'}">${rend>=0?'▲':'▼'} ${rend.toFixed(1)}%</div></div></div>`;}).join('');}
@@ -1653,34 +1344,16 @@ function renderPatrimonio(){
   const totalDeudaTarjetas=tarjetas.reduce((s,t)=>s+Math.max(0,deudaTarjeta(t)),0);
   const totalUtilizadoLineas=lineas.reduce((s,l)=>s+(+l.utilizado||0),0);
   document.getElementById('subPatrim').textContent=`Balance · ${clp(pat)} neto`;
-  document.getElementById('patrimKpis').innerHTML=`
-    <div class="card"><div class="kpi-label">Patrimonio neto</div><div class="kpi-value ${pat<0?'neg':''}"><span class="cur">$</span>${Math.abs(pat).toLocaleString('es-CL')}</div>${pat<0?'<div class="kpi-foot"><span class="badge b-down">Negativo</span></div>':''}</div>
-    <div class="card"><div class="kpi-label">Activos</div><div class="kpi-value pos"><span class="cur">$</span>${ta.toLocaleString('es-CL')}</div><div class="kpi-foot">${data.activos.length} registros + inversiones</div></div>
-    <div class="card"><div class="kpi-label">Pasivos</div><div class="kpi-value neg"><span class="cur">$</span>${tp.toLocaleString('es-CL')}</div><div class="kpi-foot">${tarjetas.length} tarjetas · ${lineas.length} líneas · ${otrosPasivos.length} otros</div></div>`;
-
+  document.getElementById('patrimKpis').innerHTML=`<div class="card"><div class="kpi-label">Patrimonio neto</div><div class="kpi-value ${pat<0?'neg':''}"><span class="cur">$</span>${Math.abs(pat).toLocaleString('es-CL')}</div>${pat<0?'<div class="kpi-foot"><span class="badge b-down">Negativo</span></div>':''}</div><div class="card"><div class="kpi-label">Activos</div><div class="kpi-value pos"><span class="cur">$</span>${ta.toLocaleString('es-CL')}</div><div class="kpi-foot">${data.activos.length} registros + inversiones</div></div><div class="card"><div class="kpi-label">Pasivos</div><div class="kpi-value neg"><span class="cur">$</span>${tp.toLocaleString('es-CL')}</div><div class="kpi-foot">${tarjetas.length} tarjetas · ${lineas.length} líneas · ${otrosPasivos.length} otros</div></div>`;
   const existing=document.getElementById('infoCreditosPatrim');
   if(existing) existing.remove();
   if(tarjetas.length || lineas.length){
     const infoCard=document.createElement('div');
-    infoCard.className='card';
-    infoCard.id='infoCreditosPatrim';
-    infoCard.style.marginBottom='12px';
-    infoCard.style.borderColor='rgba(110,86,255,.2)';
-    infoCard.innerHTML=`
-      <div style="display:flex;align-items:flex-start;gap:12px">
-        <div style="width:32px;height:32px;flex:0 0 32px;border-radius:8px;background:rgba(110,86,255,.12);display:grid;place-items:center;font-size:14px">💡</div>
-        <div style="flex:1">
-          <div style="font-size:12.5px;font-weight:600;margin-bottom:3px">Tarjetas y líneas de crédito</div>
-          <div style="font-size:11.5px;color:var(--text-2);line-height:1.55;font-weight:400">
-            La gestión está en <strong style="color:var(--accent-2);cursor:pointer" onclick="irA('gastos')">Gastos y crédito →</strong><br>
-            Deuda tarjetas: <strong style="color:var(--red)">${clp(totalDeudaTarjetas)}</strong> · Líneas utilizadas: <strong style="color:var(--red)">${clp(totalUtilizadoLineas)}</strong>
-          </div>
-        </div>
-      </div>`;
+    infoCard.className='card';infoCard.id='infoCreditosPatrim';infoCard.style.marginBottom='12px';infoCard.style.borderColor='rgba(110,86,255,.2)';
+    infoCard.innerHTML=`<div style="display:flex;align-items:flex-start;gap:12px"><div style="width:32px;height:32px;flex:0 0 32px;border-radius:8px;background:rgba(110,86,255,.12);display:grid;place-items:center;font-size:14px">💡</div><div style="flex:1"><div style="font-size:12.5px;font-weight:600;margin-bottom:3px">Tarjetas y líneas de crédito</div><div style="font-size:11.5px;color:var(--text-2);line-height:1.55;font-weight:400">La gestión está en <strong style="color:var(--accent-2);cursor:pointer" onclick="irA('gastos')">Gastos y crédito →</strong><br>Deuda tarjetas: <strong style="color:var(--red)">${clp(totalDeudaTarjetas)}</strong> · Líneas utilizadas: <strong style="color:var(--red)">${clp(totalUtilizadoLineas)}</strong></div></div></div>`;
     const gridActivos=document.querySelector('#view-patrimonio .grid.g2');
     if(gridActivos) gridActivos.parentNode.insertBefore(infoCard, gridActivos);
   }
-
   document.getElementById('totActivos').textContent=clp(ta);
   document.getElementById('totPasivos').textContent=clp(otrosPasivos.reduce((s,p)=>s+(+p.valor||0),0));
   const la=document.getElementById('listActivos');
@@ -1706,7 +1379,12 @@ function renderConfig(){
   else if(user){
     cfg.innerHTML=`<div style="display:flex;flex-direction:column;gap:12px"><div><div style="font-size:10.5px;color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">Cuenta conectada</div><div style="font-size:13px;font-weight:600">${user.email}</div></div><div style="display:flex;gap:7px"><button class="chip" id="btnForceSync">Sincronizar</button><button class="chip" id="btnLogout" style="color:var(--red);border-color:rgba(248,113,113,.25)">Cerrar sesión</button></div></div>`;
     document.getElementById('btnForceSync').onclick=()=>{pushCloud();pullCloud();toast('Sincronizado');};
-    document.getElementById('btnLogout').onclick=async()=>{await sb.auth.signOut();location.reload();};
+    document.getElementById('btnLogout').onclick=async()=>{
+      if(!confirm('¿Cerrar sesión? Se limpiarán los datos locales de este navegador.\n\nTus datos en la nube quedan guardados y los recuperas al volver a iniciar sesión.'))return;
+      await sb.auth.signOut();
+      localStorage.removeItem(KEY);
+      location.reload();
+    };
   }else{
     cfg.innerHTML=`<div style="font-size:12px;color:var(--muted);margin-bottom:12px">Inicia sesión para sincronizar entre dispositivos.</div><button class="chip primary" id="btnGoLogin">Iniciar sesión</button>`;
     document.getElementById('btnGoLogin').onclick=()=>{document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById('view-login').classList.add('active');};
@@ -1740,35 +1418,17 @@ const modalForm=document.getElementById('modalForm');
 const modalTitle=document.getElementById('modalTitle');
 let currentTipo=null,currentId=null,currentTarjetaPreset=null;
 let currentPagoTarjetaId=null;
-
 function inputField(name,label,type='text',value='',attrs=''){return `<div class="field"><label>${label}</label><input name="${name}" type="${type}" value="${value}" ${attrs}></div>`;}
 function selectField(name,label,options,value){return `<div class="field"><label>${label}</label><select name="${name}">${options.map(o=>`<option value="${esc(o)}" ${o===value?'selected':''}>${esc(o)}</option>`).join('')}</select></div>`;}
-
 function openModal(tipo,id=null,tarjetaPreset=null){
-  currentTipo=tipo;currentId=id;currentTarjetaPreset=tarjetaPreset;
-  currentPagoTarjetaId=null;
+  currentTipo=tipo;currentId=id;currentTarjetaPreset=tarjetaPreset;currentPagoTarjetaId=null;
   let item=null;
   if(id && tipo!=='pagoTarjeta'){const arr=tipoToArray(tipo);item=data[arr].find(x=>x.id===id);}
   const titulos={ingreso:'Ingreso',gasto:'Gasto',inversion:'Inversión',presupuesto:'Presupuesto',activo:'Activo',pasivo:'Pasivo',tarjeta:'Tarjeta de crédito',linea:'Línea de crédito'};
   modalTitle.textContent=(id?'Editar ':'Nuevo ')+titulos[tipo];
   let html='';
   if(tipo==='ingreso'){html=inputField('nombre','Nombre','text',item?.nombre||'',"required placeholder='Ej: Sueldo'");html+=inputField('monto','Monto (CLP)','number',item?.monto||'',"required min=0 step=1 placeholder='0'");html+=selectField('categoria','Categoría',data.categorias.ingresos,item?.categoria||data.categorias.ingresos[0]);html+=inputField('fecha','Fecha','date',item?.fecha||hoy(),"required");html+=`<label class="check"><input type="checkbox" name="recurrente" ${item?.recurrente?'checked':''}> Ingreso recurrente</label>`;}
-  if(tipo==='gasto'){
-    const tarjetas=getTarjetas();
-    const tarjetaIdActual=item?.tarjetaId || tarjetaPreset || '';
-    const cuotasActual=item?.cuotas || 1;
-    const tasaActual=item?.tasaCuotas ?? 0;
-    html=inputField('nombre','Nombre','text',item?.nombre||'',"required placeholder='Ej: Jumbo'");
-    html+=inputField('monto','Monto (CLP)','number',item?.monto||'',"required min=0 step=1 placeholder='0'");
-    html+=selectField('categoria','Categoría',data.categorias.gastos,item?.categoria||data.categorias.gastos[0]);
-    html+=inputField('fecha','Fecha','date',item?.fecha||hoy(),"required");
-    html+=`<div class="field"><label>Medio de pago</label><select name="tarjetaId"><option value="" ${!tarjetaIdActual?'selected':''}>Efectivo / Débito</option>${tarjetas.map(t=>`<option value="${t.id}" ${tarjetaIdActual===t.id?'selected':''}>💳 ${esc(t.nombre)} · disp. ${clp(cupoDisponible(t))}</option>`).join('')}</select></div>`;
-    html+=`<div class="field-row">
-      <div class="field"><label>N° cuotas</label><input name="cuotas" type="number" min="1" max="48" step="1" value="${cuotasActual}" placeholder="1"></div>
-      <div class="field"><label>Tasa mensual (%)</label><input name="tasaCuotas" type="number" min="0" step="0.01" value="${tasaActual}" placeholder="0"></div>
-    </div>
-    <div id="previewCuotas" style="font-size:11px;color:var(--muted);font-weight:500;line-height:1.6;padding:9px 12px;border-radius:8px;background:var(--surface-2);border:1px solid var(--border);margin-bottom:11px">Cuotas solo aplican a compras con tarjeta.</div>`;
-  }
+  if(tipo==='gasto'){const tarjetas=getTarjetas();const tarjetaIdActual=item?.tarjetaId || tarjetaPreset || '';const cuotasActual=item?.cuotas || 1;const tasaActual=item?.tasaCuotas ?? 0;html=inputField('nombre','Nombre','text',item?.nombre||'',"required placeholder='Ej: Jumbo'");html+=inputField('monto','Monto (CLP)','number',item?.monto||'',"required min=0 step=1 placeholder='0'");html+=selectField('categoria','Categoría',data.categorias.gastos,item?.categoria||data.categorias.gastos[0]);html+=inputField('fecha','Fecha','date',item?.fecha||hoy(),"required");html+=`<div class="field"><label>Medio de pago</label><select name="tarjetaId"><option value="" ${!tarjetaIdActual?'selected':''}>Efectivo / Débito</option>${tarjetas.map(t=>`<option value="${t.id}" ${tarjetaIdActual===t.id?'selected':''}>💳 ${esc(t.nombre)} · disp. ${clp(cupoDisponible(t))}</option>`).join('')}</select></div>`;html+=`<div class="field-row"><div class="field"><label>N° cuotas</label><input name="cuotas" type="number" min="1" max="48" step="1" value="${cuotasActual}" placeholder="1"></div><div class="field"><label>Tasa mensual (%)</label><input name="tasaCuotas" type="number" min="0" step="0.01" value="${tasaActual}" placeholder="0"></div></div><div id="previewCuotas" style="font-size:11px;color:var(--muted);font-weight:500;line-height:1.6;padding:9px 12px;border-radius:8px;background:var(--surface-2);border:1px solid var(--border);margin-bottom:11px">Cuotas solo aplican a compras con tarjeta.</div>`;}
   if(tipo==='inversion'){html=inputField('nombre','Nombre','text',item?.nombre||'',"required");html+=selectField('tipo','Tipo',data.categorias.inversiones,item?.tipo||data.categorias.inversiones[0]);html+=inputField('monto','Monto actual (CLP)','number',item?.monto||'',"required min=0 step=1");html+=inputField('rendimiento','Rendimiento (%)','number',item?.rendimiento??'',"step=0.1");}
   if(tipo==='presupuesto'){html=selectField('categoria','Categoría',data.categorias.gastos,item?.categoria||data.categorias.gastos[0]);html+=inputField('asignado','Monto asignado (CLP)','number',item?.asignado||'',"required min=0 step=1");}
   if(tipo==='activo'||tipo==='pasivo'){const tipos=tipo==='activo'?['Bien raíz','Efectivo','Vehículo','Otro']:['Hipotecario','Automotriz','Otro'];html=inputField('nombre','Nombre','text',item?.nombre||'',"required");html+=selectField('tipo','Tipo',tipos,item?.tipo||tipos[0]);html+=inputField('valor','Valor (CLP)','number',item?.valor||'',"required min=0 step=1");}
@@ -1777,7 +1437,6 @@ function openModal(tipo,id=null,tarjetaPreset=null){
   modalForm.innerHTML=html;
   modalBg.classList.add('open');
   setTimeout(()=>modalForm.querySelector('input,select')?.focus(),60);
-
   if(currentTipo==='gasto'){
     setTimeout(()=>{
       const inpCuotas=modalForm.querySelector('[name=cuotas]');
@@ -1805,115 +1464,31 @@ function openModal(tipo,id=null,tarjetaPreset=null){
     },80);
   }
 }
-
-function openModalPago(cardId, pagoId=null){
-  currentTipo='pagoTarjeta';
-  currentId=cardId;
-  currentPagoTarjetaId=pagoId;
-
+function openModalPago(cardId,pagoId=null){
+  currentTipo='pagoTarjeta';currentId=cardId;currentPagoTarjetaId=pagoId;
   const card=data.pasivos.find(x=>x.id===cardId && x.tipo==='Tarjeta');
   if(!card){toast('Tarjeta no encontrada',true);return;}
-
-  const esEdicion = pagoId !== null;
-  modalTitle.textContent = esEdicion ? 'Editar pago · '+card.nombre : (card.pagos && card.pagos.length ? 'Pagos · '+card.nombre : 'Registrar pago · '+card.nombre);
-
-  const deuda=Math.max(0,deudaTarjeta(card));
-  const cupoDisp=cupoDisponible(card);
-
-  const pagoEdit = esEdicion ? (card.pagos||[]).find(pg=>pg.id===pagoId) : null;
-  const montoVal = pagoEdit ? pagoEdit.monto : '';
-  const fechaVal = pagoEdit ? pagoEdit.fecha : hoy();
-  const catVal = pagoEdit ? (pagoEdit.categoria||CAT_PAGO_TC) : CAT_PAGO_TC;
-  const notaVal = pagoEdit ? (pagoEdit.nota||'') : '';
-
+  const esEdicion=pagoId!==null;
+  modalTitle.textContent=esEdicion?'Editar pago · '+card.nombre:(card.pagos && card.pagos.length?'Pagos · '+card.nombre:'Registrar pago · '+card.nombre);
+  const deuda=Math.max(0,deudaTarjeta(card));const cupoDisp=cupoDisponible(card);
+  const pagoEdit=esEdicion?(card.pagos||[]).find(pg=>pg.id===pagoId):null;
+  const montoVal=pagoEdit?pagoEdit.monto:'';
+  const fechaVal=pagoEdit?pagoEdit.fecha:hoy();
+  const catVal=pagoEdit?(pagoEdit.categoria||CAT_PAGO_TC):CAT_PAGO_TC;
+  const notaVal=pagoEdit?(pagoEdit.nota||''):'';
   const pagosOrdenados=[...(card.pagos||[])].sort((a,b)=>(b.fecha||'').localeCompare(a.fecha||''));
-  const historialHTML = pagosOrdenados.length ? `
-    <div class="hist-pagos">
-      <div class="hist-pagos-title">Historial de pagos (${pagosOrdenados.length})</div>
-      ${pagosOrdenados.slice(0,10).map(pg=>`
-        <div class="hist-pago">
-          <div class="hist-pago-info">
-            <div class="hist-pago-fecha">${fmtDateLong(pg.fecha)}</div>
-            <div class="hist-pago-cat">${esc(pg.categoria||CAT_PAGO_TC)}${pg.nota?' · '+esc(pg.nota):''}</div>
-          </div>
-          <div class="hist-pago-monto">${clp(pg.monto)}</div>
-          <div class="hist-pago-acciones">
-            <button type="button" data-act="edit-pago" data-pago-id="${pg.id}">✎</button>
-            <button type="button" class="del" data-act="del-pago" data-pago-id="${pg.id}">🗑</button>
-          </div>
-        </div>
-      `).join('')}
-      ${pagosOrdenados.length>10?`<div style="font-size:10.5px;color:var(--muted);text-align:center;padding:6px 0;font-style:italic">+${pagosOrdenados.length-10} pagos anteriores…</div>`:''}
-    </div>` : '';
-
-  const bannerEdicion = esEdicion ? `
-    <div class="hist-edit-banner">
-      <span>✎ Editando pago del ${fmtDateLong(pagoEdit.fecha)}</span>
-      <button type="button" id="cancelarEdicionPago">Cancelar</button>
-    </div>` : '';
-
-  let html='';
-  html += bannerEdicion;
-  html += `<div style="font-size:11.5px;color:var(--muted);margin-bottom:14px;line-height:1.7;padding:11px;border-radius:8px;background:var(--surface-2);border:1px solid var(--border)">
-    <div style="display:flex;justify-content:space-between"><span>Deuda actual</span><strong style="color:var(--red)">${clp(deuda)}</strong></div>
-    <div style="display:flex;justify-content:space-between"><span>Disponible</span><strong style="color:var(--green)">${clp(cupoDisp)}</strong></div>
-    <div style="display:flex;justify-content:space-between"><span>Cupo total</span><strong style="color:var(--text)">${clp(card.cupo)}</strong></div>
-  </div>`;
-  html += `<div class="field-row">
-    <div class="field"><label>Monto a pagar (CLP)</label><input name="monto" type="number" min="1" step="1" value="${montoVal}" placeholder="0" required></div>
-    <div class="field"><label>Fecha</label><input name="fecha" type="date" value="${fechaVal}" required></div>
-  </div>`;
-  html += `<div class="field"><label>Categoría de presupuesto</label><select name="categoria">
-    ${data.categorias.gastos.map(c=>`<option value="${esc(c)}" ${c===catVal?'selected':''}>${iconoCategoria(c)} ${esc(c)}</option>`).join('')}
-  </select></div>`;
-  html += `<div style="font-size:10.5px;color:var(--muted);margin-top:-6px;margin-bottom:10px;line-height:1.55;font-weight:400">El pago se sumará al presupuesto de esta categoría en el mes correspondiente. Por defecto se usa <strong style="color:var(--accent-2)">${CAT_PAGO_TC}</strong>.</div>`;
-  html += `<div class="field"><label>Nota (opcional)</label><input name="nota" type="text" value="${esc(notaVal)}" placeholder="Ej: Pago mínimo / Total"></div>`;
-  html += historialHTML;
-
-  modalForm.innerHTML=html;
-  modalBg.classList.add('open');
-  setTimeout(()=>modalForm.querySelector('[name=monto]')?.focus(),80);
-
-  modalForm.querySelectorAll('[data-act="edit-pago"]').forEach(b=>{
-    b.onclick=(e)=>{
-      e.preventDefault();
-      openModalPago(cardId, +b.dataset.pagoId);
-    };
-  });
-  modalForm.querySelectorAll('[data-act="del-pago"]').forEach(b=>{
-    b.onclick=(e)=>{
-      e.preventDefault();
-      const pid=+b.dataset.pagoId;
-      const pg=(card.pagos||[]).find(x=>x.id===pid);
-      if(!pg) return;
-      if(!confirm(`¿Eliminar el pago del ${fmtDateLong(pg.fecha)} por ${clp(pg.monto)}?`)) return;
-      card.pagos=(card.pagos||[]).filter(x=>x.id!==pid);
-      save();
-      const pagoIdActual=currentPagoTarjetaId;
-      if(pagoIdActual===pid){
-        openModalPago(cardId);
-      } else {
-        openModalPago(cardId, pagoIdActual);
-      }
-      renderAll();
-      toast('Pago eliminado · '+clp(pg.monto));
-    };
-  });
-  const btnCancelarEd=document.getElementById('cancelarEdicionPago');
-  if(btnCancelarEd){
-    btnCancelarEd.onclick=(e)=>{
-      e.preventDefault();
-      openModalPago(cardId);
-    };
-  }
+  const historialHTML=pagosOrdenados.length?`<div class="hist-pagos"><div class="hist-pagos-title">Historial de pagos (${pagosOrdenados.length})</div>${pagosOrdenados.slice(0,10).map(pg=>`<div class="hist-pago"><div class="hist-pago-info"><div class="hist-pago-fecha">${fmtDateLong(pg.fecha)}</div><div class="hist-pago-cat">${esc(pg.categoria||CAT_PAGO_TC)}${pg.nota?' · '+esc(pg.nota):''}</div></div><div class="hist-pago-monto">${clp(pg.monto)}</div><div class="hist-pago-acciones"><button type="button" data-act="edit-pago" data-pago-id="${pg.id}">✎</button><button type="button" class="del" data-act="del-pago" data-pago-id="${pg.id}">🗑</button></div></div>`).join('')}${pagosOrdenados.length>10?`<div style="font-size:10.5px;color:var(--muted);text-align:center;padding:6px 0;font-style:italic">+${pagosOrdenados.length-10} pagos anteriores…</div>`:''}</div>`:'';
+  const bannerEdicion=esEdicion?`<div class="hist-edit-banner"><span>✎ Editando pago del ${fmtDateLong(pagoEdit.fecha)}</span><button type="button" id="cancelarEdicionPago">Cancelar</button></div>`:'';
+  let html='';html+=bannerEdicion;html+=`<div style="font-size:11.5px;color:var(--muted);margin-bottom:14px;line-height:1.7;padding:11px;border-radius:8px;background:var(--surface-2);border:1px solid var(--border)"><div style="display:flex;justify-content:space-between"><span>Deuda actual</span><strong style="color:var(--red)">${clp(deuda)}</strong></div><div style="display:flex;justify-content:space-between"><span>Disponible</span><strong style="color:var(--green)">${clp(cupoDisp)}</strong></div><div style="display:flex;justify-content:space-between"><span>Cupo total</span><strong style="color:var(--text)">${clp(card.cupo)}</strong></div></div>`;html+=`<div class="field-row"><div class="field"><label>Monto a pagar (CLP)</label><input name="monto" type="number" min="1" step="1" value="${montoVal}" placeholder="0" required></div><div class="field"><label>Fecha</label><input name="fecha" type="date" value="${fechaVal}" required></div></div>`;html+=`<div class="field"><label>Categoría de presupuesto</label><select name="categoria">${data.categorias.gastos.map(c=>`<option value="${esc(c)}" ${c===catVal?'selected':''}>${iconoCategoria(c)} ${esc(c)}</option>`).join('')}</select></div>`;html+=`<div style="font-size:10.5px;color:var(--muted);margin-top:-6px;margin-bottom:10px;line-height:1.55;font-weight:400">El pago se sumará al presupuesto de esta categoría en el mes correspondiente. Por defecto se usa <strong style="color:var(--accent-2)">${CAT_PAGO_TC}</strong>.</div>`;html+=`<div class="field"><label>Nota (opcional)</label><input name="nota" type="text" value="${esc(notaVal)}" placeholder="Ej: Pago mínimo / Total"></div>`;html+=historialHTML;
+  modalForm.innerHTML=html;modalBg.classList.add('open');setTimeout(()=>modalForm.querySelector('[name=monto]')?.focus(),80);
+  modalForm.querySelectorAll('[data-act="edit-pago"]').forEach(b=>{b.onclick=(e)=>{e.preventDefault();openModalPago(cardId,+b.dataset.pagoId);};});
+  modalForm.querySelectorAll('[data-act="del-pago"]').forEach(b=>{b.onclick=(e)=>{e.preventDefault();const pid=+b.dataset.pagoId;const pg=(card.pagos||[]).find(x=>x.id===pid);if(!pg) return;if(!confirm(`¿Eliminar el pago del ${fmtDateLong(pg.fecha)} por ${clp(pg.monto)}?`)) return;card.pagos=(card.pagos||[]).filter(x=>x.id!==pid);save();const pagoIdActual=currentPagoTarjetaId;if(pagoIdActual===pid){openModalPago(cardId);}else{openModalPago(cardId,pagoIdActual);}renderAll();toast('Pago eliminado · '+clp(pg.monto));};});
+  const btnCancelarEd=document.getElementById('cancelarEdicionPago');if(btnCancelarEd){btnCancelarEd.onclick=(e)=>{e.preventDefault();openModalPago(cardId);};}
 }
-
 function closeModal(){modalBg.classList.remove('open');modalForm.reset();currentPagoTarjetaId=null;}
 document.getElementById('btnCancel').onclick=closeModal;
-
 document.getElementById('btnSave').onclick=e=>{
   e.preventDefault();
-
   if(currentTipo==='pagoTarjeta'){
     const fd=new FormData(modalForm);
     const card=data.pasivos.find(x=>x.id===currentId);
@@ -1923,28 +1498,14 @@ document.getElementById('btnSave').onclick=e=>{
     const fecha=fd.get('fecha')||hoy();
     const categoria=fd.get('categoria')||CAT_PAGO_TC;
     const nota=fd.get('nota')||'';
-
     card.pagos=card.pagos||[];
-    if(currentPagoTarjetaId){
-      const idx=card.pagos.findIndex(pg=>pg.id===currentPagoTarjetaId);
-      if(idx<0){toast('Pago no encontrado',true);return;}
-      card.pagos[idx]={...card.pagos[idx],monto,fecha,categoria,nota};
-      toast('Pago actualizado · '+clp(monto));
-    } else {
-      card.pagos.push({id:uid(),monto,fecha,categoria,nota});
-      toast('Pago registrado · '+clp(monto)+' → '+categoria);
-    }
-
+    if(currentPagoTarjetaId){const idx=card.pagos.findIndex(pg=>pg.id===currentPagoTarjetaId);if(idx<0){toast('Pago no encontrado',true);return;}card.pagos[idx]={...card.pagos[idx],monto,fecha,categoria,nota};toast('Pago actualizado · '+clp(monto));}
+    else{card.pagos.push({id:uid(),monto,fecha,categoria,nota});toast('Pago registrado · '+clp(monto)+' → '+categoria);}
     save();
-    if(currentPagoTarjetaId){
-      openModalPago(card.id, currentPagoTarjetaId);
-    } else {
-      closeModal();
-    }
+    if(currentPagoTarjetaId){openModalPago(card.id,currentPagoTarjetaId);}else{closeModal();}
     renderAll();
     return;
   }
-
   const fd=new FormData(modalForm);
   const obj={};
   for(const [k,v] of fd.entries()){
@@ -1968,7 +1529,6 @@ document.getElementById('btnSave').onclick=e=>{
 modalBg.onclick=e=>{if(e.target===modalBg)closeModal();};
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modalBg.classList.contains('open'))closeModal();});
 document.querySelectorAll('[data-add]').forEach(b=>b.addEventListener('click',()=>openModal(b.dataset.add)));
-
 const btnAddCatPresup=document.getElementById('btnAddCatPresup');
 if(btnAddCatPresup){
   btnAddCatPresup.onclick=()=>{
@@ -1983,17 +1543,12 @@ if(btnAddCatPresup){
     setTimeout(()=>{if(confirm('¿Crear sobre de presupuesto para "'+nombre+'"?')){openModal('presupuesto');setTimeout(()=>{const sel=modalForm.querySelector('[name=categoria]');if(sel)sel.value=nombre;},100);}},180);
   };
 }
-
 const btnNuevoTipoInv=document.getElementById('btnNuevoTipoInv');
 const btnNuevoTipoInv2=document.getElementById('btnNuevoTipoInv2');
 if(btnNuevoTipoInv)btnNuevoTipoInv.onclick=addTipoInv;
 if(btnNuevoTipoInv2)btnNuevoTipoInv2.onclick=addTipoInv;
-
 function toast(msg,warn){const t=document.getElementById('toast');t.textContent=msg;t.className='toast show'+(warn?' warn':'');setTimeout(()=>t.className='toast'+(warn?' warn':''),2400);}
 
-/* ============================================================
-   INFORME PDF
-============================================================ */
 function generarInformePDF(){
   const win=window.open('','_blank');
   if(!win){toast('Permite ventanas emergentes para generar el PDF',true);return;}
@@ -2011,186 +1566,35 @@ function generarInformePDF(){
   const mes=mesActual();
   const ingMes=data.ingresos.filter(x=>x.fecha?.startsWith(mes)).reduce((s,x)=>s+(+x.monto||0),0);
   const gasMes=data.gastos.filter(x=>x.fecha?.startsWith(mes)).reduce((s,x)=>s+(+x.monto||0),0)+totalPagosTCdelMes();
-
   const catsMes={};
   data.gastos.filter(g=>g.fecha?.startsWith(mes)).forEach(g=>catsMes[g.categoria]=(catsMes[g.categoria]||0)+(+g.monto||0));
   const pagosMes=totalPagosTCdelMes();
   if(pagosMes>0) catsMes[CAT_PAGO_TC]=(catsMes[CAT_PAGO_TC]||0)+pagosMes;
   const catsSorted=Object.entries(catsMes).sort((a,b)=>b[1]-a[1]);
   const totalCatMes=catsSorted.reduce((s,[,v])=>s+v,0);
-
   const fmtN=n=>'$'+Math.round(+n||0).toLocaleString('es-CL');
-
-  const html=`<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Informe Mis Finanzas — ${fecha}</title>
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;color:#1a1a1f;background:#fff;padding:32px 40px;font-size:12px;line-height:1.5}
-.header{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #111;padding-bottom:16px;margin-bottom:24px}
-.header-left h1{font-size:20px;font-weight:700;letter-spacing:-.4px}
-.header-left p{font-size:11px;color:#666;margin-top:4px}
-.header-right{text-align:right;font-size:10px;color:#666;line-height:1.6}
-.header-right strong{color:#111;font-size:11px}
-h2{font-size:11px;text-transform:uppercase;letter-spacing:1.2px;color:#666;margin:24px 0 10px;padding-bottom:6px;border-bottom:1px solid #e5e5e5;font-weight:600}
-h2:first-of-type{margin-top:0}
-.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
-.kpi{border:1px solid #e5e5e5;border-radius:6px;padding:12px 14px}
-.kpi .l{font-size:9.5px;text-transform:uppercase;letter-spacing:.8px;color:#888;font-weight:600;margin-bottom:6px}
-.kpi .v{font-size:16px;font-weight:700;letter-spacing:-.4px}
-.kpi .v.pos{color:#16a34a}
-.kpi .v.neg{color:#dc2626}
-.kpi .s{font-size:10px;color:#888;margin-top:4px}
-table{width:100%;border-collapse:collapse;font-size:11px;margin-bottom:8px}
-th{text-align:left;padding:8px 6px;border-bottom:1.5px solid #333;font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#555}
-td{padding:7px 6px;border-bottom:1px solid #f0f0f0}
-td.r{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
-td.r.neg{color:#dc2626}
-td.r.pos{color:#16a34a}
-tr.total td{border-top:1.5px solid #333;border-bottom:none;font-weight:700;padding-top:10px}
-.bar{height:6px;border-radius:3px;background:#eee;overflow:hidden;margin-top:4px}
-.bar-fill{height:100%;border-radius:3px}
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px}
-.box{border:1px solid #e5e5e5;border-radius:6px;padding:12px 14px;margin-bottom:10px}
-.box-title{font-size:11.5px;font-weight:700;margin-bottom:8px}
-.box-row{display:flex;justify-content:space-between;font-size:11px;padding:3px 0}
-.box-row .lbl{color:#666}
-.box-row .val{font-weight:600;font-variant-numeric:tabular-nums}
-.footer{margin-top:32px;padding-top:14px;border-top:1px solid #e5e5e5;text-align:center;font-size:9.5px;color:#999}
-.tag{display:inline-block;padding:2px 7px;border-radius:4px;font-size:9.5px;font-weight:600;background:#f0f0f0;color:#555;margin-left:6px}
-.tag.neg{background:#fee2e2;color:#dc2626}
-.tag.pos{background:#dcfce7;color:#16a34a}
-.cuotas-box{border:1px solid #e5e5e5;border-radius:6px;padding:12px 14px;margin-top:6px}
-.cuotas-title{font-size:10.5px;text-transform:uppercase;letter-spacing:.6px;color:#6e56ff;font-weight:600;margin-bottom:8px}
-.cuotas-item{display:flex;justify-content:space-between;font-size:11px;padding:3px 0;color:#333}
-.cuotas-item .n{color:#666}
-.cuotas-item .m{font-weight:600;font-variant-numeric:tabular-nums}
-.cuotas-total{margin-top:8px;padding-top:8px;border-top:1px dashed #ccc;display:flex;justify-content:space-between;font-size:11.5px;font-weight:700}
-.cuotas-total .val{color:#6e56ff}
-.no-print{display:flex;gap:8px;justify-content:center;margin-bottom:20px}
-.no-print button{padding:8px 16px;border:1px solid #ddd;background:#fff;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit}
-.no-print button.p{background:#111;color:#fff;border-color:#111}
-@media print{body{padding:12px 16px} .no-print{display:none}}
-</style></head><body>
-
-<div class="no-print">
-  <button class="p" onclick="window.print()">🖨 Guardar como PDF / Imprimir</button>
-  <button onclick="window.close()">Cerrar</button>
-</div>
-
-<div class="header">
-  <div class="header-left">
-    <h1>Informe Financiero Personal</h1>
-    <p>Generado desde Mis Finanzas · ${fecha}</p>
-  </div>
-  <div class="header-right">
-    <strong>${user && user.email ? esc(user.email) : 'Oscar Norambuena'}</strong><br>
-    ${hora} hrs
-  </div>
-</div>
-
+  const html=`<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Informe Mis Finanzas — ${fecha}</title><style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;color:#1a1a1f;background:#fff;padding:32px 40px;font-size:12px;line-height:1.5}.header{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #111;padding-bottom:16px;margin-bottom:24px}.header-left h1{font-size:20px;font-weight:700;letter-spacing:-.4px}.header-left p{font-size:11px;color:#666;margin-top:4px}.header-right{text-align:right;font-size:10px;color:#666;line-height:1.6}.header-right strong{color:#111;font-size:11px}h2{font-size:11px;text-transform:uppercase;letter-spacing:1.2px;color:#666;margin:24px 0 10px;padding-bottom:6px;border-bottom:1px solid #e5e5e5;font-weight:600}h2:first-of-type{margin-top:0}.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}.kpi{border:1px solid #e5e5e5;border-radius:6px;padding:12px 14px}.kpi .l{font-size:9.5px;text-transform:uppercase;letter-spacing:.8px;color:#888;font-weight:600;margin-bottom:6px}.kpi .v{font-size:16px;font-weight:700;letter-spacing:-.4px}.kpi .v.pos{color:#16a34a}.kpi .v.neg{color:#dc2626}.kpi .s{font-size:10px;color:#888;margin-top:4px}table{width:100%;border-collapse:collapse;font-size:11px;margin-bottom:8px}th{text-align:left;padding:8px 6px;border-bottom:1.5px solid #333;font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#555}td{padding:7px 6px;border-bottom:1px solid #f0f0f0}td.r{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}td.r.neg{color:#dc2626}td.r.pos{color:#16a34a}tr.total td{border-top:1.5px solid #333;border-bottom:none;font-weight:700;padding-top:10px}.bar{height:6px;border-radius:3px;background:#eee;overflow:hidden;margin-top:4px}.bar-fill{height:100%;border-radius:3px}.two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px}.box{border:1px solid #e5e5e5;border-radius:6px;padding:12px 14px;margin-bottom:10px}.box-title{font-size:11.5px;font-weight:700;margin-bottom:8px}.box-row{display:flex;justify-content:space-between;font-size:11px;padding:3px 0}.box-row .lbl{color:#666}.box-row .val{font-weight:600;font-variant-numeric:tabular-nums}.footer{margin-top:32px;padding-top:14px;border-top:1px solid #e5e5e5;text-align:center;font-size:9.5px;color:#999}.tag{display:inline-block;padding:2px 7px;border-radius:4px;font-size:9.5px;font-weight:600;background:#f0f0f0;color:#555;margin-left:6px}.tag.neg{background:#fee2e2;color:#dc2626}.tag.pos{background:#dcfce7;color:#16a34a}.cuotas-box{border:1px solid #e5e5e5;border-radius:6px;padding:12px 14px;margin-top:6px}.cuotas-title{font-size:10.5px;text-transform:uppercase;letter-spacing:.6px;color:#6e56ff;font-weight:600;margin-bottom:8px}.cuotas-item{display:flex;justify-content:space-between;font-size:11px;padding:3px 0;color:#333}.cuotas-item .n{color:#666}.cuotas-item .m{font-weight:600;font-variant-numeric:tabular-nums}.cuotas-total{margin-top:8px;padding-top:8px;border-top:1px dashed #ccc;display:flex;justify-content:space-between;font-size:11.5px;font-weight:700}.cuotas-total .val{color:#6e56ff}.no-print{display:flex;gap:8px;justify-content:center;margin-bottom:20px}.no-print button{padding:8px 16px;border:1px solid #ddd;background:#fff;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit}.no-print button.p{background:#111;color:#fff;border-color:#111}@media print{body{padding:12px 16px} .no-print{display:none}}</style></head><body>
+<div class="no-print"><button class="p" onclick="window.print()">🖨 Guardar como PDF / Imprimir</button><button onclick="window.close()">Cerrar</button></div>
+<div class="header"><div class="header-left"><h1>Informe Financiero Personal</h1><p>Generado desde Mis Finanzas · ${fecha}</p></div><div class="header-right"><strong>${user && user.email ? esc(user.email) : 'Oscar Norambuena'}</strong><br>${hora} hrs</div></div>
 <h2>Resumen general</h2>
-<div class="kpis">
-  <div class="kpi"><div class="l">Patrimonio neto</div><div class="v ${pat<0?'neg':''}">${fmtN(Math.abs(pat))}</div><div class="s">${pat<0?'Saldo negativo':''}</div></div>
-  <div class="kpi"><div class="l">Activos</div><div class="v pos">${fmtN(ta)}</div><div class="s">${data.activos.length} bienes + ${data.inversiones.length} inv.</div></div>
-  <div class="kpi"><div class="l">Pasivos</div><div class="v neg">${fmtN(tp)}</div><div class="s">${tarjetas.length} tarjetas · ${lineas.length} líneas</div></div>
-  <div class="kpi"><div class="l">Tasa de ahorro</div><div class="v ${tasa<0?'neg':(tasa>=20?'pos':'')}">${tasa.toFixed(1)}%</div><div class="s">${fmtN(aho)} ahorro acum.</div></div>
-</div>
-
+<div class="kpis"><div class="kpi"><div class="l">Patrimonio neto</div><div class="v ${pat<0?'neg':''}">${fmtN(Math.abs(pat))}</div><div class="s">${pat<0?'Saldo negativo':''}</div></div><div class="kpi"><div class="l">Activos</div><div class="v pos">${fmtN(ta)}</div><div class="s">${data.activos.length} bienes + ${data.inversiones.length} inv.</div></div><div class="kpi"><div class="l">Pasivos</div><div class="v neg">${fmtN(tp)}</div><div class="s">${tarjetas.length} tarjetas · ${lineas.length} líneas</div></div><div class="kpi"><div class="l">Tasa de ahorro</div><div class="v ${tasa<0?'neg':(tasa>=20?'pos':'')}">${tasa.toFixed(1)}%</div><div class="s">${fmtN(aho)} ahorro acum.</div></div></div>
 <h2>Mes en curso</h2>
-<div class="kpis">
-  <div class="kpi"><div class="l">Ingresos del mes</div><div class="v pos">${fmtN(ingMes)}</div></div>
-  <div class="kpi"><div class="l">Gastos del mes</div><div class="v neg">${fmtN(gasMes)}</div><div class="s">Incluye pagos TC</div></div>
-  <div class="kpi"><div class="l">Ahorro del mes</div><div class="v ${ingMes-gasMes<0?'neg':'pos'}">${fmtN(Math.abs(ingMes-gasMes))}</div></div>
-  <div class="kpi"><div class="l">Pagos TC del mes</div><div class="v">${fmtN(pagosMes)}</div></div>
-</div>
-
+<div class="kpis"><div class="kpi"><div class="l">Ingresos del mes</div><div class="v pos">${fmtN(ingMes)}</div></div><div class="kpi"><div class="l">Gastos del mes</div><div class="v neg">${fmtN(gasMes)}</div><div class="s">Incluye pagos TC</div></div><div class="kpi"><div class="l">Ahorro del mes</div><div class="v ${ingMes-gasMes<0?'neg':'pos'}">${fmtN(Math.abs(ingMes-gasMes))}</div></div><div class="kpi"><div class="l">Pagos TC del mes</div><div class="v">${fmtN(pagosMes)}</div></div></div>
 <h2>Gastos por categoría (mes actual)</h2>
-<table>
-  <thead><tr><th>Categoría</th><th style="text-align:right">Monto</th><th style="text-align:right">% del total</th></tr></thead>
-  <tbody>
-    ${catsSorted.map(([c,v])=>`<tr><td>${esc(c)}<div class="bar"><div class="bar-fill" style="width:${totalCatMes?(v/totalCatMes*100):0}%;background:#6e56ff"></div></div></td><td class="r neg">${fmtN(v)}</td><td class="r">${totalCatMes?((v/totalCatMes)*100).toFixed(1):0}%</td></tr>`).join('') || '<tr><td colspan="3" style="color:#999;text-align:center;padding:16px">Sin gastos</td></tr>'}
-    <tr class="total"><td>Total del mes</td><td class="r neg">${fmtN(Object.values(catsMes).reduce((s,v)=>s+v,0))}</td><td class="r">100%</td></tr>
-  </tbody>
-</table>
-
+<table><thead><tr><th>Categoría</th><th style="text-align:right">Monto</th><th style="text-align:right">% del total</th></tr></thead><tbody>${catsSorted.map(([c,v])=>`<tr><td>${esc(c)}<div class="bar"><div class="bar-fill" style="width:${totalCatMes?(v/totalCatMes*100):0}%;background:#6e56ff"></div></div></td><td class="r neg">${fmtN(v)}</td><td class="r">${totalCatMes?((v/totalCatMes)*100).toFixed(1):0}%</td></tr>`).join('') || '<tr><td colspan="3" style="color:#999;text-align:center;padding:16px">Sin gastos</td></tr>'}<tr class="total"><td>Total del mes</td><td class="r neg">${fmtN(Object.values(catsMes).reduce((s,v)=>s+v,0))}</td><td class="r">100%</td></tr></tbody></table>
 <h2>Presupuesto mensual</h2>
-<table>
-  <thead><tr><th>Categoría</th><th style="text-align:right">Asignado</th><th style="text-align:right">Gastado</th><th style="text-align:right">Disponible</th><th style="text-align:right">Estado</th></tr></thead>
-  <tbody>
-    ${data.presupuestos.map(p=>{
-      const g=gastoDeCategoria(p.categoria);
-      const disp=p.asignado-g;
-      const over=g>p.asignado;
-      return `<tr><td>${esc(p.categoria)}</td><td class="r">${fmtN(p.asignado)}</td><td class="r neg">${fmtN(g)}</td><td class="r ${over?'neg':'pos'}">${fmtN(Math.abs(disp))}</td><td class="r"><span class="tag ${over?'neg':'pos'}">${over?'Excedido':(g/p.asignado>0.9?'Al límite':'OK')}</span></td></tr>`;
-    }).join('') || '<tr><td colspan="5" style="color:#999;text-align:center;padding:16px">Sin presupuestos</td></tr>'}
-  </tbody>
-</table>
-
+<table><thead><tr><th>Categoría</th><th style="text-align:right">Asignado</th><th style="text-align:right">Gastado</th><th style="text-align:right">Disponible</th><th style="text-align:right">Estado</th></tr></thead><tbody>${data.presupuestos.map(p=>{const g=gastoDeCategoria(p.categoria);const disp=p.asignado-g;const over=g>p.asignado;return `<tr><td>${esc(p.categoria)}</td><td class="r">${fmtN(p.asignado)}</td><td class="r neg">${fmtN(g)}</td><td class="r ${over?'neg':'pos'}">${fmtN(Math.abs(disp))}</td><td class="r"><span class="tag ${over?'neg':'pos'}">${over?'Excedido':(g/p.asignado>0.9?'Al límite':'OK')}</span></td></tr>`;}).join('') || '<tr><td colspan="5" style="color:#999;text-align:center;padding:16px">Sin presupuestos</td></tr>'}</tbody></table>
 <h2>Tarjetas y líneas de crédito</h2>
-<div class="two-col">
-  <div>
-    ${tarjetas.map(t=>{
-      const deuda=Math.max(0,deudaTarjeta(t));
-      const pct=t.cupo?(deuda/t.cupo*100):0;
-      const cuotasVig=cuotasVigentesDeTarjeta(t.id);
-      const totalMensual=totalMensualCuotasTarjeta(t.id);
-      const cuotasHTML=cuotasVig.length?`
-        <div class="cuotas-box">
-          <div class="cuotas-title">📆 Cuotas vigentes este mes</div>
-          ${cuotasVig.map(g=>`<div class="cuotas-item"><span><strong>${esc(g.nombre)}</strong> · <span class="n">${g.cuotas} cuotas${(+g.tasaCuotas||0)>0?' · '+(+g.tasaCuotas).toFixed(2)+'%':''}</span></span><span class="m">${fmtN(valorCuotaGasto(g))}</span></div>`).join('')}
-          <div class="cuotas-total"><span>Total cuotas del mes</span><span class="val">${fmtN(totalMensual)}</span></div>
-        </div>`:'';
-      return `<div class="box"><div class="box-title">💳 ${esc(t.nombre)}</div><div class="box-row"><span class="lbl">Cupo total</span><span class="val">${fmtN(t.cupo)}</span></div><div class="box-row"><span class="lbl">Utilizado</span><span class="val" style="color:#dc2626">${fmtN(deuda)}</span></div><div class="box-row"><span class="lbl">Disponible</span><span class="val" style="color:#16a34a">${fmtN(t.cupo-deuda)}</span></div><div class="bar"><div class="bar-fill" style="width:${pct}%;background:${pct>80?'#dc2626':pct>50?'#f97316':'#16a34a'}"></div></div>${cuotasHTML}</div>`;
-    }).join('') || '<div class="box" style="color:#999;text-align:center">Sin tarjetas</div>'}
-  </div>
-  <div>
-    ${lineas.map(l=>{
-      const util=+l.utilizado||0;
-      const cupo=+l.cupo||0;
-      const pct=cupo?(util/cupo*100):0;
-      return `<div class="box"><div class="box-title">🏦 ${esc(l.nombre)}${l.banco?' · '+esc(l.banco):''}</div><div class="box-row"><span class="lbl">Cupo total</span><span class="val">${fmtN(cupo)}</span></div><div class="box-row"><span class="lbl">Utilizado</span><span class="val" style="color:#dc2626">${fmtN(util)}</span></div><div class="box-row"><span class="lbl">Disponible</span><span class="val" style="color:#16a34a">${fmtN(cupo-util)}</span></div>${l.tasa?`<div class="box-row"><span class="lbl">Tasa mensual</span><span class="val">${(+l.tasa).toFixed(2)}%</span></div>`:''}<div class="bar"><div class="bar-fill" style="width:${pct}%;background:${pct>80?'#dc2626':pct>50?'#f97316':'#06b6d4'}"></div></div></div>`;
-    }).join('') || '<div class="box" style="color:#999;text-align:center">Sin líneas</div>'}
-  </div>
-</div>
-
+<div class="two-col"><div>${tarjetas.map(t=>{const deuda=Math.max(0,deudaTarjeta(t));const pct=t.cupo?(deuda/t.cupo*100):0;const cuotasVig=cuotasVigentesDeTarjeta(t.id);const totalMensual=totalMensualCuotasTarjeta(t.id);const cuotasHTML=cuotasVig.length?`<div class="cuotas-box"><div class="cuotas-title">📆 Cuotas vigentes este mes</div>${cuotasVig.map(g=>`<div class="cuotas-item"><span><strong>${esc(g.nombre)}</strong> · <span class="n">${g.cuotas} cuotas${(+g.tasaCuotas||0)>0?' · '+(+g.tasaCuotas).toFixed(2)+'%':''}</span></span><span class="m">${fmtN(valorCuotaGasto(g))}</span></div>`).join('')}<div class="cuotas-total"><span>Total cuotas del mes</span><span class="val">${fmtN(totalMensual)}</span></div></div>`:'';return `<div class="box"><div class="box-title">💳 ${esc(t.nombre)}</div><div class="box-row"><span class="lbl">Cupo total</span><span class="val">${fmtN(t.cupo)}</span></div><div class="box-row"><span class="lbl">Utilizado</span><span class="val" style="color:#dc2626">${fmtN(deuda)}</span></div><div class="box-row"><span class="lbl">Disponible</span><span class="val" style="color:#16a34a">${fmtN(t.cupo-deuda)}</span></div><div class="bar"><div class="bar-fill" style="width:${pct}%;background:${pct>80?'#dc2626':pct>50?'#f97316':'#16a34a'}"></div></div>${cuotasHTML}</div>`;}).join('') || '<div class="box" style="color:#999;text-align:center">Sin tarjetas</div>'}</div><div>${lineas.map(l=>{const util=+l.utilizado||0;const cupo=+l.cupo||0;const pct=cupo?(util/cupo*100):0;return `<div class="box"><div class="box-title">🏦 ${esc(l.nombre)}${l.banco?' · '+esc(l.banco):''}</div><div class="box-row"><span class="lbl">Cupo total</span><span class="val">${fmtN(cupo)}</span></div><div class="box-row"><span class="lbl">Utilizado</span><span class="val" style="color:#dc2626">${fmtN(util)}</span></div><div class="box-row"><span class="lbl">Disponible</span><span class="val" style="color:#16a34a">${fmtN(cupo-util)}</span></div>${l.tasa?`<div class="box-row"><span class="lbl">Tasa mensual</span><span class="val">${(+l.tasa).toFixed(2)}%</span></div>`:''}<div class="bar"><div class="bar-fill" style="width:${pct}%;background:${pct>80?'#dc2626':pct>50?'#f97316':'#06b6d4'}"></div></div></div>`;}).join('') || '<div class="box" style="color:#999;text-align:center">Sin líneas</div>'}</div></div>
 <h2>Otros activos y pasivos</h2>
-<div class="two-col">
-  <div>
-    <table>
-      <thead><tr><th>Activo</th><th style="text-align:right">Valor</th></tr></thead>
-      <tbody>${data.activos.map(a=>`<tr><td>${esc(a.nombre)}<br><span style="font-size:9.5px;color:#888">${esc(a.tipo)}</span></td><td class="r pos">${fmtN(a.valor)}</td></tr>`).join('')}</tbody>
-    </table>
-  </div>
-  <div>
-    <table>
-      <thead><tr><th>Pasivo</th><th style="text-align:right">Saldo</th></tr></thead>
-      <tbody>${otrosPasivos.map(p=>`<tr><td>${esc(p.nombre)}<br><span style="font-size:9.5px;color:#888">${esc(p.tipo)}</span></td><td class="r neg">${fmtN(p.valor)}</td></tr>`).join('') || '<tr><td colspan="2" style="color:#999;text-align:center;padding:12px">Sin registros</td></tr>'}</tbody>
-    </table>
-  </div>
-</div>
-
-<div class="footer">
-  Informe generado automáticamente por Mis Finanzas · ${fecha} a las ${hora} hrs<br>
-  Documento confidencial
-</div>
-
+<div class="two-col"><div><table><thead><tr><th>Activo</th><th style="text-align:right">Valor</th></tr></thead><tbody>${data.activos.map(a=>`<tr><td>${esc(a.nombre)}<br><span style="font-size:9.5px;color:#888">${esc(a.tipo)}</span></td><td class="r pos">${fmtN(a.valor)}</td></tr>`).join('')}</tbody></table></div><div><table><thead><tr><th>Pasivo</th><th style="text-align:right">Saldo</th></tr></thead><tbody>${otrosPasivos.map(p=>`<tr><td>${esc(p.nombre)}<br><span style="font-size:9.5px;color:#888">${esc(p.tipo)}</span></td><td class="r neg">${fmtN(p.valor)}</td></tr>`).join('') || '<tr><td colspan="2" style="color:#999;text-align:center;padding:12px">Sin registros</td></tr>'}</tbody></table></div></div>
+<div class="footer">Informe generado automáticamente por Mis Finanzas · ${fecha} a las ${hora} hrs<br>Documento confidencial</div>
 </body></html>`;
-
-  win.document.open();
-  win.document.write(html);
-  win.document.close();
+  win.document.open();win.document.write(html);win.document.close();
   setTimeout(()=>{try{win.focus();win.print();}catch(e){}},600);
 }
-
-['btnInformePDF','btnInformePDFConfig','btnInformePDFTop'].forEach(id=>{
-  const el=document.getElementById(id); if(el) el.onclick=()=>generarInformePDF();
-});
-
-document.getElementById('btnExport').onclick=()=>{
-  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);a.download='mis-finanzas-'+hoy()+'.json';a.click();
-  toast('Respaldo descargado');
-};
+['btnInformePDF','btnInformePDFConfig','btnInformePDFTop'].forEach(id=>{const el=document.getElementById(id);if(el)el.onclick=()=>generarInformePDF();});
+document.getElementById('btnExport').onclick=()=>{const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='mis-finanzas-'+hoy()+'.json';a.click();toast('Respaldo descargado');};
 document.getElementById('btnImport').onclick=()=>document.getElementById('fileImport').click();
 document.getElementById('fileImport').onchange=e=>{
   const f=e.target.files[0];if(!f)return;
@@ -2241,14 +1645,11 @@ document.getElementById('btnReset').onclick=()=>{
 };
 document.getElementById('btnRangoHist').onclick=()=>{histRango=6;renderHistorico();};
 document.getElementById('btnRangoHist12').onclick=()=>{histRango=12;renderHistorico();};
-
 const btnExportConfig=document.getElementById('btnExportConfig');
 if(btnExportConfig) btnExportConfig.onclick=()=>document.getElementById('btnExport').click();
-
 if('serviceWorker' in navigator && location.protocol!=='file:'){
   window.addEventListener('load',()=>{navigator.serviceWorker.register('./sw.js',{scope:'./'}).catch(()=>{});});
 }
-
 let authMode='signin';
 const authForm=document.getElementById('authForm');
 const authTitle=document.getElementById('authTitle');
@@ -2310,7 +1711,6 @@ async function initSupabase(){
   const {data:{session}}=await sb.auth.getSession();
   if(session?.user){user=session.user;await afterLogin();}
 }
-
 renderAll();
 updateBnCuenta();
 updateSaludo();
