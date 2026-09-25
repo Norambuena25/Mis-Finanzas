@@ -288,6 +288,9 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
 .auth-toggle{text-align:center;font-size:11.5px;color:var(--muted);margin-top:14px;font-weight:400}
 .auth-toggle a{color:var(--accent-2);cursor:pointer;font-weight:600;text-decoration:none}
 .auth-toggle a:hover{color:#c4b5fd}
+.forgot-link{text-align:right;margin-top:-4px;margin-bottom:12px}
+.forgot-link a{font-size:11px;color:var(--accent-2);cursor:pointer;font-weight:500;text-decoration:none}
+.forgot-link a:hover{color:#c4b5fd;text-decoration:underline}
 .sync-dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--muted-2);margin-left:auto}
 .sync-dot.on{background:var(--green)}
 .sync-dot.syncing{background:var(--orange);animation:pulse 1s infinite}
@@ -550,6 +553,9 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
         <form id="authForm">
           <div class="field"><label>Correo</label><input type="email" id="authEmail" required placeholder="tu@correo.cl"></div>
           <div class="field"><label>Contraseña</label><input type="password" id="authPass" required minlength="6" placeholder="Mínimo 6 caracteres"></div>
+          <div class="forgot-link">
+            <a id="forgotPass">¿Olvidaste tu contraseña?</a>
+          </div>
           <button class="btn btn-save" style="width:100%" type="submit" id="authBtn">Entrar</button>
         </form>
         <div class="auth-toggle">
@@ -558,6 +564,27 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
         </div>
         <div style="text-align:center;margin-top:16px">
           <button class="chip" onclick="irA('dashboard')" style="font-size:11.5px">← Volver al dashboard</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="view-reset">
+      <div class="auth-wrap">
+        <h2>Nueva contraseña</h2>
+        <p>Elige una contraseña nueva para tu cuenta</p>
+        <form id="resetForm">
+          <div class="field">
+            <label>Nueva contraseña</label>
+            <input type="password" id="resetPass1" required minlength="6" placeholder="Mínimo 6 caracteres">
+          </div>
+          <div class="field">
+            <label>Confirmar contraseña</label>
+            <input type="password" id="resetPass2" required minlength="6" placeholder="Repite la contraseña">
+          </div>
+          <button class="btn btn-save" style="width:100%" type="submit" id="resetBtn">Guardar contraseña</button>
+        </form>
+        <div style="text-align:center;margin-top:16px">
+          <button class="chip" id="resetCancel" style="font-size:11.5px">← Volver al inicio</button>
         </div>
       </div>
     </section>
@@ -688,58 +715,91 @@ try{
   });
 }catch{data=structuredClone(seed);}
 
-let sb=null,user=null,histRango=6;
+/* ⚡ authMode movido arriba para evitar hoisting frágil */
+let sb=null,user=null,histRango=6,authMode='signin';
+
 if(SUPABASE_URL && SUPABASE_ANON_KEY && window.supabase){
   sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY,{auth:{redirectTo:APP_URL}});
   sb.auth.onAuthStateChange((event,session)=>{
     if(event==='SIGNED_OUT'){localStorage.removeItem(KEY);}
+    if(event==='PASSWORD_RECOVERY'){
+      user=session?.user||null;
+      // Limpia el hash de la URL (el token de recuperación)
+      if(location.hash) history.replaceState(null,'',location.pathname);
+      mostrarResetPassword();
+    }
   });
 }
+
+/* =====================================================
+   PULL CLOUD SEGURO — pregunta antes de sobrescribir
+===================================================== */
+async function pullCloud(){
+  if(!sb||!user)return;
+  setSync('syncing');
+  const {data:rows,error}=await sb.from('finanzas').select('data,updated_at').eq('user_id',user.id).maybeSingle();
+  if(error){setSync('off');return;}
+  if(!rows?.data){setSync('on');return;}
+
+  const localCount=(data.ingresos?.length||0)+(data.gastos?.length||0);
+  const cloudCount=(rows.data.ingresos?.length||0)+(rows.data.gastos?.length||0);
+
+  if(localCount>0 && cloudCount<localCount){
+    const usarCloud=confirm(
+      '⚠️ Conflicto detectado\n\n'+
+      'Datos locales: '+localCount+' movimientos\n'+
+      'Datos en la nube: '+cloudCount+' movimientos\n\n'+
+      '¿Quieres SOBREESCRIBIR tus datos locales con los de la nube?\n\n'+
+      'Aceptar = usar la nube\n'+
+      'Cancelar = mantener los locales (recomendado, son más completos)'
+    );
+    if(!usarCloud){
+      await pushCloud();
+      setSync('on');
+      return;
+    }
+  }
+
+  data=rows.data;
+  const catVieja='Pago de tarjetas';
+  if(data.categorias.gastos.includes(catVieja)){
+    data.categorias.gastos=data.categorias.gastos.map(c=>c===catVieja?CAT_PAGO_TC:c);
+    if(data.colores[catVieja]){data.colores[CAT_PAGO_TC]=data.colores[catVieja];delete data.colores[catVieja];}
+    data.gastos.forEach(g=>{ if(g.categoria===catVieja) g.categoria=CAT_PAGO_TC; });
+  }
+  if(!data.categorias.gastos.includes(CAT_PAGO_TC)){
+    const idxOtros=data.categorias.gastos.indexOf('Otros');
+    if(idxOtros>=0) data.categorias.gastos.splice(idxOtros,0,CAT_PAGO_TC);
+    else data.categorias.gastos.push(CAT_PAGO_TC);
+  }
+  if(!data.colores[CAT_PAGO_TC]) data.colores[CAT_PAGO_TC]='#a855f7';
+  if(!data.presupuestos.some(p=>p.categoria===CAT_PAGO_TC)){
+    data.presupuestos.push({id:Date.now()+Math.floor(Math.random()*999),categoria:CAT_PAGO_TC,asignado:500000});
+  }
+  data.pasivos.forEach(p=>{
+    if(p.tipo==='Tarjeta'){
+      if(!Array.isArray(p.pagos)) p.pagos=[];
+      p.pagos.forEach(pg=>{
+        if(pg.categoria===undefined || pg.categoria===catVieja) pg.categoria=CAT_PAGO_TC;
+        if(pg.id===undefined) pg.id=Date.now()+Math.floor(Math.random()*9999);
+      });
+    }
+  });
+  data.gastos.forEach(g=>{
+    if(g.tarjetaId===undefined)g.tarjetaId=null;
+    if(g.cuotas===undefined)g.cuotas=1;
+    if(g.tasaCuotas===undefined)g.tasaCuotas=0;
+  });
+  localStorage.setItem(KEY,JSON.stringify(data));
+  renderAll();
+  setSync('on');
+}
+
 async function pushCloud(){
   if(!sb||!user)return;
   setSync('syncing');
   const {error}=await sb.from('finanzas').upsert({user_id:user.id,data:data,updated_at:new Date().toISOString()},{onConflict:'user_id'});
   setSync(error?'off':'on');
-}
-async function pullCloud(){
-  if(!sb||!user)return;
-  setSync('syncing');
-  const {data:rows,error}=await sb.from('finanzas').select('data').eq('user_id',user.id).maybeSingle();
-  if(!error && rows?.data){
-    data=rows.data;
-    const catVieja='Pago de tarjetas';
-    if(data.categorias.gastos.includes(catVieja)){
-      data.categorias.gastos=data.categorias.gastos.map(c=>c===catVieja?CAT_PAGO_TC:c);
-      if(data.colores[catVieja]){data.colores[CAT_PAGO_TC]=data.colores[catVieja];delete data.colores[catVieja];}
-      data.gastos.forEach(g=>{ if(g.categoria===catVieja) g.categoria=CAT_PAGO_TC; });
-    }
-    if(!data.categorias.gastos.includes(CAT_PAGO_TC)){
-      const idxOtros=data.categorias.gastos.indexOf('Otros');
-      if(idxOtros>=0) data.categorias.gastos.splice(idxOtros,0,CAT_PAGO_TC);
-      else data.categorias.gastos.push(CAT_PAGO_TC);
-    }
-    if(!data.colores[CAT_PAGO_TC]) data.colores[CAT_PAGO_TC]='#a855f7';
-    if(!data.presupuestos.some(p=>p.categoria===CAT_PAGO_TC)){
-      data.presupuestos.push({id:Date.now()+Math.floor(Math.random()*999),categoria:CAT_PAGO_TC,asignado:500000});
-    }
-    data.pasivos.forEach(p=>{
-      if(p.tipo==='Tarjeta'){
-        if(!Array.isArray(p.pagos)) p.pagos=[];
-        p.pagos.forEach(pg=>{
-          if(pg.categoria===undefined || pg.categoria===catVieja) pg.categoria=CAT_PAGO_TC;
-          if(pg.id===undefined) pg.id=Date.now()+Math.floor(Math.random()*9999);
-        });
-      }
-    });
-    data.gastos.forEach(g=>{
-      if(g.tarjetaId===undefined)g.tarjetaId=null;
-      if(g.cuotas===undefined)g.cuotas=1;
-      if(g.tasaCuotas===undefined)g.tasaCuotas=0;
-    });
-    localStorage.setItem(KEY,JSON.stringify(data));
-    renderAll();
-  }
-  setSync('on');
 }
 let pushTimer=null;
 function save(){
@@ -940,7 +1000,7 @@ function renderReglaIngresos(){
     cont.innerHTML=`
       <div class="card" style="margin-bottom:12px">
         <div class="card-head"><div class="card-title">📊 Distribución de ingresos<small>Compara tu realidad con las reglas recomendadas</small></div></div>
-        <div class="empty"><strong>Sin ingresos este mes</strong>Agrega al menos un ingreso de septiembre para ver este análisis</div>
+        <div class="empty"><strong>Sin ingresos este mes</strong>Agrega al menos un ingreso para ver este análisis</div>
       </div>`;
     return;
   }
@@ -958,7 +1018,6 @@ function renderReglaIngresos(){
   const excedeGastos702010=Math.max(0,gasMes-r2_gastos);
   const cumpleAhorro2020=Math.max(0,ahorroMes)>=r1_ahorro;
   const cumpleGastos7010=gasMes<=r2_gastos;
-  const cumpleAhorro70=Math.max(0,ahorroMes)>=r2_ahorro;
   cont.innerHTML=`
     <div class="card" style="margin-bottom:12px">
       <div class="card-head">
@@ -978,7 +1037,7 @@ function renderReglaIngresos(){
         <div class="card" style="padding:14px;background:var(--surface-2);border:none">
           <div class="kpi-label">Ahorro del mes</div>
           <div class="kpi-value ${ahorroMes<0?'neg':'pos'}" style="font-size:18px;margin:6px 0 4px"><span class="cur">$</span>${Math.abs(ahorroMes).toLocaleString('es-CL')}</div>
-          <div class="kpi-foot"><span class="badge ${cumpleAhorro5020?'b-up':'b-warn'}">${pctAhorro.toFixed(1)}% del ingreso</span></div>
+          <div class="kpi-foot"><span class="badge ${cumpleAhorro2020?'b-up':'b-warn'}">${pctAhorro.toFixed(1)}% del ingreso</span></div>
         </div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px" id="reglasWrap">
@@ -1003,7 +1062,7 @@ function renderReglaIngresos(){
             <div class="bar-track"><div class="bar-fill" style="width:20%;background:var(--green)"></div></div>
           </div>
           <div style="margin-top:12px;padding-top:10px;border-top:1px dashed var(--border);font-size:11px;color:var(--text-2);line-height:1.55;font-weight:400">
-            ${cumpleAhorro5020
+            ${cumpleAhorro2020
               ? `✅ <strong style="color:var(--green)">Vas bien.</strong> Ahorras ${pctAhorro.toFixed(0)}%, sobre el 20% recomendado.`
               : `⚠️ Deberías ahorrar <strong style="color:var(--orange)">${clp(faltaAhorro5020)}</strong> más al mes para cumplir la regla.`}
           </div>
@@ -1123,12 +1182,13 @@ function renderLecturas(){
 function renderDashboard(){
   updateSaludo();
   const ing=totalIngresos();
+  const pagosTC=totalPagosTCdelMes();
   const gas=totalGastos()+data.pasivos.filter(p=>p.tipo==='Tarjeta').reduce((s,p)=>s+(+p.pagos||[]).reduce((ss,pg)=>ss+(+pg.monto||0),0),0);
   const pat=totalActivos()-totalPasivos();
   const aho=ing?((ing-gas)/ing*100):0;
   const mes=mesActual();
   const ingMes=data.ingresos.filter(x=>x.fecha?.startsWith(mes)).reduce((s,x)=>s+(+x.monto||0),0);
-  const gasMes=data.gastos.filter(x=>x.fecha?.startsWith(mes)).reduce((s,x)=>s+(+x.monto||0),0)+totalPagosTCdelMes();
+  const gasMes=data.gastos.filter(x=>x.fecha?.startsWith(mes)).reduce((s,x)=>s+(+x.monto||0),0)+pagosTC;
   const ahoMes=ingMes-gasMes;
   const ta=totalActivos(),tp=totalPasivos();
   const tarjetas=getTarjetas();
@@ -1161,7 +1221,7 @@ function renderDashboard(){
     </div>`;
   document.getElementById('dashKpis').innerHTML=`
     <div class="card"><div class="kpi-label">Ingresos del mes</div><div class="kpi-value pos"><span class="cur">$</span>${ingMes.toLocaleString('es-CL')}</div><div class="kpi-foot">Histórico ${clp(ing)}</div></div>
-    <div class="card"><div class="kpi-label">Gastos del mes</div><div class="kpi-value neg"><span class="cur">$</span>${gasMes.toLocaleString('es-CL')}</div><div class="kpi-foot">Incluye pagos TC ${clp(totalPagosTCdelMes())}</div></div>
+    <div class="card"><div class="kpi-label">Gastos del mes</div><div class="kpi-value neg"><span class="cur">$</span>${gasMes.toLocaleString('es-CL')}</div><div class="kpi-foot">Incluye pagos TC ${clp(pagosTC)}</div></div>
     <div class="card"><div class="kpi-label">Ahorro del mes</div><div class="kpi-value ${ahoMes<0?'neg':'pos'}"><span class="cur">$</span>${Math.abs(ahoMes).toLocaleString('es-CL')}</div><div class="kpi-foot">${ahoMes<0?'⚠ Estás gastando más de lo que ingresas':'Flujo positivo'}</div></div>
     <div class="card"><div class="kpi-label">Tasa de ahorro</div><div class="kpi-value ${aho<0?'neg':(aho>=20?'pos':'')}">${aho.toFixed(1)}<span class="cur" style="font-size:16px">%</span></div><div class="kpi-foot"><span class="badge ${aho<0?'b-down':(aho>=20?'b-up':'b-warn')}">${aho<0?'Negativa':(aho>=20?'Saludable':'A mejorar')}</span></div></div>`;
   const tSub=document.getElementById('dashTarjSub');
@@ -1184,8 +1244,7 @@ function renderDashboard(){
   }else{lSub.textContent='Sin líneas';lCont.innerHTML='<div class="empty"><strong>Sin líneas de crédito</strong>Agrega tu primera línea en Gastos y crédito</div>';}
   const cats={};
   data.gastos.filter(g=>g.fecha?.startsWith(mes)).forEach(g=>cats[g.categoria]=(cats[g.categoria]||0)+(+g.monto||0));
-  const pagosMes=totalPagosTCdelMes();
-  if(pagosMes>0) cats[CAT_PAGO_TC]=(cats[CAT_PAGO_TC]||0)+pagosMes;
+  if(pagosTC>0) cats[CAT_PAGO_TC]=(cats[CAT_PAGO_TC]||0)+pagosTC;
   const totalCat=Object.values(cats).reduce((s,v)=>s+v,0);
   const sorted=Object.entries(cats).sort((a,b)=>b[1]-a[1]).slice(0,6);
   document.getElementById('dashCat').innerHTML=sorted.length?sorted.map(([c,v])=>`<div class="bar-row"><div class="bar-top"><span>${iconoCategoria(c)} ${c}</span><span class="amt">${clp(v)} <small>${((v/totalCat)*100).toFixed(0)}%</small></span></div><div class="bar-track"><div class="bar-fill" style="width:${v/totalCat*100}%;background:${colorCategoria(c)}"></div></div></div>`).join(''):'<div class="empty">Sin gastos este mes</div>';
@@ -1600,8 +1659,17 @@ function renderConfig(){
   const cfg=document.getElementById('syncConfig');
   if(!SUPABASE_URL){cfg.innerHTML='<div style="font-size:12px;color:var(--muted);line-height:1.6">Configura <strong style="color:var(--text-2)">SUPABASE_URL</strong> y <strong style="color:var(--text-2)">SUPABASE_ANON_KEY</strong> para activar la sincronización.</div>';}
   else if(user){
-    cfg.innerHTML=`<div style="display:flex;flex-direction:column;gap:12px"><div><div style="font-size:10.5px;color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">Cuenta conectada</div><div style="font-size:13px;font-weight:600">${user.email}</div></div><div style="display:flex;gap:7px"><button class="chip" id="btnForceSync">Sincronizar</button><button class="chip" id="btnLogout" style="color:var(--red);border-color:rgba(248,113,113,.25)">Cerrar sesión</button></div></div>`;
+    cfg.innerHTML=`<div style="display:flex;flex-direction:column;gap:12px"><div><div style="font-size:10.5px;color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">Cuenta conectada</div><div style="font-size:13px;font-weight:600">${esc(user.email)}</div></div><div style="display:flex;gap:7px;flex-wrap:wrap"><button class="chip" id="btnForceSync">Sincronizar</button><button class="chip" id="btnChangePass" style="color:var(--accent-2);border-color:rgba(110,86,255,.3)">🔑 Cambiar contraseña</button><button class="chip" id="btnLogout" style="color:var(--red);border-color:rgba(248,113,113,.25)">Cerrar sesión</button></div></div>`;
     document.getElementById('btnForceSync').onclick=()=>{pushCloud();pullCloud();toast('Sincronizado');};
+    document.getElementById('btnChangePass').onclick=()=>{
+      const email=user?.email;
+      if(!email)return;
+      if(!confirm('¿Enviar link para cambiar la contraseña a '+email+'?'))return;
+      sb.auth.resetPasswordForEmail(email,{redirectTo:APP_URL}).then(({error})=>{
+        if(error)toast(error.message,true);
+        else toast('📧 Revisa tu correo');
+      });
+    };
     document.getElementById('btnLogout').onclick=async()=>{
       if(!confirm('¿Cerrar sesión? Se limpiarán los datos locales de este navegador.\n\nTus datos en la nube quedan guardados y los recuperas al volver a iniciar sesión.'))return;
       await sb.auth.signOut();
@@ -1649,8 +1717,14 @@ const modalForm=document.getElementById('modalForm');
 const modalTitle=document.getElementById('modalTitle');
 let currentTipo=null,currentId=null,currentTarjetaPreset=null;
 let currentPagoTarjetaId=null;
-function inputField(name,label,type='text',value='',attrs=''){return `<div class="field"><label>${label}</label><input name="${name}" type="${type}" value="${value}" ${attrs}></div>`;}
-function selectField(name,label,options,value){return `<div class="field"><label>${label}</label><select name="${name}">${options.map(o=>`<option value="${esc(o)}" ${o===value?'selected':''}>${esc(o)}</option>`).join('')}</select></div>`;}
+
+/* 🔒 inputField y selectField con esc() */
+function inputField(name,label,type='text',value='',attrs=''){
+  return `<div class="field"><label>${esc(label)}</label><input name="${esc(name)}" type="${esc(type)}" value="${esc(value)}" ${attrs}></div>`;
+}
+function selectField(name,label,options,value){
+  return `<div class="field"><label>${esc(label)}</label><select name="${esc(name)}">${options.map(o=>`<option value="${esc(o)}" ${o===value?'selected':''}>${esc(o)}</option>`).join('')}</select></div>`;
+}
 function openModal(tipo,id=null,tarjetaPreset=null){
   currentTipo=tipo;currentId=id;currentTarjetaPreset=tarjetaPreset;currentPagoTarjetaId=null;
   let item=null;
@@ -1806,7 +1880,7 @@ function generarInformePDF(){
   const fmtN=n=>'$'+Math.round(+n||0).toLocaleString('es-CL');
   const html=`<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Informe Mis Finanzas — ${fecha}</title><style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;color:#1a1a1f;background:#fff;padding:32px 40px;font-size:12px;line-height:1.5}.header{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #111;padding-bottom:16px;margin-bottom:24px}.header-left h1{font-size:20px;font-weight:700;letter-spacing:-.4px}.header-left p{font-size:11px;color:#666;margin-top:4px}.header-right{text-align:right;font-size:10px;color:#666;line-height:1.6}.header-right strong{color:#111;font-size:11px}h2{font-size:11px;text-transform:uppercase;letter-spacing:1.2px;color:#666;margin:24px 0 10px;padding-bottom:6px;border-bottom:1px solid #e5e5e5;font-weight:600}h2:first-of-type{margin-top:0}.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}.kpi{border:1px solid #e5e5e5;border-radius:6px;padding:12px 14px}.kpi .l{font-size:9.5px;text-transform:uppercase;letter-spacing:.8px;color:#888;font-weight:600;margin-bottom:6px}.kpi .v{font-size:16px;font-weight:700;letter-spacing:-.4px}.kpi .v.pos{color:#16a34a}.kpi .v.neg{color:#dc2626}.kpi .s{font-size:10px;color:#888;margin-top:4px}table{width:100%;border-collapse:collapse;font-size:11px;margin-bottom:8px}th{text-align:left;padding:8px 6px;border-bottom:1.5px solid #333;font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#555}td{padding:7px 6px;border-bottom:1px solid #f0f0f0}td.r{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}td.r.neg{color:#dc2626}td.r.pos{color:#16a34a}tr.total td{border-top:1.5px solid #333;border-bottom:none;font-weight:700;padding-top:10px}.bar{height:6px;border-radius:3px;background:#eee;overflow:hidden;margin-top:4px}.bar-fill{height:100%;border-radius:3px}.two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px}.box{border:1px solid #e5e5e5;border-radius:6px;padding:12px 14px;margin-bottom:10px}.box-title{font-size:11.5px;font-weight:700;margin-bottom:8px}.box-row{display:flex;justify-content:space-between;font-size:11px;padding:3px 0}.box-row .lbl{color:#666}.box-row .val{font-weight:600;font-variant-numeric:tabular-nums}.footer{margin-top:32px;padding-top:14px;border-top:1px solid #e5e5e5;text-align:center;font-size:9.5px;color:#999}.tag{display:inline-block;padding:2px 7px;border-radius:4px;font-size:9.5px;font-weight:600;background:#f0f0f0;color:#555;margin-left:6px}.tag.neg{background:#fee2e2;color:#dc2626}.tag.pos{background:#dcfce7;color:#16a34a}.cuotas-box{border:1px solid #e5e5e5;border-radius:6px;padding:12px 14px;margin-top:6px}.cuotas-title{font-size:10.5px;text-transform:uppercase;letter-spacing:.6px;color:#6e56ff;font-weight:600;margin-bottom:8px}.cuotas-item{display:flex;justify-content:space-between;font-size:11px;padding:3px 0;color:#333}.cuotas-item .n{color:#666}.cuotas-item .m{font-weight:600;font-variant-numeric:tabular-nums}.cuotas-total{margin-top:8px;padding-top:8px;border-top:1px dashed #ccc;display:flex;justify-content:space-between;font-size:11.5px;font-weight:700}.cuotas-total .val{color:#6e56ff}.no-print{display:flex;gap:8px;justify-content:center;margin-bottom:20px}.no-print button{padding:8px 16px;border:1px solid #ddd;background:#fff;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit}.no-print button.p{background:#111;color:#fff;border-color:#111}@media print{body{padding:12px 16px} .no-print{display:none}}</style></head><body>
 <div class="no-print"><button class="p" onclick="window.print()">🖨 Guardar como PDF / Imprimir</button><button onclick="window.close()">Cerrar</button></div>
-<div class="header"><div class="header-left"><h1>Informe Financiero Personal</h1><p>Generado desde Mis Finanzas · ${fecha}</p></div><div class="header-right"><strong>${user && user.email ? esc(user.email) : 'Oscar Norambuena'}</strong><br>${hora} hrs</div></div>
+<div class="header"><div class="header-left"><h1>Informe Financiero Personal</h1><p>Generado desde Mis Finanzas · ${fecha}</p></div><div class="header-right"><strong>${user && user.email ? esc(user.email) : 'Usuario'}</strong><br>${hora} hrs</div></div>
 <h2>Resumen general</h2>
 <div class="kpis"><div class="kpi"><div class="l">Patrimonio neto</div><div class="v ${pat<0?'neg':''}">${fmtN(Math.abs(pat))}</div><div class="s">${pat<0?'Saldo negativo':''}</div></div><div class="kpi"><div class="l">Activos</div><div class="v pos">${fmtN(ta)}</div><div class="s">${data.activos.length} bienes + ${data.inversiones.length} inv.</div></div><div class="kpi"><div class="l">Pasivos</div><div class="v neg">${fmtN(tp)}</div><div class="s">${tarjetas.length} tarjetas · ${lineas.length} líneas</div></div><div class="kpi"><div class="l">Tasa de ahorro</div><div class="v ${tasa<0?'neg':(tasa>=20?'pos':'')}">${tasa.toFixed(1)}%</div><div class="s">${fmtN(aho)} ahorro acum.</div></div></div>
 <h2>Mes en curso</h2>
@@ -1881,18 +1955,20 @@ if(btnExportConfig) btnExportConfig.onclick=()=>document.getElementById('btnExpo
 if('serviceWorker' in navigator && location.protocol!=='file:'){
   window.addEventListener('load',()=>{navigator.serviceWorker.register('./sw.js',{scope:'./'}).catch(()=>{});});
 }
-let authMode='signin';
+
 const authForm=document.getElementById('authForm');
 const authTitle=document.getElementById('authTitle');
 const authSub=document.getElementById('authSub');
 const authBtn=document.getElementById('authBtn');
 const authToggle=document.getElementById('authToggle');
 const authToggleText=document.getElementById('authToggleText');
+
 authToggle?.addEventListener('click',()=>{
   authMode=authMode==='signin'?'signup':'signin';
   if(authMode==='signup'){authTitle.textContent='Crear cuenta';authSub.textContent='Regístrate para sincronizar';authBtn.textContent='Registrarme';authToggleText.textContent='¿Ya tienes cuenta?';authToggle.textContent='Iniciar sesión';}
   else{authTitle.textContent='Inicia sesión';authSub.textContent='Sincroniza tus finanzas entre dispositivos';authBtn.textContent='Entrar';authToggleText.textContent='¿No tienes cuenta?';authToggle.textContent='Crear cuenta';}
 });
+
 authForm?.addEventListener('submit',async e=>{
   e.preventDefault();
   if(!sb){toast('Supabase no configurado',true);return;}
@@ -1909,6 +1985,7 @@ authForm?.addEventListener('submit',async e=>{
   }catch(err){toast(err.message||'Error',true);}
   finally{authBtn.disabled=false;authBtn.textContent=authMode==='signin'?'Entrar':'Registrarme';}
 });
+
 function updateBnCuenta(){
   const btn=document.getElementById('bnCuenta');
   const icon=document.getElementById('bnCuentaIcon');
@@ -1932,6 +2009,7 @@ function updateBnCuenta(){
     }
   }
 }
+
 async function afterLogin(){
   document.getElementById('syncBox').style.display='flex';
   document.getElementById('syncEmail').textContent=user.email||'';
@@ -1943,11 +2021,90 @@ async function afterLogin(){
   renderConfig();
   renderAll();
 }
+
+/* 🛡 initSupabase con try/catch */
 async function initSupabase(){
   if(!sb)return;
-  const {data:{session}}=await sb.auth.getSession();
-  if(session?.user){user=session.user;await afterLogin();}
+  try{
+    const {data:{session},error}=await sb.auth.getSession();
+    if(error)throw error;
+    if(session?.user){user=session.user;await afterLogin();}
+  }catch(err){
+    console.warn('Supabase init:',err?.message||err);
+    // La app sigue funcionando en modo local
+  }
 }
+
+/* =====================================================
+   🔐 RECUPERACIÓN DE CONTRASEÑA
+===================================================== */
+function mostrarResetPassword(){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-reset').classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  setTimeout(()=>document.getElementById('resetPass1')?.focus(),150);
+}
+
+// Link "¿Olvidaste tu contraseña?"
+document.getElementById('forgotPass')?.addEventListener('click',async()=>{
+  if(!sb){toast('Supabase no configurado',true);return;}
+  const email=document.getElementById('authEmail')?.value.trim();
+  if(!email){
+    toast('Primero escribe tu correo arriba',true);
+    document.getElementById('authEmail')?.focus();
+    return;
+  }
+  if(!confirm('¿Enviar link de recuperación a '+email+'?')) return;
+  try{
+    const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:APP_URL});
+    if(error)throw error;
+    toast('📧 Revisa tu correo — el link expira en 1 hora');
+    // Pista visual (solo si no existe ya)
+    if(!document.getElementById('hintRecovery')){
+      const hint=document.createElement('div');
+      hint.id='hintRecovery';
+      hint.style.cssText='font-size:11.5px;color:var(--text-2);background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.25);padding:10px 12px;border-radius:8px;margin-top:12px;line-height:1.55';
+      hint.innerHTML='✅ Enviamos un link a <strong style="color:var(--text)">'+esc(email)+'</strong>.<br>Ábrelo desde este mismo dispositivo. Si no lo ves, revisa <strong style="color:var(--text)">spam</strong>.';
+      document.getElementById('authForm')?.appendChild(hint);
+    }
+  }catch(err){
+    toast(err.message||'No se pudo enviar el correo',true);
+  }
+});
+
+// Formulario de nueva contraseña
+document.getElementById('resetForm')?.addEventListener('submit',async e=>{
+  e.preventDefault();
+  if(!sb){toast('Supabase no configurado',true);return;}
+  const p1=document.getElementById('resetPass1').value;
+  const p2=document.getElementById('resetPass2').value;
+  if(p1.length<6){toast('Mínimo 6 caracteres',true);return;}
+  if(p1!==p2){toast('Las contraseñas no coinciden',true);return;}
+  const btn=document.getElementById('resetBtn');
+  btn.disabled=true;btn.textContent='Guardando…';
+  try{
+    const {error}=await sb.auth.updateUser({password:p1});
+    if(error)throw error;
+    toast('✅ Contraseña actualizada');
+    setTimeout(async()=>{
+      btn.disabled=false;btn.textContent='Guardar contraseña';
+      if(user && user.email){ await afterLogin(); }
+      else { irALogin('signin'); }
+    },800);
+  }catch(err){
+    toast(err.message||'Error al guardar',true);
+    btn.disabled=false;btn.textContent='Guardar contraseña';
+  }
+});
+
+// Botón "Volver al inicio" del reset
+document.getElementById('resetCancel')?.addEventListener('click',()=>{
+  if(sb) sb.auth.signOut();
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-login').classList.add('active');
+});
+
+/* ===== Init final ===== */
 renderAll();
 updateBnCuenta();
 updateSaludo();
