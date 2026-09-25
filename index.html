@@ -223,12 +223,10 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
 .estrategias-head .sub{font-size:11px;color:var(--muted);margin-top:2px;font-weight:400}
 .estrategia-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px;margin-bottom:10px;transition:.15s}
 .estrategia-card:hover{border-color:var(--border-2)}
-.estrategia-card.recomendada{border-color:rgba(34,197,94,.3);background:linear-gradient(135deg,rgba(34,197,94,.035),transparent 60%)}
 .estrategia-card.optima{border-color:rgba(110,86,255,.32);background:linear-gradient(135deg,rgba(110,86,255,.05),transparent 60%)}
 .estrategia-head{display:flex;align-items:center;gap:11px;margin-bottom:12px}
 .estrategia-icon{width:34px;height:34px;flex:0 0 34px;border-radius:9px;display:grid;place-items:center;font-size:15px;background:var(--surface-2);color:var(--text-2)}
 .estrategia-icon.pur{background:rgba(110,86,255,.14);color:#c4b5fd}
-.estrategia-icon.grn{background:rgba(34,197,94,.14);color:#4ade80}
 .estrategia-icon.cyn{background:rgba(6,182,212,.14);color:#22d3ee}
 .estrategia-icon.org{background:rgba(249,115,22,.14);color:#fb923c}
 .estrategia-title{font-size:13.5px;font-weight:600;letter-spacing:-.1px}
@@ -307,8 +305,8 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
 .bn-badge{position:absolute;top:3px;right:calc(50% - 12px);width:5px;height:5px;border-radius:50%;background:var(--orange);animation:pulse 1.5s infinite;display:none}
 #bnCuenta:not(.logged){color:var(--accent-2)}
 #bnCuenta:not(.logged) .bn-badge{display:block}
-@media(max-width:1080px){.g4{grid-template-columns:repeat(2,1fr)}.g3,.g21,.g12{grid-template-columns:1fr}.hero-card{grid-template-columns:1fr 1fr;padding:22px 24px;gap:20px}.hero-main{grid-column:span 2}.estrategia-resumen{grid-template-columns:1fr 1fr}}
-@media(max-width:720px){.sidebar{display:none}.main{padding:18px 16px 88px}.g4,.g3,.g2{grid-template-columns:1fr}.hero-card{grid-template-columns:1fr;padding:20px;gap:16px}.hero-main{grid-column:span 1}.hero-value{font-size:30px}.page-title{font-size:19px}.field-row{grid-template-columns:1fr}.cc-nums{grid-template-columns:1fr 1fr;gap:10px}.bottom-nav{display:flex}.card{padding:15px}.kpi-value{font-size:20px}.estrategia-resumen{grid-template-columns:1fr}}
+@media(max-width:1080px){.g4{grid-template-columns:repeat(2,1fr)}.g3,.g21,.g12{grid-template-columns:1fr}.hero-card{grid-template-columns:1fr 1fr;padding:22px 24px;gap:20px}.hero-main{grid-column:span 2}.estrategia-resumen{grid-template-columns:1fr 1fr}#reglasWrap{grid-template-columns:1fr!important}}
+@media(max-width:720px){.sidebar{display:none}.main{padding:18px 16px 88px}.g4,.g3,.g2{grid-template-columns:1fr}.hero-card{grid-template-columns:1fr;padding:20px;gap:16px}.hero-main{grid-column:span 1}.hero-value{font-size:30px}.page-title{font-size:19px}.field-row{grid-template-columns:1fr}.cc-nums{grid-template-columns:1fr 1fr;gap:10px}.bottom-nav{display:flex}.card{padding:15px}.kpi-value{font-size:20px}.estrategia-resumen{grid-template-columns:1fr}#reglasWrap{grid-template-columns:1fr!important}}
 </style>
 </head>
 <body>
@@ -365,6 +363,7 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
       <div id="loginBanner"></div>
       <div id="heroPatrimonio"></div>
       <div class="grid g4" id="dashKpis"></div>
+      <div id="reglaIngresos"></div>
       <div class="grid g2">
         <div class="card">
           <div class="card-head">
@@ -397,6 +396,7 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
       </div>
       <div class="suggestions" id="sugerencias"></div>
       <div class="estrategias-wrap" id="estrategiasDeuda"></div>
+      <div id="lecturas"></div>
     </section>
 
     <section class="view" id="view-historico">
@@ -873,9 +873,6 @@ function renderAll(){
   bindRowClicks();
 }
 
-/* =====================================================
-   SALUDO DINÁMICO + BANNER DE LOGIN
-===================================================== */
 function updateSaludo(){
   const el=document.getElementById('saludoDashboard');
   if(!el) return;
@@ -929,6 +926,198 @@ function donutSVG(segmentos,size=160,stroke=20){
     return el;
   }).join('');
   return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="rgba(255,255,255,.04)" stroke-width="${stroke}"/>${cir}</svg>`;
+}
+
+/* =====================================================
+   REGLA DE DISTRIBUCIÓN DE INGRESOS (50/30/20 y 70/20/10)
+===================================================== */
+function renderReglaIngresos(){
+  const cont=document.getElementById('reglaIngresos');
+  if(!cont) return;
+  const mes=mesActual();
+  const ingMes=data.ingresos.filter(x=>x.fecha?.startsWith(mes)).reduce((s,x)=>s+(+x.monto||0),0);
+  if(ingMes===0){
+    cont.innerHTML=`
+      <div class="card" style="margin-bottom:12px">
+        <div class="card-head"><div class="card-title">📊 Distribución de ingresos<small>Compara tu realidad con las reglas recomendadas</small></div></div>
+        <div class="empty"><strong>Sin ingresos este mes</strong>Agrega al menos un ingreso de septiembre para ver este análisis</div>
+      </div>`;
+    return;
+  }
+  const gasMes=data.gastos.filter(x=>x.fecha?.startsWith(mes)).reduce((s,x)=>s+(+x.monto||0),0)+totalPagosTCdelMes();
+  const ahorroMes=ingMes-gasMes;
+  const pctGastos=ingMes?((gasMes/ingMes)*100):0;
+  const pctAhorro=ingMes?((ahorroMes/ingMes)*100):0;
+  const r1_necesidades=ingMes*0.50;
+  const r1_gustos=ingMes*0.30;
+  const r1_ahorro=ingMes*0.20;
+  const r2_gastos=ingMes*0.70;
+  const r2_ahorro=ingMes*0.20;
+  const r2_inversion=ingMes*0.10;
+  const faltaAhorro5020=Math.max(0,r1_ahorro-Math.max(0,ahorroMes));
+  const excedeGastos702010=Math.max(0,gasMes-r2_gastos);
+  const cumpleAhorro2020=Math.max(0,ahorroMes)>=r1_ahorro;
+  const cumpleGastos7010=gasMes<=r2_gastos;
+  const cumpleAhorro70=Math.max(0,ahorroMes)>=r2_ahorro;
+  cont.innerHTML=`
+    <div class="card" style="margin-bottom:12px">
+      <div class="card-head">
+        <div class="card-title">📊 Reglas de distribución de ingresos<small>Compara tu situación actual con las dos reglas más recomendadas</small></div>
+      </div>
+      <div class="grid g3" style="margin-bottom:16px">
+        <div class="card" style="padding:14px;background:var(--surface-2);border:none">
+          <div class="kpi-label">Ingreso del mes</div>
+          <div class="kpi-value" style="font-size:18px;margin:6px 0 4px"><span class="cur">$</span>${ingMes.toLocaleString('es-CL')}</div>
+          <div class="kpi-foot">Base del análisis</div>
+        </div>
+        <div class="card" style="padding:14px;background:var(--surface-2);border:none">
+          <div class="kpi-label">Gastos del mes</div>
+          <div class="kpi-value ${pctGastos>70?'neg':''}" style="font-size:18px;margin:6px 0 4px"><span class="cur">$</span>${gasMes.toLocaleString('es-CL')}</div>
+          <div class="kpi-foot"><span class="badge ${pctGastos>70?'b-down':(pctGastos>60?'b-warn':'b-up')}">${pctGastos.toFixed(1)}% del ingreso</span></div>
+        </div>
+        <div class="card" style="padding:14px;background:var(--surface-2);border:none">
+          <div class="kpi-label">Ahorro del mes</div>
+          <div class="kpi-value ${ahorroMes<0?'neg':'pos'}" style="font-size:18px;margin:6px 0 4px"><span class="cur">$</span>${Math.abs(ahorroMes).toLocaleString('es-CL')}</div>
+          <div class="kpi-foot"><span class="badge ${cumpleAhorro5020?'b-up':'b-warn'}">${pctAhorro.toFixed(1)}% del ingreso</span></div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px" id="reglasWrap">
+        <div style="border:1px solid var(--border);border-radius:10px;padding:16px;background:var(--surface-2)">
+          <div style="display:flex;align-items:center;gap:9px;margin-bottom:14px">
+            <div style="width:30px;height:30px;border-radius:8px;background:rgba(110,86,255,.15);display:grid;place-items:center;font-size:14px">🎯</div>
+            <div style="flex:1">
+              <div style="font-size:13px;font-weight:600">Regla 50/30/20</div>
+              <div style="font-size:10.5px;color:var(--muted)">La más citada por expertos</div>
+            </div>
+          </div>
+          <div style="margin-bottom:10px">
+            <div class="bar-top" style="font-size:11px"><span>🏠 Necesidades</span><span class="amt">${clp(r1_necesidades)} <small>50%</small></span></div>
+            <div class="bar-track"><div class="bar-fill" style="width:50%;background:var(--accent)"></div></div>
+          </div>
+          <div style="margin-bottom:10px">
+            <div class="bar-top" style="font-size:11px"><span>🎬 Gustos</span><span class="amt">${clp(r1_gustos)} <small>30%</small></span></div>
+            <div class="bar-track"><div class="bar-fill" style="width:30%;background:var(--pink)"></div></div>
+          </div>
+          <div>
+            <div class="bar-top" style="font-size:11px"><span>💰 Ahorro e inversión</span><span class="amt">${clp(r1_ahorro)} <small>20%</small></span></div>
+            <div class="bar-track"><div class="bar-fill" style="width:20%;background:var(--green)"></div></div>
+          </div>
+          <div style="margin-top:12px;padding-top:10px;border-top:1px dashed var(--border);font-size:11px;color:var(--text-2);line-height:1.55;font-weight:400">
+            ${cumpleAhorro5020
+              ? `✅ <strong style="color:var(--green)">Vas bien.</strong> Ahorras ${pctAhorro.toFixed(0)}%, sobre el 20% recomendado.`
+              : `⚠️ Deberías ahorrar <strong style="color:var(--orange)">${clp(faltaAhorro5020)}</strong> más al mes para cumplir la regla.`}
+          </div>
+        </div>
+        <div style="border:1px solid var(--border);border-radius:10px;padding:16px;background:var(--surface-2)">
+          <div style="display:flex;align-items:center;gap:9px;margin-bottom:14px">
+            <div style="width:30px;height:30px;border-radius:8px;background:rgba(0,212,255,.15);display:grid;place-items:center;font-size:14px">⚡</div>
+            <div style="flex:1">
+              <div style="font-size:13px;font-weight:600">Regla 70/20/10</div>
+              <div style="font-size:10.5px;color:var(--muted)">Enfoque en inversión</div>
+            </div>
+          </div>
+          <div style="margin-bottom:10px">
+            <div class="bar-top" style="font-size:11px"><span>💳 Gastos generales</span><span class="amt">${clp(r2_gastos)} <small>70%</small></span></div>
+            <div class="bar-track"><div class="bar-fill" style="width:70%;background:var(--accent)"></div></div>
+          </div>
+          <div style="margin-bottom:10px">
+            <div class="bar-top" style="font-size:11px"><span>💰 Ahorro</span><span class="amt">${clp(r2_ahorro)} <small>20%</small></span></div>
+            <div class="bar-track"><div class="bar-fill" style="width:20%;background:var(--green)"></div></div>
+          </div>
+          <div>
+            <div class="bar-top" style="font-size:11px"><span>📈 Inversión</span><span class="amt">${clp(r2_inversion)} <small>10%</small></span></div>
+            <div class="bar-track"><div class="bar-fill" style="width:10%;background:var(--cyan)"></div></div>
+          </div>
+          <div style="margin-top:12px;padding-top:10px;border-top:1px dashed var(--border);font-size:11px;color:var(--text-2);line-height:1.55;font-weight:400">
+            ${cumpleGastos7010
+              ? `✅ <strong style="color:var(--green)">Bien.</strong> Tus gastos (${pctGastos.toFixed(0)}%) están dentro del 70% recomendado.`
+              : `⚠️ Tus gastos (${pctGastos.toFixed(0)}%) exceden el 70%. Recorta <strong style="color:var(--red)">${clp(excedeGastos702010)}</strong>.`}
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:16px">
+        <div style="font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);font-weight:600;margin-bottom:10px">Tu distribución actual vs las reglas</div>
+        <div style="height:28px;border-radius:8px;overflow:hidden;display:flex;background:var(--surface-2);border:1px solid var(--border);margin-bottom:14px">
+          ${pctGastos>0?`<div style="width:${Math.min(100,pctGastos)}%;background:linear-gradient(90deg,#ec4899,#f97316);display:flex;align-items:center;justify-content:center;color:#fff;font-size:10.5px;font-weight:700">${pctGastos.toFixed(0)}% gastos</div>`:''}
+          ${pctAhorro>0?`<div style="width:${Math.min(100,pctAhorro)}%;background:linear-gradient(90deg,#22c55e,#00d4ff);display:flex;align-items:center;justify-content:center;color:#04231a;font-size:10.5px;font-weight:700">${pctAhorro.toFixed(0)}% ahorro</div>`:''}
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:11px">
+          <div style="padding:10px 12px;border-radius:8px;background:var(--surface-2);border:1px solid var(--border)">
+            <div style="color:var(--muted);font-weight:600;margin-bottom:4px">🎯 Regla 50/30/20</div>
+            <div style="color:var(--text-2);line-height:1.55">50% necesidades, 30% gustos, 20% ahorro. Ideal si tienes deudas y buscas equilibrio.</div>
+          </div>
+          <div style="padding:10px 12px;border-radius:8px;background:var(--surface-2);border:1px solid var(--border)">
+            <div style="color:var(--muted);font-weight:600;margin-bottom:4px">⚡ Regla 70/20/10</div>
+            <div style="color:var(--text-2);line-height:1.55">70% gastos, 20% ahorro, 10% inversión. Más flexible, exige invertir el 10%.</div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+/* =====================================================
+   LECTURAS RECOMENDADAS
+===================================================== */
+function renderLecturas(){
+  const cont=document.getElementById('lecturas');
+  if(!cont) return;
+  const categorias=[
+    {titulo:'💰 Finanzas personales',libros:[
+      {t:'Padre Rico, Padre Pobre',a:'Robert Kiyosaki',d:'El clásico que cambia la mentalidad sobre activos y pasivos. Ideal si recién empiezas.',n:'Inicial'},
+      {t:'El Hombre Más Rico de Babilonia',a:'George S. Clason',d:'Parábolas simples y atemporales sobre cómo ahorrar e invertir. Lectura rápida y motivadora.',n:'Inicial'},
+      {t:'Los Secretos de la Mente Millonaria',a:'T. Harv Eker',d:'Cómo tus creencias sobre el dinero determinan tus resultados financieros.',n:'Inicial'},
+      {t:'La Transformación Total de su Dinero',a:'Dave Ramsey',d:'Plan paso a paso para salir de deudas y construir patrimonio desde cero.',n:'Inicial'},
+      {t:'Dinero: Domina el juego',a:'Tony Robbins',d:'Entrevistas con los mejores inversores del mundo. Estrategias concretas.',n:'Intermedio'}
+    ]},
+    {titulo:'📈 Inversión',libros:[
+      {t:'El Inversor Inteligente',a:'Benjamin Graham',d:'La biblia del value investing. Warren Buffett lo llama "el mejor libro sobre inversión jamás escrito".',n:'Intermedio'},
+      {t:'Un Paseo Aleatorio por Wall Street',a:'Burton Malkiel',d:'Por qué los fondos indexados superan a la mayoría de gestores activos.',n:'Intermedio'},
+      {t:'La Psicología del Dinero',a:'Morgan Housel',d:'Cómo tomar mejores decisiones entendiendo tus sesgos y emociones.',n:'Inicial'},
+      {t:'Los Axiomas de Zurich',a:'Max Gunther',d:'12 reglas del manejo del riesgo financiero. Corto y útil.',n:'Inicial'},
+      {t:'Acciones Comunes y Beneficios Extraordinarios',a:'Philip Fisher',d:'Cómo encontrar empresas excepcionales para invertir a largo plazo.',n:'Avanzado'}
+    ]},
+    {titulo:'🎯 Hábitos y crecimiento',libros:[
+      {t:'Hábitos Atómicos',a:'James Clear',d:'Cómo pequeños cambios diarios generan grandes resultados financieros.',n:'Inicial'},
+      {t:'Piense y Hágase Rico',a:'Napoleon Hill',d:'El clásico de la autoayuda financiera. Enfoque en la mentalidad.',n:'Inicial'},
+      {t:'El Club de las 5 AM',a:'Robin Sharma',d:'Rutinas matutinas para ser más productivo. Impacta indirectamente tus finanzas.',n:'Inicial'},
+      {t:'Mindset: La Actitud del Éxito',a:'Carol Dweck',d:'Mentalidad fija vs. mentalidad de crecimiento. Clave para cambiar tus finanzas.',n:'Inicial'}
+    ]},
+    {titulo:'🇨🇱 Recursos para Chile',libros:[
+      {t:'Educación Financiera para Todos',a:'Varios autores',d:'Guía práctica para el contexto chileno. Cubre APV, fondos mutuos, impuestos.',n:'Inicial'},
+      {t:'Guía del Inversionista Chileno',a:'CMF Educación',d:'Recurso oficial gratuito del regulador. Descargable desde cmfchile.cl.',n:'Inicial'},
+      {t:'Blog del Banco Central de Chile',a:'BCCh',d:'Artículos sobre economía y finanzas personales en el contexto local.',n:'Intermedio'}
+    ]}
+  ];
+  cont.innerHTML=`
+    <div class="suggestions" style="padding:22px 24px;margin-top:12px">
+      <div class="estrategias-head">
+        <div class="icon" style="background:rgba(255,217,61,.14)">📚</div>
+        <div style="flex:1">
+          <div class="title">Lecturas recomendadas</div>
+          <div class="sub">Libros y recursos para potenciar tu educación financiera</div>
+        </div>
+      </div>
+      ${categorias.map(cat=>`
+        <div style="margin-bottom:20px">
+          <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)">${cat.titulo}</div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px">
+            ${cat.libros.map(l=>`
+              <div style="padding:12px 14px;border-radius:9px;background:var(--surface-2);border:1px solid var(--border);transition:.15s">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px">
+                  <div style="font-size:12.5px;font-weight:600;line-height:1.35;color:var(--text)">${l.t}</div>
+                  <span style="font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:5px;background:rgba(110,86,255,.12);color:#c4b5fd;flex:0 0 auto">${l.n}</span>
+                </div>
+                <div style="font-size:10.5px;color:var(--accent-2);font-weight:500;margin-bottom:6px">${l.a}</div>
+                <div style="font-size:11px;color:var(--text-2);line-height:1.5;font-weight:400">${l.d}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `).join('')}
+      <div style="font-size:10.5px;color:var(--muted);line-height:1.6;text-align:center;font-weight:400;padding-top:10px;border-top:1px dashed var(--border)">
+        La educación financiera es la mejor inversión. Dedica 20 minutos al día y en 3 meses notarás el cambio.
+      </div>
+    </div>`;
 }
 
 function renderDashboard(){
@@ -1006,6 +1195,8 @@ function renderDashboard(){
   document.getElementById('dashMovs').innerHTML=movs.length?movs.map(m=>{const tarjeta=m.tarjetaId?getTarjetaById(m.tarjetaId):null;const sub=`${m.categoria} · ${fmtDate(m.fecha)}${tarjeta?' · 💳 '+tarjeta.nombre:''}${m.tipo==='gasto'?infoCuotas(m):''}`;return `<div class="row" data-edit="${m.tipo}" data-id="${m.id}"><div class="row-ic">${iconoCategoria(m.categoria)}</div><div class="row-main"><div class="row-t">${m.nombre}</div><div class="row-s">${sub}</div></div><div class="row-amt ${m.tipo==='ingreso'?'pos':'neg'}">${m.tipo==='ingreso'?'+':'−'}${clp(m.monto)}</div></div>`;}).join(''):'<div class="empty">Sin movimientos</div>';
   renderSugerencias({ing,gas,pat,ta,tp,ahoMes,aho,tarjetas,lineas,totalDeudaTarjetas,totalUtilizadoLineas,ingMes,gasMes});
   renderEstrategiasDeuda();
+  renderReglaIngresos();
+  renderLecturas();
 }
 
 function renderSugerencias(ctx){
@@ -1064,13 +1255,12 @@ function generarEstrategiasDeuda(){
   const interesMensualActual=deudas.reduce((s,d)=>s+d.monto*d.tasaMensual/100,0);
   const tasaPromedioPonderada=total?deudas.reduce((s,d)=>s+d.monto*d.tasaMensual,0)/total:0;
   const deudaMasPequena=ordenBolaNieve[0];
-  const deudaMasCara=ordenAvalancha[0];
   const tasaConsol=0.9/100;
   const nMeses=48;
   const cuotaConsol=total*(tasaConsol*Math.pow(1+tasaConsol,nMeses))/(Math.pow(1+tasaConsol,nMeses)-1);
   const totalPagadoConsol=cuotaConsol*nMeses;
   const interesesConsol=totalPagadoConsol-total;
-  return {deudas,ordenBolaNieve,ordenAvalancha,total,interesMensualActual,tasaPromedioPonderada,deudaMasPequena,deudaMasCara,consolidacion:{cuotaConsol,totalPagadoConsol,interesesConsol,tasaMensual:0.9,meses:nMeses}};
+  return {deudas,ordenBolaNieve,ordenAvalancha,total,interesMensualActual,tasaPromedioPonderada,deudaMasPequena,consolidacion:{cuotaConsol,totalPagadoConsol,interesesConsol,tasaMensual:0.9,meses:nMeses}};
 }
 
 function renderEstrategiasDeuda(){
@@ -1102,7 +1292,7 @@ function renderEstrategiasDeuda(){
         <div class="item"><div class="lbl">Tasa promedio ponderada</div><div class="val">${est.tasaPromedioPonderada.toFixed(2)}%</div></div>
       </div>
       <div class="estrategia-card optima">
-        <div class="estrategia-head"><div class="estrategia-icon pur">🏔</div><div style="flex:1"><div class="estrategia-title">Método Avalancha<span class="estrategia-tag tag-optima">Matemáticamente óptima</span></div><div class="estrategia-sub">Ahorras la mayor cantidad de intereses a largo plazo</div></div></div>
+        <div class="estrategia-head"><div class="estrategia-icon pur">🏔</div><div style="flex:1"><div class="estrategia-title">Método Avalancha<span class="estrategia-tag tag-optima">Matemáticamente óptima</span></div><div class="estrategia-sub">Ahorras la mayor cantidad de intereses</div></div></div>
         <div class="estrategia-body">Pagas el <strong>mínimo en todas</strong> las deudas, y el dinero extra lo destinas a la deuda con la <strong>tasa de interés más alta</strong>. Cuando esa se termina, pasas a la siguiente.</div>
         <ul class="estrategia-pasos">${pasosAvalancha}</ul>
         <div class="estrategia-foot">✅ <strong>Ventaja:</strong> pagas menos intereses en total. <strong>Ahorro estimado:</strong> ~${clp(ahorroAvalancha)} a 12 meses.<br>⚠️ <strong>Desventaja:</strong> las primeras victorias tardan porque las deudas más caras suelen ser las más grandes.</div>
@@ -1154,7 +1344,7 @@ function renderEstrategiasDeuda(){
             </div>
           </div>
           <div style="font-size:11px;color:var(--text-2);line-height:1.55;font-weight:400">
-            Un banco paga todas tus deudas actuales y quedas con una sola cuota mensual. <strong>Plazo típico: 12 a 48 meses.</strong> El monto máximo suele ser hasta <strong>${clp(Math.round((ing || 1000000) * 8))}</strong> (8× tu ingreso mensual estimado).
+            Un banco paga todas tus deudas actuales y quedas con una sola cuota mensual. <strong>Plazo típico: 12 a 48 meses.</strong> El monto máximo suele ser hasta <strong>${clp(Math.round((ing||1000000)*8))}</strong> (8× tu ingreso mensual estimado).
           </div>
           <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">
             <span style="font-size:9.5px;font-weight:600;padding:2px 8px;border-radius:5px;background:rgba(34,197,94,.1);color:#4ade80">✓ Rápido (24–48 hrs)</span>
@@ -1227,10 +1417,6 @@ function renderEstrategiasDeuda(){
         <div style="font-size:10.5px;color:var(--muted);margin-top:14px;line-height:1.6;font-weight:400;padding:10px 12px;border-radius:8px;background:rgba(249,115,22,.04);border:1px solid rgba(249,115,22,.15)">
           ⚠️ <strong style="color:#fb923c">Antes de firmar:</strong> pide siempre la <strong>CAE</strong> (Carga Anual Equivalente), no solo la tasa. La CAE incluye todos los costos del crédito. Compara al menos 3 ofertas. Y si consolidas, <strong>corta o guarda las tarjetas</strong> para no volver a endeudarte.
         </div>
-      </div>
-      <div style="font-size:10.5px;color:var(--muted);margin-top:14px;line-height:1.6;text-align:center;font-weight:400">
-        Las tasas usadas son estimaciones del mercado chileno: tarjetas 3,5% · líneas 1,5% · hipotecario 0,45% · automotriz 0,9% · consumo 0,9% mensual.<br>
-        Ajusta las tasas reales de cada deuda en <strong style="color:var(--text-2)">Gastos y crédito</strong> para un análisis más preciso.
       </div>
     </div>`;
 }
