@@ -340,6 +340,7 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
         <span id="syncEmail" style="color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:130px">—</span>
         <span class="sync-dot" id="syncDot"></span>
       </div>
+      <button class="side-btn accent" id="btnLoginSide" style="display:none;background:linear-gradient(135deg,rgba(110,86,255,.14),rgba(110,86,255,.06));border-color:rgba(110,86,255,.35);color:#ddd6fe">🔐 Iniciar sesión</button>
       <button class="side-btn accent" id="btnInformePDF">📄 Informe PDF</button>
       <button class="side-btn" id="btnExport">↓ Exportar JSON</button>
       <button class="side-btn" id="btnImport">↑ Importar JSON</button>
@@ -352,7 +353,7 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
     <section class="view active" id="view-dashboard">
       <div class="topbar">
         <div>
-          <div class="page-title" id="saludoDashboard">Hola Oscar 👋</div>
+          <div class="page-title" id="saludoDashboard">Hola 👋</div>
           <div class="page-sub" id="dashSub"></div>
         </div>
         <div class="topbar-actions">
@@ -361,6 +362,7 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
           <button class="chip" id="btnInformePDFTop">📄 PDF</button>
         </div>
       </div>
+      <div id="loginBanner"></div>
       <div id="heroPatrimonio"></div>
       <div class="grid g4" id="dashKpis"></div>
       <div class="grid g2">
@@ -553,6 +555,9 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
         <div class="auth-toggle">
           <span id="authToggleText">¿No tienes cuenta?</span>
           <a id="authToggle">Crear cuenta</a>
+        </div>
+        <div style="text-align:center;margin-top:16px">
+          <button class="chip" onclick="irA('dashboard')" style="font-size:11.5px">← Volver al dashboard</button>
         </div>
       </div>
     </section>
@@ -867,15 +872,50 @@ function renderAll(){
   renderConfig();
   bindRowClicks();
 }
+
+/* =====================================================
+   SALUDO DINÁMICO + BANNER DE LOGIN
+===================================================== */
 function updateSaludo(){
   const el=document.getElementById('saludoDashboard');
   if(!el) return;
   if(user && user.email){
     el.innerHTML=`Hola <span class="greet-email">${esc(user.email)}</span> 👋`;
   } else {
-    el.textContent='Hola Oscar 👋';
+    el.textContent='Hola 👋';
   }
+  const banner=document.getElementById('loginBanner');
+  if(!banner) return;
+  if(user && user.email){
+    banner.innerHTML='';
+    return;
+  }
+  banner.innerHTML=`
+    <div class="card" style="margin-bottom:12px;border-color:rgba(110,86,255,.3);background:linear-gradient(135deg,rgba(110,86,255,.06),transparent 60%)">
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+        <div style="width:42px;height:42px;flex:0 0 42px;border-radius:11px;background:rgba(110,86,255,.14);display:grid;place-items:center;font-size:20px">👤</div>
+        <div style="flex:1;min-width:200px">
+          <div style="font-size:13.5px;font-weight:600;margin-bottom:3px">No has iniciado sesión</div>
+          <div style="font-size:11.5px;color:var(--text-2);line-height:1.5;font-weight:400">
+            Tus datos se guardan solo en este navegador. <strong style="color:var(--text)">Inicia sesión</strong> para sincronizarlos entre todos tus dispositivos y no perderlos si limpias la caché.
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="chip primary" onclick="irALogin('signin')" style="padding:10px 18px;font-size:12.5px">🔐 Iniciar sesión</button>
+          <button class="chip" onclick="irALogin('signup')" style="padding:10px 18px;font-size:12.5px">Crear cuenta</button>
+        </div>
+      </div>
+    </div>`;
 }
+
+function irALogin(mode='signin'){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-login').classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(mode==='signup' && authMode!=='signup'){ authToggle?.click(); }
+  if(mode==='signin' && authMode!=='signin'){ authToggle?.click(); }
+}
+
 function donutSVG(segmentos,size=160,stroke=20){
   const r=(size-stroke)/2;
   const c=2*Math.PI*r;
@@ -1041,6 +1081,7 @@ function renderEstrategiasDeuda(){
     cont.innerHTML=`<div class="suggestions"><div class="sug-head"><span class="dot"></span> Estrategias para salir de deudas</div><div style="display:flex;gap:12px;padding:6px 0"><div class="sug-icon ok">✓</div><div class="sug-body"><div class="sug-title">¡Sin deudas registradas!</div><div class="sug-text">No tienes deudas pendientes. Mantén el hábito de no usar más del 30% de tus cupos y destina el excedente al ahorro o inversión.</div></div></div></div>`;
     return;
   }
+  const ing=totalIngresos();
   const pasosAvalancha=est.ordenAvalancha.map((d,i)=>`<li><span class="num" style="background:${d.color}22;color:${d.color};border-color:${d.color}44">${i+1}</span><span class="info"><strong>${esc(d.nombre)}</strong><br><span class="tasa">${d.icon} ${esc(d.tipo)} · ${d.tasaMensual.toFixed(2)}% mensual</span></span><span class="monto">${clp(d.monto)}</span></li>`).join('');
   const pasosBolaNieve=est.ordenBolaNieve.map((d,i)=>`<li><span class="num" style="background:${d.color}22;color:${d.color};border-color:${d.color}44">${i+1}</span><span class="info"><strong>${esc(d.nombre)}</strong><br><span class="tasa">${d.icon} ${esc(d.tipo)} · ${d.tasaMensual.toFixed(2)}% mensual</span></span><span class="monto">${clp(d.monto)}</span></li>`).join('');
   const hibridaOrden=(()=>{const promo=est.tasaPromedioPonderada;const candidatas=est.ordenBolaNieve.filter(d=>d.tasaMensual>=promo);const primera=candidatas[0]||est.ordenBolaNieve[0];const resto=est.ordenAvalancha.filter(d=>d!==primera);return [primera,...resto];})();
@@ -1100,7 +1141,6 @@ function renderEstrategiasDeuda(){
         <div style="font-size:11.5px;color:var(--text-2);line-height:1.6;font-weight:400;margin-bottom:14px">
           Para consolidar tu deuda de <strong style="color:var(--red)">${clp(est.total)}</strong> tienes 3 caminos principales. Cada uno tiene requisitos, tasas y ventajas distintas:
         </div>
-
         <div style="border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px;background:var(--surface-2)">
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
             <div style="width:28px;height:28px;flex:0 0 28px;border-radius:8px;background:rgba(110,86,255,.15);display:grid;place-items:center;font-size:13px">💳</div>
@@ -1122,7 +1162,6 @@ function renderEstrategiasDeuda(){
             <span style="font-size:9.5px;font-weight:600;padding:2px 8px;border-radius:5px;background:rgba(249,115,22,.1);color:#fb923c">⚠ Tasa variable según perfil</span>
           </div>
         </div>
-
         <div style="border:1px solid rgba(34,197,94,.25);border-radius:10px;padding:14px;margin-bottom:10px;background:var(--surface-2)">
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
             <div style="width:28px;height:28px;flex:0 0 28px;border-radius:8px;background:rgba(34,197,94,.15);display:grid;place-items:center;font-size:13px">🏠</div>
@@ -1144,7 +1183,6 @@ function renderEstrategiasDeuda(){
             <span style="font-size:9.5px;font-weight:600;padding:2px 8px;border-radius:5px;background:rgba(248,113,113,.1);color:#f87171">⚠ Riesgo: puedes perder la propiedad</span>
           </div>
         </div>
-
         <div style="border:1px solid rgba(6,182,212,.25);border-radius:10px;padding:14px;margin-bottom:10px;background:var(--surface-2)">
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
             <div style="width:28px;height:28px;flex:0 0 28px;border-radius:8px;background:rgba(6,182,212,.15);display:grid;place-items:center;font-size:13px">📋</div>
@@ -1165,7 +1203,6 @@ function renderEstrategiasDeuda(){
             <span style="font-size:9.5px;font-weight:600;padding:2px 8px;border-radius:5px;background:rgba(34,197,94,.1);color:#4ade80">✓ Sin costo de cambio</span>
           </div>
         </div>
-
         <div style="margin-top:16px;padding-top:14px;border-top:1px dashed var(--border)">
           <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:10px">🔍 Dónde comparar antes de firmar</div>
           <div style="display:flex;flex-direction:column;gap:8px">
@@ -1386,8 +1423,16 @@ function renderConfig(){
       location.reload();
     };
   }else{
-    cfg.innerHTML=`<div style="font-size:12px;color:var(--muted);margin-bottom:12px">Inicia sesión para sincronizar entre dispositivos.</div><button class="chip primary" id="btnGoLogin">Iniciar sesión</button>`;
-    document.getElementById('btnGoLogin').onclick=()=>{document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById('view-login').classList.add('active');};
+    cfg.innerHTML=`
+      <div style="font-size:12.5px;color:var(--text-2);margin-bottom:14px;line-height:1.55">
+        Inicia sesión para guardar tus finanzas en la nube y sincronizarlas entre dispositivos.
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="chip primary" id="btnGoLogin">🔐 Iniciar sesión</button>
+        <button class="chip" id="btnGoSignup">Crear cuenta</button>
+      </div>`;
+    document.getElementById('btnGoLogin').onclick=()=>irALogin('signin');
+    document.getElementById('btnGoSignup').onclick=()=>irALogin('signup');
   }
 }
 function editCategoria(tipo,cat){const nuevo=prompt('Nombre:',cat);if(!nuevo||nuevo===cat)return;data.categorias[tipo]=data.categorias[tipo].map(x=>x===cat?nuevo:x);if(data.colores[cat]){data.colores[nuevo]=data.colores[cat];delete data.colores[cat];}save();renderConfig();renderAll();}
@@ -1683,16 +1728,22 @@ function updateBnCuenta(){
   const icon=document.getElementById('bnCuentaIcon');
   const label=document.getElementById('bnCuentaLabel');
   const badge=document.getElementById('bnCuentaBadge');
+  const btnSide=document.getElementById('btnLoginSide');
   if(!btn)return;
   if(user && user.email){
     const inicial=user.email.trim().charAt(0).toUpperCase();
     icon.textContent=inicial;icon.style.fontSize='14px';icon.style.fontWeight='600';
     label.textContent='Cuenta';btn.classList.add('logged');
     if(badge)badge.style.display='none';
+    if(btnSide)btnSide.style.display='none';
   }else{
     icon.textContent='👤';icon.style.fontSize='';icon.style.fontWeight='';
     label.textContent='Cuenta';btn.classList.remove('logged');
     if(badge)badge.style.display='block';
+    if(btnSide){
+      btnSide.style.display='block';
+      btnSide.onclick=()=>irALogin('signin');
+    }
   }
 }
 async function afterLogin(){
