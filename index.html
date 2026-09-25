@@ -171,6 +171,8 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
 .cc-bar{height:5px;border-radius:99px;background:rgba(255,255,255,.045);overflow:hidden}
 .cc-bar-fill{height:100%;border-radius:99px;transition:width .6s}
 .cc-bar-lbl{display:flex;justify-content:space-between;font-size:10.5px;color:var(--muted);font-weight:500;margin-top:6px}
+.cc-cae{font-size:10.5px;color:var(--muted);margin-top:8px;display:flex;justify-content:space-between;align-items:center}
+.cc-cae strong{color:var(--accent-2);font-variant-numeric:tabular-nums;font-weight:600}
 .cc-hist{font-size:10.5px;color:var(--muted);margin-top:10px;font-weight:400;display:flex;gap:12px;flex-wrap:wrap}
 .cc-hist strong{color:var(--text-2);font-weight:500}
 .cc-actions{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap}
@@ -667,8 +669,8 @@ const seed={
   pasivos:[
     {id:1,nombre:'Crédito hipotecario',tipo:'Hipotecario',valor:28400000},
     {id:2,nombre:'Crédito automotriz',tipo:'Automotriz',valor:3850000},
-    {id:10,nombre:'Tarjeta Banco de Chile',tipo:'Tarjeta',cupo:2500000,deudaInicial:0,pagos:[],valor:0},
-    {id:11,nombre:'CMR Falabella',tipo:'Tarjeta',cupo:1500000,deudaInicial:0,pagos:[],valor:0},
+    {id:10,nombre:'Tarjeta Banco de Chile',tipo:'Tarjeta',cupo:2500000,deudaInicial:0,pagos:[],valor:0,caePrepago:22.5},
+    {id:11,nombre:'CMR Falabella',tipo:'Tarjeta',cupo:1500000,deudaInicial:0,pagos:[],valor:0,caePrepago:28.0},
     {id:20,nombre:'Línea Banco Estado',tipo:'Linea',banco:'Banco Estado',cupo:5000000,utilizado:1200000,tasa:1.5,valor:0}
   ]
 };
@@ -706,6 +708,7 @@ try{
         if(pg.categoria===undefined || pg.categoria===catVieja) pg.categoria=CAT_PAGO_TC;
         if(pg.id===undefined) pg.id=Date.now()+Math.floor(Math.random()*9999);
       });
+      if(p.caePrepago===undefined) p.caePrepago=0;
     }
   });
   data.gastos.forEach(g=>{
@@ -715,7 +718,6 @@ try{
   });
 }catch{data=structuredClone(seed);}
 
-/* ⚡ authMode movido arriba para evitar hoisting frágil */
 let sb=null,user=null,histRango=6,authMode='signin';
 
 if(SUPABASE_URL && SUPABASE_ANON_KEY && window.supabase){
@@ -724,16 +726,12 @@ if(SUPABASE_URL && SUPABASE_ANON_KEY && window.supabase){
     if(event==='SIGNED_OUT'){localStorage.removeItem(KEY);}
     if(event==='PASSWORD_RECOVERY'){
       user=session?.user||null;
-      // Limpia el hash de la URL (el token de recuperación)
       if(location.hash) history.replaceState(null,'',location.pathname);
       mostrarResetPassword();
     }
   });
 }
 
-/* =====================================================
-   PULL CLOUD SEGURO — pregunta antes de sobrescribir
-===================================================== */
 async function pullCloud(){
   if(!sb||!user)return;
   setSync('syncing');
@@ -783,6 +781,7 @@ async function pullCloud(){
         if(pg.categoria===undefined || pg.categoria===catVieja) pg.categoria=CAT_PAGO_TC;
         if(pg.id===undefined) pg.id=Date.now()+Math.floor(Math.random()*9999);
       });
+      if(p.caePrepago===undefined) p.caePrepago=0;
     }
   });
   data.gastos.forEach(g=>{
@@ -1294,7 +1293,11 @@ function generarEstrategiasDeuda(){
   const deudas=[];
   data.pasivos.filter(p=>p.tipo==='Tarjeta').forEach(t=>{
     const deuda=Math.max(0,deudaTarjeta(t));
-    if(deuda>0){deudas.push({nombre:t.nombre,monto:deuda,tasaMensual:3.5,tipo:'Tarjeta de crédito',icon:'💳',color:'#ec4899'});}
+    if(deuda>0){
+      const caeAnual=+t.caePrepago||0;
+      const tasaMensual=caeAnual>0?(Math.pow(1+caeAnual/100,1/12)-1)*100:3.5;
+      deudas.push({nombre:t.nombre,monto:deuda,tasaMensual,tipo:'Tarjeta de crédito',icon:'💳',color:'#ec4899',caePrepago:caeAnual});
+    }
   });
   data.pasivos.filter(p=>p.tipo==='Linea').forEach(l=>{
     const util=+l.utilizado||0;
@@ -1331,18 +1334,33 @@ function renderEstrategiasDeuda(){
     return;
   }
   const ing=totalIngresos();
-  const pasosAvalancha=est.ordenAvalancha.map((d,i)=>`<li><span class="num" style="background:${d.color}22;color:${d.color};border-color:${d.color}44">${i+1}</span><span class="info"><strong>${esc(d.nombre)}</strong><br><span class="tasa">${d.icon} ${esc(d.tipo)} · ${d.tasaMensual.toFixed(2)}% mensual</span></span><span class="monto">${clp(d.monto)}</span></li>`).join('');
-  const pasosBolaNieve=est.ordenBolaNieve.map((d,i)=>`<li><span class="num" style="background:${d.color}22;color:${d.color};border-color:${d.color}44">${i+1}</span><span class="info"><strong>${esc(d.nombre)}</strong><br><span class="tasa">${d.icon} ${esc(d.tipo)} · ${d.tasaMensual.toFixed(2)}% mensual</span></span><span class="monto">${clp(d.monto)}</span></li>`).join('');
+  const pasosAvalancha=est.ordenAvalancha.map((d,i)=>`<li><span class="num" style="background:${d.color}22;color:${d.color};border-color:${d.color}44">${i+1}</span><span class="info"><strong>${esc(d.nombre)}</strong><br><span class="tasa">${d.icon} ${esc(d.tipo)} · ${d.tasaMensual.toFixed(2)}% mensual${d.caePrepago?' · CAE '+(+d.caePrepago).toFixed(2)+'%':''}</span></span><span class="monto">${clp(d.monto)}</span></li>`).join('');
+  const pasosBolaNieve=est.ordenBolaNieve.map((d,i)=>`<li><span class="num" style="background:${d.color}22;color:${d.color};border-color:${d.color}44">${i+1}</span><span class="info"><strong>${esc(d.nombre)}</strong><br><span class="tasa">${d.icon} ${esc(d.tipo)} · ${d.tasaMensual.toFixed(2)}% mensual${d.caePrepago?' · CAE '+(+d.caePrepago).toFixed(2)+'%':''}</span></span><span class="monto">${clp(d.monto)}</span></li>`).join('');
   const hibridaOrden=(()=>{const promo=est.tasaPromedioPonderada;const candidatas=est.ordenBolaNieve.filter(d=>d.tasaMensual>=promo);const primera=candidatas[0]||est.ordenBolaNieve[0];const resto=est.ordenAvalancha.filter(d=>d!==primera);return [primera,...resto];})();
-  const pasosHibrida=hibridaOrden.map((d,i)=>`<li><span class="num" style="background:${d.color}22;color:${d.color};border-color:${d.color}44">${i+1}</span><span class="info"><strong>${esc(d.nombre)}</strong>${i===0?' <span style="color:#22d3ee;font-weight:600">← empezar aquí</span>':''}<br><span class="tasa">${d.icon} ${esc(d.tipo)} · ${d.tasaMensual.toFixed(2)}% mensual</span></span><span class="monto">${clp(d.monto)}</span></li>`).join('');
+  const pasosHibrida=hibridaOrden.map((d,i)=>`<li><span class="num" style="background:${d.color}22;color:${d.color};border-color:${d.color}44">${i+1}</span><span class="info"><strong>${esc(d.nombre)}</strong>${i===0?' <span style="color:#22d3ee;font-weight:600">← empezar aquí</span>':''}<br><span class="tasa">${d.icon} ${esc(d.tipo)} · ${d.tasaMensual.toFixed(2)}% mensual${d.caePrepago?' · CAE '+(+d.caePrepago).toFixed(2)+'%':''}</span></span><span class="monto">${clp(d.monto)}</span></li>`).join('');
   const ahorroAvalancha=est.interesMensualActual*12*0.25;
+
+  const tarjetasConCAE=est.deudas.filter(d=>d.tipo==='Tarjeta de crédito' && d.caePrepago>0);
+  const totalDeudaConCAE=tarjetasConCAE.reduce((s,d)=>s+d.monto,0);
+  let comparativa=null;
+  if(tarjetasConCAE.length){
+    const tasaCons=0.009;
+    const nMeses=48;
+    const cuotaCons=totalDeudaConCAE*(tasaCons*Math.pow(1+tasaCons,nMeses))/(Math.pow(1+tasaCons,nMeses)-1);
+    const costoCons=cuotaCons*nMeses;
+    const caeProm=tarjetasConCAE.reduce((s,d)=>s+d.caePrepago*d.monto,0)/totalDeudaConCAE;
+    const tasaMesPrep=Math.pow(1+caeProm/100,1/12)-1;
+    const costoPrep=totalDeudaConCAE*(1+tasaMesPrep);
+    comparativa={totalDeuda:totalDeudaConCAE,tarjetas:tarjetasConCAE,caeProm,costoPrep,costoCons,cuotaCons,ahorroPrep:costoCons-costoPrep,nMeses};
+  }
+
   cont.innerHTML=`
     <div class="suggestions" style="padding:22px 24px">
       <div class="estrategias-head">
         <div class="icon">🎯</div>
         <div style="flex:1">
           <div class="title">Estrategias para salir de deudas</div>
-          <div class="sub">Analizamos tus ${est.deudas.length} deuda${est.deudas.length===1?'':'s'} y te proponemos 4 formas de atacarlas.</div>
+          <div class="sub">Analizamos tus ${est.deudas.length} deuda${est.deudas.length===1?'':'s'} y te proponemos 5 formas de atacarlas.</div>
         </div>
       </div>
       <div class="estrategia-resumen">
@@ -1477,6 +1495,54 @@ function renderEstrategiasDeuda(){
           ⚠️ <strong style="color:#fb923c">Antes de firmar:</strong> pide siempre la <strong>CAE</strong> (Carga Anual Equivalente), no solo la tasa. La CAE incluye todos los costos del crédito. Compara al menos 3 ofertas. Y si consolidas, <strong>corta o guarda las tarjetas</strong> para no volver a endeudarte.
         </div>
       </div>
+      ${comparativa?`
+      <div class="estrategia-card" style="border-color:rgba(6,182,212,.3);background:linear-gradient(135deg,rgba(6,182,212,.04),transparent 60%);margin-top:16px">
+        <div class="estrategia-head">
+          <div class="estrategia-icon cyn">🔄</div>
+          <div style="flex:1">
+            <div class="estrategia-title">Prepago de tarjetas vs Consolidación<span class="estrategia-tag tag-hibrida">Con tu CAE real</span></div>
+            <div class="estrategia-sub">Comparación usando el CAE prepago real de cada tarjeta</div>
+          </div>
+        </div>
+        <div class="estrategia-body">
+          Analizamos tus <strong>${comparativa.tarjetas.length} tarjeta${comparativa.tarjetas.length===1?'':'s'} con CAE prepago</strong> (deuda total ${clp(comparativa.totalDeuda)}). Comparación entre prepagar todo ahora vs consolidar a 0,9% mensual:
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0">
+          <div style="padding:14px;border-radius:9px;background:var(--surface-2);border:1px solid rgba(6,182,212,.25)">
+            <div style="font-size:10px;color:var(--cyan);font-weight:600;text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px">🔄 Prepagar todo hoy</div>
+            <div style="font-size:18px;font-weight:600;letter-spacing:-.5px;font-variant-numeric:tabular-nums">${clp(comparativa.costoPrep)}</div>
+            <div style="font-size:10.5px;color:var(--muted);margin-top:4px;line-height:1.5">Pago único · CAE prom. ${comparativa.caeProm.toFixed(2)}% anual</div>
+          </div>
+          <div style="padding:14px;border-radius:9px;background:var(--surface-2);border:1px solid rgba(249,115,22,.25)">
+            <div style="font-size:10px;color:var(--orange);font-weight:600;text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px">🔀 Consolidar 48 meses</div>
+            <div style="font-size:18px;font-weight:600;letter-spacing:-.5px;font-variant-numeric:tabular-nums">${clp(comparativa.costoCons)}</div>
+            <div style="font-size:10.5px;color:var(--muted);margin-top:4px;line-height:1.5">Cuota ${clp(comparativa.cuotaCons)}/mes · 0,9% mensual</div>
+          </div>
+        </div>
+        <table style="width:100%;border-collapse:collapse;font-size:11.5px;margin-top:8px">
+          <thead>
+            <tr>
+              <th style="text-align:left;padding:7px 4px;border-bottom:1.5px solid var(--border);font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)">Tarjeta</th>
+              <th style="text-align:right;padding:7px 4px;border-bottom:1.5px solid var(--border);font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)">Deuda</th>
+              <th style="text-align:right;padding:7px 4px;border-bottom:1.5px solid var(--border);font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)">CAE</th>
+              <th style="text-align:right;padding:7px 4px;border-bottom:1.5px solid var(--border);font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)">Costo prepago</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${comparativa.tarjetas.map(d=>{
+              const tasaMes=Math.pow(1+d.caePrepago/100,1/12)-1;
+              const costoPrep=d.monto*(1+tasaMes);
+              return `<tr><td style="padding:7px 4px;border-bottom:1px solid var(--border);color:var(--text)">${esc(d.nombre)}</td><td style="text-align:right;padding:7px 4px;border-bottom:1px solid var(--border);font-variant-numeric:tabular-nums;color:var(--red);font-weight:600">${clp(d.monto)}</td><td style="text-align:right;padding:7px 4px;border-bottom:1px solid var(--border);font-variant-numeric:tabular-nums;color:var(--accent-2);font-weight:600">${d.caePrepago.toFixed(2)}%</td><td style="text-align:right;padding:7px 4px;border-bottom:1px solid var(--border);font-variant-numeric:tabular-nums;font-weight:600;color:var(--text)">${clp(costoPrep)}</td></tr>`;
+            }).join('')}
+          </tbody>
+        </table>
+        <div class="estrategia-foot" style="margin-top:14px">
+          ${comparativa.ahorroPrep>0
+            ? `✅ <strong>Prepagar ahorra ${clp(comparativa.ahorroPrep)}</strong> vs consolidar. <strong>Requisito:</strong> necesitas tener ${clp(comparativa.costoPrep)} disponibles hoy.<br>⚠️ Si no tienes el efectivo, consolidar sigue siendo una alternativa viable a 48 meses.`
+            : `⚠️ <strong>Consolidar sale más barato</strong> por ${clp(Math.abs(comparativa.ahorroPrep))}. Tu CAE prepago es muy alto — revisa con el banco si puedes negociar una tasa mejor o busca portabilidad.`}
+        </div>
+      </div>
+      `:''}
     </div>`;
 }
 
@@ -1533,8 +1599,9 @@ function renderGastos(){
       const cuotasVig=cuotasVigentesDeTarjeta(t.id);
       const totalMensualCuotas=totalMensualCuotasTarjeta(t.id);
       const numPagos=(t.pagos||[]).length;
+      const caeHTML=(+t.caePrepago>0)?`<div class="cc-cae"><span>🔄 CAE Prepago</span><strong>${(+t.caePrepago).toFixed(2)}% anual</strong></div>`:'';
       const cuotasHTML=cuotasVig.length?`<div class="cc-cuotas"><div class="cc-cuotas-title">📆 Cuotas vigentes este mes</div>${cuotasVig.slice(0,5).map(g=>`<div class="cc-cuotas-item"><span><strong>${g.nombre}</strong> · ${g.cuotas} cuotas${(+g.tasaCuotas||0)>0?' · '+(+g.tasaCuotas).toFixed(2)+'%':''}</span><span class="monto">${clp(valorCuotaGasto(g))}</span></div>`).join('')}${cuotasVig.length>5?`<div class="cc-cuotas-item" style="color:var(--muted);font-style:italic">+${cuotasVig.length-5} más…</div>`:''}<div class="cc-cuotas-total"><span>Total cuotas del mes</span><span class="val">${clp(totalMensualCuotas)}</span></div></div>`:'';
-      return `<div class="cc-card ${warnClass}"><div class="cc-head"><div><div class="cc-name">💳 ${t.nombre}</div><div class="cc-tipo">Tarjeta de crédito</div></div><div class="cc-actions-top"><button data-act="edit-tarjeta" data-id="${t.id}">✎</button><button class="del" data-act="del-tarjeta" data-id="${t.id}">🗑</button></div></div><div class="cc-nums"><div class="cc-num"><div class="l">Cupo total</div><div class="v">${clp(t.cupo)}</div></div><div class="cc-num"><div class="l">Utilizado</div><div class="v" style="color:${col}">${clp(deuda)}</div></div><div class="cc-num"><div class="l">Disponible</div><div class="v pos">${clp(disp)}</div></div></div><div class="cc-bar"><div class="cc-bar-fill" style="width:${pct}%;background:${col}"></div></div><div class="cc-bar-lbl"><span>${pct.toFixed(1)}% usado</span><span>${gastos.length} movs · ${numPagos} pagos</span></div>${cuotasHTML}<div class="cc-actions"><button class="cc-btn primary" data-act="pagar-tarjeta" data-id="${t.id}">${numPagos?'💵 Pagos / historial':'💵 Registrar pago'}</button><button class="cc-btn" data-act="nuevo-gasto-tarjeta" data-id="${t.id}">+ Gasto</button></div></div>`;
+      return `<div class="cc-card ${warnClass}"><div class="cc-head"><div><div class="cc-name">💳 ${t.nombre}</div><div class="cc-tipo">Tarjeta de crédito</div></div><div class="cc-actions-top"><button data-act="edit-tarjeta" data-id="${t.id}">✎</button><button class="del" data-act="del-tarjeta" data-id="${t.id}">🗑</button></div></div><div class="cc-nums"><div class="cc-num"><div class="l">Cupo total</div><div class="v">${clp(t.cupo)}</div></div><div class="cc-num"><div class="l">Utilizado</div><div class="v" style="color:${col}">${clp(deuda)}</div></div><div class="cc-num"><div class="l">Disponible</div><div class="v pos">${clp(disp)}</div></div></div><div class="cc-bar"><div class="cc-bar-fill" style="width:${pct}%;background:${col}"></div></div><div class="cc-bar-lbl"><span>${pct.toFixed(1)}% usado</span><span>${gastos.length} movs · ${numPagos} pagos</span></div>${caeHTML}${cuotasHTML}<div class="cc-actions"><button class="cc-btn primary" data-act="pagar-tarjeta" data-id="${t.id}">${numPagos?'💵 Pagos / historial':'💵 Registrar pago'}</button><button class="cc-btn" data-act="nuevo-gasto-tarjeta" data-id="${t.id}">+ Gasto</button></div></div>`;
     }).join('');
     document.querySelectorAll('[data-act="edit-tarjeta"]').forEach(b=>b.onclick=e=>{e.stopPropagation();openModal('tarjeta',+b.dataset.id);});
     document.querySelectorAll('[data-act="del-tarjeta"]').forEach(b=>b.onclick=e=>{e.stopPropagation();delTarjeta(+b.dataset.id);});
@@ -1718,7 +1785,6 @@ const modalTitle=document.getElementById('modalTitle');
 let currentTipo=null,currentId=null,currentTarjetaPreset=null;
 let currentPagoTarjetaId=null;
 
-/* 🔒 inputField y selectField con esc() */
 function inputField(name,label,type='text',value='',attrs=''){
   return `<div class="field"><label>${esc(label)}</label><input name="${esc(name)}" type="${esc(type)}" value="${esc(value)}" ${attrs}></div>`;
 }
@@ -1737,7 +1803,13 @@ function openModal(tipo,id=null,tarjetaPreset=null){
   if(tipo==='inversion'){html=inputField('nombre','Nombre','text',item?.nombre||'',"required");html+=selectField('tipo','Tipo',data.categorias.inversiones,item?.tipo||data.categorias.inversiones[0]);html+=inputField('monto','Monto actual (CLP)','number',item?.monto||'',"required min=0 step=1");html+=inputField('rendimiento','Rendimiento (%)','number',item?.rendimiento??'',"step=0.1");}
   if(tipo==='presupuesto'){html=selectField('categoria','Categoría',data.categorias.gastos,item?.categoria||data.categorias.gastos[0]);html+=inputField('asignado','Monto asignado (CLP)','number',item?.asignado||'',"required min=0 step=1");}
   if(tipo==='activo'||tipo==='pasivo'){const tipos=tipo==='activo'?['Bien raíz','Efectivo','Vehículo','Otro']:['Hipotecario','Automotriz','Otro'];html=inputField('nombre','Nombre','text',item?.nombre||'',"required");html+=selectField('tipo','Tipo',tipos,item?.tipo||tipos[0]);html+=inputField('valor','Valor (CLP)','number',item?.valor||'',"required min=0 step=1");}
-  if(tipo==='tarjeta'){html=inputField('nombre','Nombre','text',item?.nombre||'',"required placeholder='Ej: Banco de Chile'");html+=inputField('cupo','Cupo autorizado (CLP)','number',item?.cupo||'',"required min=0 step=1");html+=inputField('deudaInicial','Deuda inicial (opcional)','number',item?.deudaInicial||0,"min=0 step=1");}
+  if(tipo==='tarjeta'){
+    html=inputField('nombre','Nombre','text',item?.nombre||'',"required placeholder='Ej: Banco de Chile'");
+    html+=inputField('cupo','Cupo autorizado (CLP)','number',item?.cupo||'',"required min=0 step=1");
+    html+=inputField('deudaInicial','Deuda inicial (opcional)','number',item?.deudaInicial||0,"min=0 step=1");
+    html+=inputField('caePrepago','CAE Prepago (% anual)','number',item?.caePrepago??'',"step=0.01 min=0 placeholder='Ej: 24.5 · Opcional'");
+    html+=`<div style="font-size:10.5px;color:var(--muted);line-height:1.5;margin-top:-6px;margin-bottom:11px">Tasa efectiva anual que cobra el banco si prepagas el total del saldo (pagar todas las cuotas de una vez). Déjalo en 0 si no lo conoces.</div>`;
+  }
   if(tipo==='linea'){html=inputField('nombre','Nombre de la línea','text',item?.nombre||'',"required placeholder='Ej: Línea Banco Estado'");html+=inputField('banco','Banco o entidad','text',item?.banco||'',"placeholder='Ej: Banco Estado'");html+=inputField('cupo','Cupo autorizado (CLP)','number',item?.cupo||'',"required min=0 step=1");html+=inputField('utilizado','Utilizado a la fecha (CLP)','number',item?.utilizado||0,"required min=0 step=1");html+=inputField('tasa','Tasa mensual (%)','number',item?.tasa??'',"step=0.01 min=0 placeholder='Opcional'");}
   modalForm.innerHTML=html;
   modalBg.classList.add('open');
@@ -1814,7 +1886,7 @@ document.getElementById('btnSave').onclick=e=>{
   const fd=new FormData(modalForm);
   const obj={};
   for(const [k,v] of fd.entries()){
-    if(k==='monto'||k==='valor'||k==='asignado'||k==='rendimiento'||k==='cupo'||k==='deudaInicial'||k==='utilizado'||k==='tasa'||k==='cuotas'||k==='tasaCuotas'){obj[k]=v===''?0:+v;}
+    if(k==='monto'||k==='valor'||k==='asignado'||k==='rendimiento'||k==='cupo'||k==='deudaInicial'||k==='utilizado'||k==='tasa'||k==='cuotas'||k==='tasaCuotas'||k==='caePrepago'){obj[k]=v===''?0:+v;}
     else if(k==='tarjetaId'){obj[k]=v===''?null:+v;}
     else{obj[k]=v;}
   }
@@ -1823,7 +1895,7 @@ document.getElementById('btnSave').onclick=e=>{
   const arr=tipoToArray(currentTipo);
   if(currentId){const idx=data[arr].findIndex(x=>x.id===currentId);data[arr][idx]={...data[arr][idx],...obj};toast('Actualizado');}
   else{
-    if(currentTipo==='tarjeta'){data[arr].push({id:uid(),tipo:'Tarjeta',nombre:obj.nombre,cupo:+obj.cupo||0,deudaInicial:+obj.deudaInicial||0,pagos:[],valor:0});}
+    if(currentTipo==='tarjeta'){data[arr].push({id:uid(),tipo:'Tarjeta',nombre:obj.nombre,cupo:+obj.cupo||0,deudaInicial:+obj.deudaInicial||0,pagos:[],valor:0,caePrepago:+obj.caePrepago||0});}
     else if(currentTipo==='linea'){data[arr].push({id:uid(),tipo:'Linea',nombre:obj.nombre,banco:obj.banco||'',cupo:+obj.cupo||0,utilizado:+obj.utilizado||0,tasa:+obj.tasa||0,valor:0});}
     else if(currentTipo==='gasto'){data[arr].push({id:uid(),...obj,cuotas:+obj.cuotas||1,tasaCuotas:+obj.tasaCuotas||0});}
     else{data[arr].push({id:uid(),...obj});}
@@ -1890,7 +1962,7 @@ function generarInformePDF(){
 <h2>Presupuesto mensual</h2>
 <table><thead><tr><th>Categoría</th><th style="text-align:right">Asignado</th><th style="text-align:right">Gastado</th><th style="text-align:right">Disponible</th><th style="text-align:right">Estado</th></tr></thead><tbody>${data.presupuestos.map(p=>{const g=gastoDeCategoria(p.categoria);const disp=p.asignado-g;const over=g>p.asignado;return `<tr><td>${esc(p.categoria)}</td><td class="r">${fmtN(p.asignado)}</td><td class="r neg">${fmtN(g)}</td><td class="r ${over?'neg':'pos'}">${fmtN(Math.abs(disp))}</td><td class="r"><span class="tag ${over?'neg':'pos'}">${over?'Excedido':(g/p.asignado>0.9?'Al límite':'OK')}</span></td></tr>`;}).join('') || '<tr><td colspan="5" style="color:#999;text-align:center;padding:16px">Sin presupuestos</td></tr>'}</tbody></table>
 <h2>Tarjetas y líneas de crédito</h2>
-<div class="two-col"><div>${tarjetas.map(t=>{const deuda=Math.max(0,deudaTarjeta(t));const pct=t.cupo?(deuda/t.cupo*100):0;const cuotasVig=cuotasVigentesDeTarjeta(t.id);const totalMensual=totalMensualCuotasTarjeta(t.id);const cuotasHTML=cuotasVig.length?`<div class="cuotas-box"><div class="cuotas-title">📆 Cuotas vigentes este mes</div>${cuotasVig.map(g=>`<div class="cuotas-item"><span><strong>${esc(g.nombre)}</strong> · <span class="n">${g.cuotas} cuotas${(+g.tasaCuotas||0)>0?' · '+(+g.tasaCuotas).toFixed(2)+'%':''}</span></span><span class="m">${fmtN(valorCuotaGasto(g))}</span></div>`).join('')}<div class="cuotas-total"><span>Total cuotas del mes</span><span class="val">${fmtN(totalMensual)}</span></div></div>`:'';return `<div class="box"><div class="box-title">💳 ${esc(t.nombre)}</div><div class="box-row"><span class="lbl">Cupo total</span><span class="val">${fmtN(t.cupo)}</span></div><div class="box-row"><span class="lbl">Utilizado</span><span class="val" style="color:#dc2626">${fmtN(deuda)}</span></div><div class="box-row"><span class="lbl">Disponible</span><span class="val" style="color:#16a34a">${fmtN(t.cupo-deuda)}</span></div><div class="bar"><div class="bar-fill" style="width:${pct}%;background:${pct>80?'#dc2626':pct>50?'#f97316':'#16a34a'}"></div></div>${cuotasHTML}</div>`;}).join('') || '<div class="box" style="color:#999;text-align:center">Sin tarjetas</div>'}</div><div>${lineas.map(l=>{const util=+l.utilizado||0;const cupo=+l.cupo||0;const pct=cupo?(util/cupo*100):0;return `<div class="box"><div class="box-title">🏦 ${esc(l.nombre)}${l.banco?' · '+esc(l.banco):''}</div><div class="box-row"><span class="lbl">Cupo total</span><span class="val">${fmtN(cupo)}</span></div><div class="box-row"><span class="lbl">Utilizado</span><span class="val" style="color:#dc2626">${fmtN(util)}</span></div><div class="box-row"><span class="lbl">Disponible</span><span class="val" style="color:#16a34a">${fmtN(cupo-util)}</span></div>${l.tasa?`<div class="box-row"><span class="lbl">Tasa mensual</span><span class="val">${(+l.tasa).toFixed(2)}%</span></div>`:''}<div class="bar"><div class="bar-fill" style="width:${pct}%;background:${pct>80?'#dc2626':pct>50?'#f97316':'#06b6d4'}"></div></div></div>`;}).join('') || '<div class="box" style="color:#999;text-align:center">Sin líneas</div>'}</div></div>
+<div class="two-col"><div>${tarjetas.map(t=>{const deuda=Math.max(0,deudaTarjeta(t));const pct=t.cupo?(deuda/t.cupo*100):0;const cuotasVig=cuotasVigentesDeTarjeta(t.id);const totalMensual=totalMensualCuotasTarjeta(t.id);const cuotasHTML=cuotasVig.length?`<div class="cuotas-box"><div class="cuotas-title">📆 Cuotas vigentes este mes</div>${cuotasVig.map(g=>`<div class="cuotas-item"><span><strong>${esc(g.nombre)}</strong> · <span class="n">${g.cuotas} cuotas${(+g.tasaCuotas||0)>0?' · '+(+g.tasaCuotas).toFixed(2)+'%':''}</span></span><span class="m">${fmtN(valorCuotaGasto(g))}</span></div>`).join('')}<div class="cuotas-total"><span>Total cuotas del mes</span><span class="val">${fmtN(totalMensual)}</span></div></div>`:'';const caeRow=(+t.caePrepago>0)?`<div class="box-row"><span class="lbl">CAE Prepago</span><span class="val" style="color:#6e56ff">${(+t.caePrepago).toFixed(2)}% anual</span></div>`:'';return `<div class="box"><div class="box-title">💳 ${esc(t.nombre)}</div><div class="box-row"><span class="lbl">Cupo total</span><span class="val">${fmtN(t.cupo)}</span></div><div class="box-row"><span class="lbl">Utilizado</span><span class="val" style="color:#dc2626">${fmtN(deuda)}</span></div><div class="box-row"><span class="lbl">Disponible</span><span class="val" style="color:#16a34a">${fmtN(t.cupo-deuda)}</span></div>${caeRow}<div class="bar"><div class="bar-fill" style="width:${pct}%;background:${pct>80?'#dc2626':pct>50?'#f97316':'#16a34a'}"></div></div>${cuotasHTML}</div>`;}).join('') || '<div class="box" style="color:#999;text-align:center">Sin tarjetas</div>'}</div><div>${lineas.map(l=>{const util=+l.utilizado||0;const cupo=+l.cupo||0;const pct=cupo?(util/cupo*100):0;return `<div class="box"><div class="box-title">🏦 ${esc(l.nombre)}${l.banco?' · '+esc(l.banco):''}</div><div class="box-row"><span class="lbl">Cupo total</span><span class="val">${fmtN(cupo)}</span></div><div class="box-row"><span class="lbl">Utilizado</span><span class="val" style="color:#dc2626">${fmtN(util)}</span></div><div class="box-row"><span class="lbl">Disponible</span><span class="val" style="color:#16a34a">${fmtN(cupo-util)}</span></div>${l.tasa?`<div class="box-row"><span class="lbl">Tasa mensual</span><span class="val">${(+l.tasa).toFixed(2)}%</span></div>`:''}<div class="bar"><div class="bar-fill" style="width:${pct}%;background:${pct>80?'#dc2626':pct>50?'#f97316':'#06b6d4'}"></div></div></div>`;}).join('') || '<div class="box" style="color:#999;text-align:center">Sin líneas</div>'}</div></div>
 <h2>Otros activos y pasivos</h2>
 <div class="two-col"><div><table><thead><tr><th>Activo</th><th style="text-align:right">Valor</th></tr></thead><tbody>${data.activos.map(a=>`<tr><td>${esc(a.nombre)}<br><span style="font-size:9.5px;color:#888">${esc(a.tipo)}</span></td><td class="r pos">${fmtN(a.valor)}</td></tr>`).join('')}</tbody></table></div><div><table><thead><tr><th>Pasivo</th><th style="text-align:right">Saldo</th></tr></thead><tbody>${otrosPasivos.map(p=>`<tr><td>${esc(p.nombre)}<br><span style="font-size:9.5px;color:#888">${esc(p.tipo)}</span></td><td class="r neg">${fmtN(p.valor)}</td></tr>`).join('') || '<tr><td colspan="2" style="color:#999;text-align:center;padding:12px">Sin registros</td></tr>'}</tbody></table></div></div>
 <div class="footer">Informe generado automáticamente por Mis Finanzas · ${fecha} a las ${hora} hrs<br>Documento confidencial</div>
@@ -1932,6 +2004,7 @@ document.getElementById('fileImport').onchange=e=>{
             if(pg.categoria===undefined || pg.categoria===catVieja) pg.categoria=CAT_PAGO_TC;
             if(pg.id===undefined) pg.id=Date.now()+Math.floor(Math.random()*9999);
           });
+          if(p.caePrepago===undefined) p.caePrepago=0;
         }
       });
       j.gastos.forEach(g=>{
@@ -2022,7 +2095,6 @@ async function afterLogin(){
   renderAll();
 }
 
-/* 🛡 initSupabase con try/catch */
 async function initSupabase(){
   if(!sb)return;
   try{
@@ -2031,7 +2103,6 @@ async function initSupabase(){
     if(session?.user){user=session.user;await afterLogin();}
   }catch(err){
     console.warn('Supabase init:',err?.message||err);
-    // La app sigue funcionando en modo local
   }
 }
 
@@ -2045,7 +2116,6 @@ function mostrarResetPassword(){
   setTimeout(()=>document.getElementById('resetPass1')?.focus(),150);
 }
 
-// Link "¿Olvidaste tu contraseña?"
 document.getElementById('forgotPass')?.addEventListener('click',async()=>{
   if(!sb){toast('Supabase no configurado',true);return;}
   const email=document.getElementById('authEmail')?.value.trim();
@@ -2059,7 +2129,6 @@ document.getElementById('forgotPass')?.addEventListener('click',async()=>{
     const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:APP_URL});
     if(error)throw error;
     toast('📧 Revisa tu correo — el link expira en 1 hora');
-    // Pista visual (solo si no existe ya)
     if(!document.getElementById('hintRecovery')){
       const hint=document.createElement('div');
       hint.id='hintRecovery';
@@ -2072,7 +2141,6 @@ document.getElementById('forgotPass')?.addEventListener('click',async()=>{
   }
 });
 
-// Formulario de nueva contraseña
 document.getElementById('resetForm')?.addEventListener('submit',async e=>{
   e.preventDefault();
   if(!sb){toast('Supabase no configurado',true);return;}
@@ -2097,7 +2165,6 @@ document.getElementById('resetForm')?.addEventListener('submit',async e=>{
   }
 });
 
-// Botón "Volver al inicio" del reset
 document.getElementById('resetCancel')?.addEventListener('click',()=>{
   if(sb) sb.auth.signOut();
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
